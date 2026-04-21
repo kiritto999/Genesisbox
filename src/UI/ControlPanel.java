@@ -4,6 +4,11 @@
  */
 package UI;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
+
 /**
  *
  * @author blope
@@ -15,8 +20,29 @@ public class ControlPanel extends javax.swing.JFrame {
     /**
      * Creates new form ControlPanel
      */
+    GamePanel GP;
+    
+    
+    
     public ControlPanel() {
         initComponents();
+        SizeAdapted();
+        GP= new GamePanel();
+        panelGame.setLayout(new BorderLayout());
+        panelGame.add(GP, BorderLayout.CENTER);
+        panelGame.revalidate();
+        
+      
+        
+    }
+    
+    public void SizeAdapted(){
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = screen.width ;
+        int height = screen.height ;
+        
+        setSize(width, height);
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -26,18 +52,55 @@ public class ControlPanel extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        panelGame = new javax.swing.JPanel();
+        menuGame = new javax.swing.JPanel();
+        bMenuGame = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+        panelGame.setBackground(new java.awt.Color(0, 0, 0));
+        panelGame.setPreferredSize(new java.awt.Dimension(0, 320));
+
+        javax.swing.GroupLayout panelGameLayout = new javax.swing.GroupLayout(panelGame);
+        panelGame.setLayout(panelGameLayout);
+        panelGameLayout.setHorizontalGroup(
+            panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 868, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+        panelGameLayout.setVerticalGroup(
+            panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 407, Short.MAX_VALUE)
         );
+
+        getContentPane().add(panelGame, java.awt.BorderLayout.CENTER);
+
+        menuGame.setBackground(new java.awt.Color(102, 102, 102));
+        menuGame.setPreferredSize(new java.awt.Dimension(0, 137));
+
+        javax.swing.GroupLayout menuGameLayout = new javax.swing.GroupLayout(menuGame);
+        menuGame.setLayout(menuGameLayout);
+        menuGameLayout.setHorizontalGroup(
+            menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 868, Short.MAX_VALUE)
+        );
+        menuGameLayout.setVerticalGroup(
+            menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 137, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
+
+        bMenuGame.setAlignmentX(1.0F);
+
+        jMenu1.setText("File");
+        bMenuGame.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        bMenuGame.add(jMenu2);
+
+        setJMenuBar(bMenuGame);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -68,5 +131,10 @@ public class ControlPanel extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuBar bMenuGame;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JPanel menuGame;
+    private javax.swing.JPanel panelGame;
     // End of variables declaration//GEN-END:variables
 }

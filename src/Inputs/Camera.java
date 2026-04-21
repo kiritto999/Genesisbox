@@ -8,6 +8,11 @@ package Inputs;
  *
  * @author blope
  */
-public class Camara {
+public class Camera {
     
+    public int Camerax=0;
+    public int Cameray=0;
+    
+    public double zoom=1.0; 
+   
 }
