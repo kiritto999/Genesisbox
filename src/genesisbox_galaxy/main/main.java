@@ -4,10 +4,15 @@
  */
 package genesisbox_galaxy.main;
 
+import Game.Game;
+
 /**
  *
  * @author blope
  */
 public class main {
-    
+    public static void main(String[] args) {
+        System.out.println("MAIN FUNCIONA");
+        new Game();
+    }
 }

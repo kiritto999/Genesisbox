@@ -7,6 +7,7 @@ package UI;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import Game.GameLoop;
 
 
 /**
@@ -21,20 +22,28 @@ public class ControlPanel extends javax.swing.JFrame {
      * Creates new form ControlPanel
      */
     GamePanel GP;
+    private GameLoop GLoop;
     
     
-    
-    public ControlPanel() {
+    public ControlPanel(GameLoop loop) {
         initComponents();
         SizeAdapted();
-        GP= new GamePanel();
+
+        this.GLoop = loop;
+
+        GP = new GamePanel();
+
         panelGame.setLayout(new BorderLayout());
         panelGame.add(GP, BorderLayout.CENTER);
         panelGame.revalidate();
-        
-      
-        
-    }
+        lblTime.setText("");
+        new javax.swing.Timer(100, new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                lblTime.setText(GLoop.getTimeDay().getTimeString());
+            }
+        }).start();
+    }   
     
     public void SizeAdapted(){
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -54,40 +63,54 @@ public class ControlPanel extends javax.swing.JFrame {
 
         panelGame = new javax.swing.JPanel();
         menuGame = new javax.swing.JPanel();
+        btnStartTime = new javax.swing.JButton();
+        btnPause = new javax.swing.JButton();
+        lblTime = new javax.swing.JLabel();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Aqualix");
 
         panelGame.setBackground(new java.awt.Color(0, 0, 0));
         panelGame.setPreferredSize(new java.awt.Dimension(0, 320));
-
-        javax.swing.GroupLayout panelGameLayout = new javax.swing.GroupLayout(panelGame);
-        panelGame.setLayout(panelGameLayout);
-        panelGameLayout.setHorizontalGroup(
-            panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 868, Short.MAX_VALUE)
-        );
-        panelGameLayout.setVerticalGroup(
-            panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 407, Short.MAX_VALUE)
-        );
-
+        panelGame.setLayout(null);
         getContentPane().add(panelGame, java.awt.BorderLayout.CENTER);
 
         menuGame.setBackground(new java.awt.Color(102, 102, 102));
         menuGame.setPreferredSize(new java.awt.Dimension(0, 137));
 
+        btnStartTime.setText("▶️");
+        btnStartTime.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnStartTime.addActionListener(this::btnStartTimeActionPerformed);
+
+        btnPause.setText("⏸️");
+        btnPause.addActionListener(this::btnPauseActionPerformed);
+
+        lblTime.setText("Time");
+
         javax.swing.GroupLayout menuGameLayout = new javax.swing.GroupLayout(menuGame);
         menuGame.setLayout(menuGameLayout);
         menuGameLayout.setHorizontalGroup(
             menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 868, Short.MAX_VALUE)
+            .addGroup(menuGameLayout.createSequentialGroup()
+                .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(271, 271, 271)
+                .addComponent(btnPause, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(419, Short.MAX_VALUE))
         );
         menuGameLayout.setVerticalGroup(
             menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 137, Short.MAX_VALUE)
+            .addGroup(menuGameLayout.createSequentialGroup()
+                .addGroup(menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnPause, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 84, Short.MAX_VALUE))
         );
 
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
@@ -104,6 +127,16 @@ public class ControlPanel extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnStartTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartTimeActionPerformed
+        GLoop.getTimeDay().setPaused(false);
+        System.out.println(GLoop.getTimeDay().isPaused());
+    }//GEN-LAST:event_btnStartTimeActionPerformed
+
+    private void btnPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseActionPerformed
+        GLoop.getTimeDay().setPaused(true);
+        System.out.println(GLoop.getTimeDay().isPaused());
+    }//GEN-LAST:event_btnPauseActionPerformed
 
     /**
      * @param args the command line arguments
@@ -127,13 +160,23 @@ public class ControlPanel extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new ControlPanel().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+
+                GameLoop loop = new GameLoop();
+                loop.start();
+                
+                new ControlPanel(loop).setVisible(true);
+                
+            });   
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar bMenuGame;
+    private javax.swing.JButton btnPause;
+    private javax.swing.JButton btnStartTime;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JLabel lblTime;
     private javax.swing.JPanel menuGame;
     private javax.swing.JPanel panelGame;
     // End of variables declaration//GEN-END:variables

@@ -4,6 +4,8 @@
  */
 package UI;
 
+import Entities.Entity;
+import Entities.Lummon;
 import Inputs.Camera;
 import World.Tile;
 import World.World;
@@ -12,34 +14,43 @@ import java.awt.Graphics;
 import java.util.HashSet;
 import javax.swing.JPanel;
 import Inputs.Mouser;
+import Game.GameLoop;
+import java.util.ArrayList;
 
 /**
  *
  * @author blope
  */
 public class GamePanel extends JPanel{
-    private final int UNIT_SIZE = 45;
+    private final int UNIT_SIZE = 25;
     World world;
     Camera camera;
-    Color ground_green=new Color(50, 200, 50);
+    GameLoop gameLoop;
+    Color ground=new Color(132, 232, 222);
     Color Beach_blue=new Color(73, 201, 252);
-      
+    Color ocean = new Color (89, 131, 171);
+    ArrayList<Entity> entities = new ArrayList<>();
 
     public GamePanel(){
-        this.setBackground(new Color(80, 168, 204));
+        this.setBackground(ocean);
         world = new World();
         camera = new Camera();
+        gameLoop = new GameLoop();
         Mouser mouse = new Mouser(camera, this);        
         addMouseListener(mouse);
         addMouseMotionListener(mouse);
+        
     }
     
     
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         DrawIsland(g);
+        DrawTest(g);
         //drawGrid(g);
     }
+    
+   
     
     private void drawGrid(Graphics g) {
         int columns = world.getColums();
@@ -75,7 +86,7 @@ public class GamePanel extends JPanel{
                 if (map[r][c].getType() == Tile.WATER ){
                     g.setColor(Beach_blue); 
                 }else{
-                    g.setColor(ground_green);
+                    g.setColor(ground);
                     }
                 
                 int x = camera.Camerax + (int)(c * size);
@@ -114,7 +125,12 @@ public class GamePanel extends JPanel{
         camera.Cameray = Math.max(minY, Math.min(camera.Cameray, maxY));
     }
 }
-        
+   public void DrawTest(Graphics g){
+       entities.add(new Lummon(5, 5));
+        for (Entity e : entities) {
+            e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
+        }
+   }
     
     
     

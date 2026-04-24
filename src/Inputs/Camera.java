@@ -10,9 +10,11 @@ package Inputs;
  */
 public class Camera {
     
-    public int Camerax=0;
+    public int Camerax=450;
     public int Cameray=0;
     
     public double zoom=1.0; 
+    
+    
    
 }

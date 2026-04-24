@@ -9,6 +9,19 @@ package Game;
  *
  * @author blope
  */
+import javax.swing.JFrame;
+import UI.ControlPanel;
+
 public class Game {
-    
+    private GameLoop gameLoop;
+
+    public Game() {
+        System.out.println("El game se esta ejecutado");
+        gameLoop = new GameLoop();
+        gameLoop.start();
+        
+        ControlPanel panel = new ControlPanel(gameLoop);
+        panel.setVisible(true);
+        
+    }
 }

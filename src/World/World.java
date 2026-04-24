@@ -9,8 +9,8 @@ package World;
  * @author blope
  */
 public class World {
-    int rows = 15;
-    int colums = 15;
+    int rows = 60;
+    int colums = 60;
     Tile[][] map;
     
     public World(){
