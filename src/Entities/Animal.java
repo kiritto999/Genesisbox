@@ -11,10 +11,12 @@ package Entities;
 public abstract class Animal extends Entity {
 
     protected boolean life;
+    
     protected int health;
     protected int energy;
+    
     protected int sex;
-    protected int type;
+    protected int habitat;
     protected int food;
     
     protected int hunger;

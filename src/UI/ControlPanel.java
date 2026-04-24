@@ -161,12 +161,9 @@ public class ControlPanel extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-
                 GameLoop loop = new GameLoop();
                 loop.start();
-                
                 new ControlPanel(loop).setVisible(true);
-                
             });   
     }
 

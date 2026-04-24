@@ -6,27 +6,33 @@ package Entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Random;
+import java.util.Random;
 
 /**
  *
  * @author blope
  */
 public class Lummon extends Animal {
-
+    Random random;
+    
     public Lummon(int x, int y) {
         super(x, y);
         life = true;
-        health = 50;
-        energy = 60;
-        sex = 1;
         
+        health = random.nextInt(25,50);
+        energy = random.nextInt(150,300);
+        
+        sex = 1;
+        habitat= 1;
+        food=1;
         
         hunger = 0;
         thirst = 0;
 
-        speed = 3;
-        attack = 2;
-        intelligence = 4;
+        speed = random.nextInt(4,5);
+        attack = random.nextInt(1,2);
+        intelligence = random.nextInt(1,4);
     }
 
     @Override

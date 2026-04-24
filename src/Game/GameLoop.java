@@ -58,6 +58,9 @@ public class GameLoop implements Runnable{
                 e.printStackTrace();
             }
         }
+        
+        
+        
     }
     public void start() {
         running = true;
