@@ -7,48 +7,47 @@ package Entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
-import java.util.Random;
+import World.Tile;
 
-/**
- *
- * @author blope
- */
 public class Lummon extends Animal {
-    Random random;
-    
-    public Lummon(int x, int y) {
-        super(x, y);
-        life = true;
-        
-        health = random.nextInt(25,50);
-        energy = random.nextInt(150,300);
-        
-        sex = 1;
-        habitat= 1;
-        food=1;
-        
+
+    Random random = new Random();
+
+    public Lummon(int tileX, int tileY) {
+        super(tileX, tileY);
+
+        name = "Lummon";
+        maxHealth = 50 + random.nextInt(50);
+        health = 25 + random.nextInt(25);
+
+        energy = 150 + random.nextInt(150);
+
+        sex = random.nextBoolean() ? Sex.MALE : Sex.FEMALE;
+        habitat = Tile.GRASS;
+        foodType = FoodType.HERBIVORE;
+
         hunger = 0;
         thirst = 0;
 
-        speed = random.nextInt(4,5);
-        attack = random.nextInt(1,2);
-        intelligence = random.nextInt(1,4);
+        speed = 2 + random.nextInt(3);
+        attack = 1 + random.nextInt(2);
+        intelligence = 1 + random.nextInt(4);
     }
 
     @Override
-    public void update() {
-
+    public void update(World.World world) {
+        super.update(world);
     }
-    
-    @Override
+
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
+
         g.setColor(Color.WHITE);
 
         g.fillOval(
-            cameraX + x * tileSize,
-            cameraY + y * tileSize,
-            tileSize,
-            tileSize
+            cameraX + tileX * tileSize + tileSize / 4,
+            cameraY + tileY * tileSize + tileSize / 4,
+            tileSize / 2,
+            tileSize / 2
         );
     }
 }
