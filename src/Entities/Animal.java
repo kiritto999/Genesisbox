@@ -4,6 +4,8 @@
  */
 package Entities;
 
+import World.World;
+
 /**
  *
  * @author blope
@@ -31,7 +33,8 @@ public abstract class Animal extends Entity {
     }
 
     @Override
-    public void update() {
+    public void update(World world) {      
+    
         hunger++;
         thirst++;
         energy--;

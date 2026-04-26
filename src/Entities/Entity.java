@@ -1,41 +1,63 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Entities;
 
 import java.awt.Graphics;
 
 /**
- *
- * @author blope
+ * Clase base para todas las entidades del mundo.
  */
 public abstract class Entity {
-    
-    protected int x;
-    protected int y;
 
-    public Entity(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
+    protected int tileX;
+    protected int tileY;
+    protected String name;
+    protected int health;
+    protected int maxHealth;
+    protected boolean alive;
+
+    public enum EntityType {
+        ANIMAL, RESOURCE
     }
 
-    public abstract void update();
-    
-    public abstract void draw(Graphics g, int tileSize, int cameraX, int cameraY);
+    protected EntityType type;
 
-    public int getX() {
-        return x;
+// En Entity.java, dos constructores:
+public Entity(int tileX, int tileY) {
+    this.tileX   = tileX;
+    this.tileY   = tileY;
+    this.alive   = true;
+    this.type    = EntityType.ANIMAL;
+}
+
+public Entity(String name, int tileX, int tileY, int maxHealth, EntityType type) {
+    this.name      = name;
+    this.tileX     = tileX;
+    this.tileY     = tileY;
+    this.maxHealth = maxHealth;
+    this.alive     = true;
+    this.type      = type;
+}
+
+    public abstract void update(World.World world);
+
+    public void takeDamage(int amount) {
+        health = Math.max(0, health - amount);
+        if (health == 0) alive = false;
     }
 
-    public int getY() {
-        return y;
+    public void heal(int amount) {
+        health = Math.min(maxHealth, health + amount);
     }
     
-    
+    public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {}
+
+    public int        getTileX()     { return tileX; }
+    public int        getTileY()     { return tileY; }
+    public String     getName()      { return name; }
+    public int        getHealth()    { return health; }
+    public int        getMaxHealth() { return maxHealth; }
+    public boolean    isAlive()      { return alive; }
+    public EntityType getType()      { return type; }
+
+    public void setTileX(int x) { this.tileX = x; }
+    public void setTileY(int y) { this.tileY = y; }
 }

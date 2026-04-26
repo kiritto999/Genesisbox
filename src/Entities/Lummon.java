@@ -4,10 +4,12 @@
  */
 package Entities;
 
+import World.World;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 import java.util.Random;
+
 
 /**
  *
@@ -36,17 +38,17 @@ public class Lummon extends Animal {
     }
 
     @Override
-    public void update() {
-
+    public void update(World world) {
+        super.update(world);
     }
     
-    @Override
+   
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
         g.setColor(Color.WHITE);
 
         g.fillOval(
-            cameraX + x * tileSize,
-            cameraY + y * tileSize,
+            cameraX + tileX * tileSize,
+            cameraY + tileY * tileSize,
             tileSize,
             tileSize
         );
