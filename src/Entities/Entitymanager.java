@@ -33,7 +33,7 @@ public class Entitymanager {
  
     private void spawnInicial() {
         spawnRecursos(Tree.class,  8);
-        spawnRecursos(Stone.class, 5);
+        spawnRecursos(Nero.class, 5);
         spawnRecursos(Food.class,  6);
     }
  
@@ -54,7 +54,7 @@ public class Entitymanager {
  
     private Resource crearRecurso(Class<?> clazz, int x, int y) {
         if (clazz == Tree.class)  return new Tree(x, y);
-        if (clazz == Stone.class) return new Stone(x, y);
+        if (clazz == Nero.class) return new Nero(x, y);
         if (clazz == Food.class)  return new Food(x, y);
         return null;
     }

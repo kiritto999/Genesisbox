@@ -50,8 +50,6 @@ public Entity(String name, int tileX, int tileY, int maxHealth, EntityType type)
     public void heal(int amount) {
         health = Math.min(maxHealth, health + amount);
     }
-    
-    public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {}
 
     public int        getTileX()     { return tileX; }
     public int        getTileY()     { return tileY; }

@@ -9,16 +9,18 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Graphics2D;
+
 /**
  *
  * @author Friedrick
  */
-public class Stone extends Resource {
+public class Nero extends Resource {
  
     public static final Color COLOR_LLENA  = new Color(49, 120, 34);
     public static final Color COLOR_VACIA  = new Color(37, 77, 26);
  
-    public Stone(int tileX, int tileY) {
+    public Nero(int tileX, int tileY) {
         super("Nero", tileX, tileY,
                 /*maxHealth*/   100,
                 /*maxQuantity*/  15,

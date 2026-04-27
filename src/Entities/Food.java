@@ -68,4 +68,6 @@ public class Food extends Resource {
     }
  
     public float getVisualSize() { return 0.35f; }
+
 }
+
