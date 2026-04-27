@@ -110,7 +110,7 @@ public abstract class Animal extends Entity {
             if (esMovimientoValido(nx, ny, world)) {
                 tileX = nx;
                 tileY = ny;
-                slot = entitymanager.getSlotLibre(nx, ny);
+                slot = entitymanager.getSlotLibre(nx, ny, capacity);
                 return;
             }
         }
