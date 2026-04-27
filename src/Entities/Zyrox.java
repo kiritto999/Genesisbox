@@ -18,8 +18,8 @@ public class Zyrox extends Animal {
 
     Random random = new Random();
 
-    public Zyrox(int tileX, int tileY) {
-        super(tileX, tileY);
+    public Zyrox (int tileX, int tileY, Entitymanager manager) {
+        super(tileX, tileY, manager);  
 
         name      = "Zyrox";
         maxHealth = 40 + random.nextInt(21);  // 40-60

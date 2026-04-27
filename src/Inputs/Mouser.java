@@ -41,6 +41,7 @@ public class Mouser implements MouseListener,MouseMotionListener, MouseWheelList
         dragging = true;
         lastX = e.getX();
         lastY = e.getY();
+        jpanel.handleClick(e.getX(), e.getY());
     }
     
 

@@ -19,13 +19,13 @@ public class Lummon extends Animal {
 
     Random random = new Random();
 
-    public Lummon(int tileX, int tileY) {
-        super(tileX, tileY);
+    public Lummon(int tileX, int tileY, Entitymanager manager) {
+        super(tileX, tileY, manager);  
 
-        name      = "Lummon";
-        maxHealth = 15 + random.nextInt(11);  // 15-25
-        health    = maxHealth;
- 
+        name         = "Lummon";
+        maxHealth    = 15 + random.nextInt(11);  // 15-25
+        health       = maxHealth;
+        capacity     = 1;
         energy       = 30 + random.nextInt(21);  // 30-50
         sex          = random.nextBoolean() ? Sex.MALE : Sex.FEMALE;
         habitat      = Tile.GRASS;
@@ -34,7 +34,7 @@ public class Lummon extends Animal {
         hunger = CAP_HAMBRE; // empieza lleno
         thirst = CAP_SED;    // empieza lleno
  
-        speed        = 4 + random.nextInt(3);   // 4-6
+        speed        = 2 + random.nextInt(3);   // 2-4
         attack       = 4 + random.nextInt(6);   // 4-9
         intelligence = 3 + random.nextInt(3);   // 3-5
     }

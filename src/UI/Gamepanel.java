@@ -20,8 +20,9 @@ import java.util.ArrayList;
  */
 public class GamePanel extends JPanel {
 
-    private final int UNIT_SIZE = 25;
-    private ControlPanel controlPanel;
+    private final int UNIT_SIZE = 25; //unidad de medida de las casillas
+    
+    InfoPanel infoP;
     World world;
     Camera camera;
     Entitymanager entitymanager;
@@ -30,10 +31,10 @@ public class GamePanel extends JPanel {
     Color Beach_blue = new Color(73, 201, 252);
     Color ocean = new Color(89, 131, 171);
     boolean dgrid= false;
-    public GamePanel(World world, Entitymanager entitymanager,ControlPanel cp){
+    public GamePanel(World world, Entitymanager entitymanager,InfoPanel infoPanel){
         this.setBackground(ocean);
 
-        this.controlPanel = cp;
+        this.infoP=infoPanel;
         this.world = world;
         this.entitymanager = entitymanager;
 
@@ -149,6 +150,45 @@ public class GamePanel extends JPanel {
             e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
         }
    }
+   
+   //detector de entidades en las casiilas
+   public void handleClick(int mouseX, int mouseY) {
+
+        int size = (int)(UNIT_SIZE * camera.zoom);
+
+        int tileX = (mouseX - camera.Camerax) / size;
+        int tileY = (mouseY - camera.Cameray) / size;
+
+        // validar límites
+        if (tileX < 0 || tileY < 0 || tileX >= world.getColums() || tileY >= world.getRows()) {
+            return;
+        }
+        
+        Tile tile = world.getMap()[tileY][tileX];
+        
+        Entity entity = null;
+        Resource resource = null;
+
+        // buscar entidad
+        for (Entity e : entitymanager.getAnimals()) {
+            if (e.getTileX() == tileX && e.getTileY() == tileY) {
+                entity = e;
+                break;
+            }
+        }
+
+        // buscar recurso
+        for (Entity e : entitymanager.getResources()) {
+            if (e.getTileX() == tileX && e.getTileY() == tileY) {
+                resource = (Resource) e;
+                break;
+            }
+        }
+
+        if (infoP != null) {
+            infoP.updateInfo(tileX, tileY, tile, entity, resource);
+        }
+    }
 }
     
     

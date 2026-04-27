@@ -27,23 +27,25 @@ public abstract class Animal extends Entity {
     protected int speed;
     protected int attack;
     protected int intelligence;
+    protected int capacity;
     
     // ── Info ──────────────────────────────────────────────────────────────
     protected Sex      sex;
     protected int      habitat;
     protected FoodType foodType;
+    protected Entitymanager entitymanager;
     
     // ── Timers de juego (en segundos reales) ─────────────────────────
-    private double moveTimer    = 0; // se mueve cada 10 segundos
+    private double moveTimer    = 0; // se mueve cada 2 segundos
     private double hambreTimer  = 0; // hambre baja cada 10 segundos
     private double sedTimer     = 0; // sed baja cada 7 segundos
- 
-    private static final double MOVE_INTERVAL   = 10.0;
-    private static final double HAMBRE_INTERVAL = 10.0;
+    private static final double MOVE_INTERVAL = 2.0; // 2 segundos 
+    private static final double HAMBRE_INTERVAL = 1.0;
     private static final double SED_INTERVAL    =  7.0;
  
-    public Animal(int tileX, int tileY) {
-        super(tileX, tileY);
+    public Animal(int tileX, int tileY, Entitymanager manager) {
+        super(tileX, tileY, manager);
+        this.entitymanager = manager;
         this.hunger = CAP_HAMBRE;
         this.thirst = CAP_SED;
     }
@@ -79,10 +81,12 @@ public abstract class Animal extends Entity {
  
         // ── Movimiento ───────────────────────────────────────────────────
         moveTimer += deltaTime;
-        if (moveTimer >= MOVE_INTERVAL) {
+        double interval = 3.0 / speed;  // ← reemplaza MOVE_INTERVAL por esto
+
+        if (moveTimer >= interval) {
             moveTimer = 0;
             mover(world);
-            energy = Math.max(0, energy - 1); // -1 energía al moverse
+            energy = Math.max(0, energy - 1);
         }
     }
  
@@ -90,6 +94,7 @@ public abstract class Animal extends Entity {
      * Mueve el animal a una casilla de hierba adyacente aleatoria.
      */
     protected void mover(World.World world) {
+        System.out.println("MOVIENDO " + name + " desde " + tileX + "," + tileY);
         int[][] move = {{0,-1},{0,1},{1,0},{-1,0}};
  
         // Mezcla las direcciones para movimiento aleatorio
@@ -112,18 +117,20 @@ public abstract class Animal extends Entity {
  
     protected boolean esMovimientoValido(int nx, int ny, World.World world) {
         if (nx < 0 || ny < 0 || nx >= world.getColums() || ny >= world.getRows()) return false;
+        if (world.getMap()[ny][nx].getType() != Tile.GRASS) return false;
+        if (entitymanager.contarEspacioTile(nx, ny) + capacity > 5) return false;
         return world.getMap()[ny][nx].getType() == Tile.GRASS;
     }
  
     
-    public int getEnergy()      { return energy; }
-    public int getHunger()      { return hunger; }
-    public int getThirst()      { return thirst; }
-    public int getSpeed()       { return speed; }
-    public int getAttack()      { return attack; }
-    public int getIntelligence(){ return intelligence; }
-    public Sex getSex()         { return sex; }
+    public int getEnergy()       { return energy; }
+    public int getHunger()       { return hunger; }
+    public int getThirst()       { return thirst; }
+    public int getSpeed()        { return speed; }
+    public int getAttack()       { return attack; }
+    public int getIntelligence() { return intelligence; }
+    public Sex getSex()          { return sex; }
     public FoodType getFoodType(){ return foodType; }
-    
-
+    public int getCapacity()     { return capacity; }
+      
 }

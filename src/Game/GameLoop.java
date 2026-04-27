@@ -1,6 +1,9 @@
 package Game;
 
+import Entities.Animal;
+import Entities.Entitymanager;
 import Utils.TimeDay;
+import World.World;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -14,70 +17,65 @@ import Utils.TimeDay;
 public class GameLoop implements Runnable{
     
     private TimeDay timeDay;
-    private long lastTime;
-    
+    private long lastTime;    
     private boolean running = false; 
+    
+    // Referencias necesarias para actualizar animales
+    private Entitymanager entitymanager;
+    private World world;
     
     public GameLoop(){
         timeDay = new TimeDay();
         lastTime= System.nanoTime();
     }
     
-    public void update(double Ftime) { 
-        // actualiza el tiempo--------
-        if (timeDay.isPaused()) {
-            lastTime = System.nanoTime(); 
-            return;
-        }
+    // Setter para inyectar dependencias después de construir
+
+    public void setEntitymanager(Entitymanager em) {
+        this.entitymanager = em; 
+  
+    }
+    public void setWorld(World world) {
+        this.world = world;
+    }
+    public void update(double Ftime) {
+        if (timeDay.isPaused()) return;
         timeDay.updateTime(Ftime);
+        if (entitymanager != null) entitymanager.update(Ftime); // ← agregar esto
     }
+
     
-    @Override
-    public void run() {
-        System.out.println("Time INICIADO");
+@Override
+public void run() {
+    while (running) {
+        long now = System.nanoTime();
+        double deltaTime = (now - lastTime) / 1_000_000_000.0;
+        lastTime = now;
 
-        while (running == true ){
-
-            long now = System.nanoTime();
-
-            if (timeDay.isPaused()) {
-                lastTime = now;
-            } else {
-                
-                double deltaTime = (now - lastTime) / 1_000_000_000.0;
-                lastTime = now;
-
-                update(deltaTime);
+        if (!timeDay.isPaused()) {
+            timeDay.updateTime(deltaTime);
+            if (entitymanager != null) {
+                entitymanager.update(deltaTime);  
             }
-            double deltaTime = (now - lastTime) / 1_000_000_000.0;
-            lastTime = now;
-
-            update(deltaTime);
             
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
-        
-        
-        
-        
-        
+
+        try { Thread.sleep(16); } catch (InterruptedException e) { e.printStackTrace(); }
     }
+}
+
+        
+        
     public void start() {
         running = true;
         new Thread(this).start();
     }
 
-    public void stop() {
-        running = false;
-    }   
+    public void stop()  { running = false; }
     
-    public TimeDay getTimeDay() {
-        return timeDay;
-    }
+    public TimeDay getTimeDay() { return timeDay; }
+
+    
     
     
 }

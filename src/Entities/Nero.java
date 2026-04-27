@@ -57,6 +57,6 @@ public class Nero extends Resource {
         return isDepleted() ? COLOR_VACIA : COLOR_LLENA;
     }
  
-    public float getVisualSize() { return 0.6f; }
+    public float getVisualSize() { return 0.90f; }
     
 }

@@ -11,6 +11,10 @@ import Game.GameLoop;
 import Entities.*;
 import World.World;
 import java.util.Random;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -25,7 +29,7 @@ public class ControlPanel extends javax.swing.JFrame {
      */
     Random rng = new Random();
     
-    GamePanel GP;  
+    private GamePanel GP;  
     private GameLoop GLoop;
     private World world;
     private Entitymanager EManager;
@@ -33,40 +37,58 @@ public class ControlPanel extends javax.swing.JFrame {
     String[] animals = {"Elegir","Lummon", "Zyrox"};
     String[] resources = {"Elegir","Food","Nero","Zenthra",};
     
-    public ControlPanel(GameLoop loop, World world, Entitymanager manager,InfoPanel infoPanel ) {
+    
+    
+    
+    private JLabel lblPos;
+    private JLabel lblTileType;
+    private JLabel lblEntityName;
+    private JLabel lblHealth;
+    private JLabel lblEnergy;
+    private JLabel lblResourceName;
+    private JLabel lblResourceAmount;
+    public ControlPanel(GameLoop loop, World world, Entitymanager manager, InfoPanel infoPanel ) {
         initComponents();
         SizeAdapted();
-        //para que todo sea un solo create
+
         this.GLoop = loop;
         this.world = world;
         this.EManager = manager;
-        this.infoPanel = infoPanel;
-        
-        GP = new GamePanel(world,EManager,this);
+        this.infoPanel = infoPanel; 
 
-        //agrega el panel visible con el redujo
+
+        GP = new GamePanel(world, EManager, this.infoPanel);
+
         panelGame.setLayout(new BorderLayout());
         panelGame.add(GP, BorderLayout.CENTER);
         panelGame.revalidate();
-        
-        //va modificando el tiempo 
+
+        // usar panelInfo como contenedor del InfoPanel
+        panelInfo.setLayout(new BorderLayout()); // colar absoluteloyaut para la acomodacion delso LBLs
+        panelInfo.removeAll(); //por si acaso
+        panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
+        panelInfo.add(this.infoPanel, BorderLayout.CENTER);     
+
+        //tamaño del panel lateral
+        panelInfo.setPreferredSize(new Dimension(250, 0));
+
+        // tiempo
         lblTime.setText("");
-        new javax.swing.Timer(100, new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                lblTime.setText(GLoop.getTimeDay().getTimeString());
-            }
+        new javax.swing.Timer(100, e -> {
+            lblTime.setText(GLoop.getTimeDay().getTimeString());
         }).start();
-        
-        //agrega las opciones al los combobox
+
+        // combobox
         for (String animal : animals) { 
             cboxAnimals.addItem(animal);
         }
         for (String resource : resources ){
             cboxResource.addItem(resource);
         }
-        panelInfo.setVisible(false);
-    }   
+
+        //la info empieza oculta
+        panelInfo.setVisible(true);
+    }
     
     
     //adapta la ventana a la pantalla
@@ -79,12 +101,12 @@ public class ControlPanel extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
     //comparativa del cbox para saber el aniamal
-    public Animal makeAnimal(int tipo, int x, int y,Entitymanager emEntitymanager) {
+    public Animal makeAnimal(int tipo, int x, int y, Entitymanager manager) {
         switch (tipo) {
             case 1:
-                return new Lummon(x, y);
+                return new Lummon(x, y, EManager);
             case 2:
-                return new Zyrox(x, y);
+                return new Zyrox(x, y, EManager);
             default:
                 return null;
         }
@@ -103,6 +125,74 @@ public class ControlPanel extends javax.swing.JFrame {
         }
     }
 
+    
+    public void Information() {
+
+    panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
+
+    //POSICION -----------------------------------------
+    JPanel panelPos = new JPanel();
+    panelPos.setLayout(new BoxLayout(panelPos, BoxLayout.Y_AXIS));
+
+    JLabel titlePos = new JLabel("POSICIÓN");
+    lblPos = new JLabel("0,0");
+
+    panelPos.add(titlePos);
+    panelPos.add(lblPos);
+
+    panelPos.setBorder(BorderFactory.createTitledBorder("Posición"));
+    panelInfo.add(panelPos); 
+
+
+    // TILE -----------------------------------------
+    JPanel panelTile = new JPanel();
+    panelTile.setLayout(new BoxLayout(panelTile, BoxLayout.Y_AXIS));
+
+    JLabel titleTile = new JLabel("TILE");
+    lblTileType = new JLabel("-");
+
+    panelTile.add(titleTile);
+    panelTile.add(lblTileType);
+
+    panelTile.setBorder(BorderFactory.createTitledBorder("Tile"));
+    panelInfo.add(panelTile);
+
+
+    // ENTITY -----------------------------------------
+    JPanel panelEntity = new JPanel();
+    panelEntity.setLayout(new BoxLayout(panelEntity, BoxLayout.Y_AXIS));
+
+    JLabel titleEntity = new JLabel("ENTITY");
+
+    lblEntityName = new JLabel("-");
+    lblHealth = new JLabel("-");
+    lblEnergy = new JLabel("-");
+
+    panelEntity.add(titleEntity);
+    panelEntity.add(lblEntityName);
+    panelEntity.add(lblHealth);
+    panelEntity.add(lblEnergy);
+
+    panelEntity.setBorder(BorderFactory.createTitledBorder("Entidad"));
+    panelInfo.add(panelEntity);
+
+
+    //RESOURCE -----------------------------------------
+    JPanel panelResource = new JPanel();
+    panelResource.setLayout(new BoxLayout(panelResource, BoxLayout.Y_AXIS));
+
+    JLabel titleRes = new JLabel("RESOURCE");
+
+    lblResourceName = new JLabel("-");
+    lblResourceAmount = new JLabel("-");
+
+    panelResource.add(titleRes);
+    panelResource.add(lblResourceName);
+    panelResource.add(lblResourceAmount);
+
+    panelResource.setBorder(BorderFactory.createTitledBorder("Recurso"));
+    panelInfo.add(panelResource);
+    }
    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -122,14 +212,6 @@ public class ControlPanel extends javax.swing.JFrame {
         RbtnResource = new javax.swing.JRadioButton();
         btnGrid = new javax.swing.JButton();
         panelInfo = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        lblLocation = new javax.swing.JLabel();
-        lblTileType = new javax.swing.JLabel();
-        lblEntityName = new javax.swing.JLabel();
-        lblHealth = new javax.swing.JLabel();
-        lblEnergy = new javax.swing.JLabel();
-        lblResourceName = new javax.swing.JLabel();
-        lblResourceAmount = new javax.swing.JLabel();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -196,32 +278,6 @@ public class ControlPanel extends javax.swing.JFrame {
 
         panelInfo.setBackground(new java.awt.Color(102, 102, 102));
         panelInfo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel1.setBackground(new java.awt.Color(51, 255, 0));
-        jLabel1.setText("Informacion");
-        panelInfo.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 40));
-
-        lblLocation.setText("pocision");
-        panelInfo.add(lblLocation, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 60, 20));
-
-        lblTileType.setText("TileType");
-        panelInfo.add(lblTileType, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 40, -1, -1));
-
-        lblEntityName.setText("lblEntityName");
-        panelInfo.add(lblEntityName, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, -1, -1));
-
-        lblHealth.setText("health");
-        panelInfo.add(lblHealth, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
-
-        lblEnergy.setText("Energy");
-        panelInfo.add(lblEnergy, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, -1, -1));
-
-        lblResourceName.setText("Resource");
-        panelInfo.add(lblResourceName, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, -1, -1));
-
-        lblResourceAmount.setText("ResouceM");
-        panelInfo.add(lblResourceAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 120, -1, -1));
-
         getContentPane().add(panelInfo, java.awt.BorderLayout.LINE_END);
 
         bMenuGame.setAlignmentX(1.0F);
@@ -303,8 +359,10 @@ public class ControlPanel extends javax.swing.JFrame {
             World world = new World();                    
             Entitymanager manager = new Entitymanager(world);
             InfoPanel infoP = new InfoPanel();
+            loop.setEntitymanager(manager);
+            loop.setWorld(world);
             loop.start();
-            new ControlPanel(loop, world, manager,infoP).setVisible(true); 
+            new ControlPanel(loop, world, manager,infoP).setVisible(true);
         });
     }
 
@@ -319,17 +377,9 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JButton btnStartTime;
     private javax.swing.JComboBox<String> cboxAnimals;
     private javax.swing.JComboBox<String> cboxResource;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JLabel lblEnergy;
-    private javax.swing.JLabel lblEntityName;
-    private javax.swing.JLabel lblHealth;
-    private javax.swing.JLabel lblLocation;
-    private javax.swing.JLabel lblResourceAmount;
-    private javax.swing.JLabel lblResourceName;
-    private javax.swing.JLabel lblTileType;
     private javax.swing.JLabel lblTime;
     private javax.swing.JPanel menuGame;
     private javax.swing.JPanel panelGame;
