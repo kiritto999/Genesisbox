@@ -24,6 +24,7 @@ public class GameLoop implements Runnable{
     }
     
     public void update(double Ftime) { 
+        // actualiza el tiempo--------
         if (timeDay.isPaused()) {
             lastTime = System.nanoTime(); 
             return;
@@ -42,6 +43,7 @@ public class GameLoop implements Runnable{
             if (timeDay.isPaused()) {
                 lastTime = now;
             } else {
+                
                 double deltaTime = (now - lastTime) / 1_000_000_000.0;
                 lastTime = now;
 

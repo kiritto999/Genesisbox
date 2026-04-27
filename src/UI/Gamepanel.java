@@ -4,19 +4,15 @@
  */
 package UI;
 
-import Entities.Entity;
-import Entities.Lummon;
-import Inputs.Camera;
-import World.Tile;
-import World.World;
+import Entities.*;
+import Inputs.*;
+import World.*;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.HashSet;
 import javax.swing.JPanel;
-import Inputs.Mouser;
 import Game.GameLoop;
 import java.util.ArrayList;
-import Entities.Entitymanager;
 
 /**
  *
@@ -25,7 +21,7 @@ import Entities.Entitymanager;
 public class GamePanel extends JPanel {
 
     private final int UNIT_SIZE = 25;
-
+    private ControlPanel controlPanel;
     World world;
     Camera camera;
     Entitymanager entitymanager;
@@ -33,10 +29,11 @@ public class GamePanel extends JPanel {
     Color ground = new Color(16, 79, 23);
     Color Beach_blue = new Color(73, 201, 252);
     Color ocean = new Color(89, 131, 171);
-
-    public GamePanel(World world, Entitymanager entitymanager){
+    boolean dgrid= false;
+    public GamePanel(World world, Entitymanager entitymanager,ControlPanel cp){
         this.setBackground(ocean);
 
+        this.controlPanel = cp;
         this.world = world;
         this.entitymanager = entitymanager;
 
@@ -45,6 +42,7 @@ public class GamePanel extends JPanel {
         Mouser mouse = new Mouser(camera, this);        
         addMouseListener(mouse);
         addMouseMotionListener(mouse);
+        
     }
 
     
@@ -59,31 +57,33 @@ public class GamePanel extends JPanel {
    
     
     private void drawGrid(Graphics g) {
+    
+    if (dgrid){
+        int size = (int)(UNIT_SIZE * camera.zoom);
 
-    int size = (int)(UNIT_SIZE * camera.zoom);
+        g.setColor(Color.BLACK);
 
-    g.setColor(Color.BLACK);
+        // líneas verticales
+        for (int c = 0; c <= world.getColums(); c++) {
+            int x = camera.Camerax + (int)(c * size);
+            g.drawLine(
+                x,
+                camera.Cameray,
+                x,
+                camera.Cameray + world.getRows() * size
+            );
+        }
 
-    // líneas verticales
-    for (int c = 0; c <= world.getColums(); c++) {
-        int x = camera.Camerax + (int)(c * size);
-        g.drawLine(
-            x,
-            camera.Cameray,
-            x,
-            camera.Cameray + world.getRows() * size
-        );
-    }
-
-    // líneas horizontales
-    for (int r = 0; r <= world.getRows(); r++) {
-        int y = camera.Cameray + (int)(r * size);
-        g.drawLine(
-            camera.Camerax,
-            y,
-            camera.Camerax + world.getColums() * size,
-            y
-        );
+        // líneas horizontales
+        for (int r = 0; r <= world.getRows(); r++) {
+            int y = camera.Cameray + (int)(r * size);
+            g.drawLine(
+                camera.Camerax,
+                y,
+                camera.Camerax + world.getColums() * size,
+                y
+            );
+        }
     }
     }
     
@@ -142,7 +142,7 @@ public class GamePanel extends JPanel {
 }
    public void DrawTest(Graphics g){
 
-        for (Entity e : entitymanager.getEntities()) {
+        for (Entity e : entitymanager.getResources()) {
             e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
         }
         for (Entity e : entitymanager.getAnimals()) {

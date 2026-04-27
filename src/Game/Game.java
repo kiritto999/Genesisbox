@@ -13,6 +13,7 @@ import Entities.Entitymanager;
 import javax.swing.JFrame;
 import UI.ControlPanel;
 import UI.GamePanel;
+import UI.InfoPanel;
 import World.World;
 
 
@@ -27,8 +28,9 @@ public class Game {
 
         World world = new World();
         Entitymanager manager = new Entitymanager(world);
-
-        ControlPanel cp = new ControlPanel(gameLoop, world, manager);
+        InfoPanel infoP = new InfoPanel();
+        
+        ControlPanel cp = new ControlPanel(gameLoop, world, manager,infoP);
 
         cp.setVisible(true);
     }

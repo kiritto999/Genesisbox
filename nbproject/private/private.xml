@@ -3,12 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Entity.java</file>
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Animal.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/UI/InfoPanel.java</file>
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Lummon.java</file>
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/UI/ControlPanel.java</file>
-            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/UI/InfoPanel.java</file>
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/UI/GamePanel.java</file>
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Resource.java</file>
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Game/GameLoop.java</file>
@@ -23,12 +22,8 @@
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Game/Game.java</file>
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Inputs/Mouser.java</file>
             <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/World/MapGenerator.java</file>
-=======
-            <file>file:/C:/Users/Friedrick/Desktop/ProyectoJava/Genesisbox/src/Entities/Lummon.java</file>
-            <file>file:/C:/Users/Friedrick/Desktop/ProyectoJava/Genesisbox/src/Game/GameLoop.java</file>
-            <file>file:/C:/Users/Friedrick/Desktop/ProyectoJava/Genesisbox/src/Entities/Zyrox.java</file>
-            <file>file:/C:/Users/Friedrick/Desktop/ProyectoJava/Genesisbox/src/Entities/Animal.java</file>
->>>>>>> 2706348 (Se creo las estats y el movement de las criaturas)
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Inputs/Camera.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/World/Tile.java</file>
         </group>
     </open-files>
 </project-private>

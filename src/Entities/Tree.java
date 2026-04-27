@@ -17,7 +17,7 @@ public class Tree extends Resource {
  
     private Etapa_Crecimiento stage;
     private int Tiempo_Crecimiento;
-    private static final int INTERVALO_CRECIMIENTO = 200;
+    private static final int INTERVALO_CRECIMIENTO = 20000;
  
     public static final Color COLOR_SEMILLA = new Color(219, 54, 36);
     public static final Color COLOR_JOVEN = new Color(180, 44, 29);

@@ -39,16 +39,16 @@ public class TimeDay {
                 minute = minute % 60;
             }
 
-            if (hour >= 32) {
-                int daysPassed = hour / 24;
+            if (hour >= 18) {
+                int daysPassed = hour / 18;
                 day += daysPassed;
                 totaldays += daysPassed;
-                hour = hour % 24;
+                hour = hour % 18;
             }
 
-            if (day >= 512) {
-                year += day / 512;
-                day = day % 512;
+            if (day >= 312) {
+                year += day / 312;
+                day = day % 312;
             }
         }
     }

@@ -10,10 +10,10 @@ package Inputs;
  */
 public class Camera {
     
-    public int Camerax=450;
-    public int Cameray=0;
+    public int Camerax=425;//pocision de la camara base en x
+    public int Cameray=-100;//pocision de la camara base en y
     
-    public double zoom=1.0; 
+    public double zoom=0.75; 
     
     
    

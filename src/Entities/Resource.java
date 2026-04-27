@@ -60,5 +60,6 @@ public abstract class Resource extends Entity {
         return maxQuantity == 0 ? 0 : (float) quantity / maxQuantity;
     }
         public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {}
-
+        
+    
 }

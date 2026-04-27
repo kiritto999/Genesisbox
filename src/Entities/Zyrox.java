@@ -53,8 +53,8 @@ public class Zyrox extends Animal {
         g.fillOval(
             cameraX + tileX * tileSize + tileSize / 5,
             cameraY + tileY * tileSize + tileSize / 5,
-            tileSize * 2,   // un poco más grande que el Lummon
-            tileSize * 2
+            tileSize * 3/5,   // un poco más grande que el Lummon
+            tileSize * 3/5
         );
     }
 }
