@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import Game.GameLoop;
 
 
+
 /**
  *
  * @author blope
@@ -23,9 +24,10 @@ public class ControlPanel extends javax.swing.JFrame {
      */
     GamePanel GP;
     private GameLoop GLoop;
-    
+    String[] animals = {"Lummon", "Zyrox", "Niby"};
     
     public ControlPanel(GameLoop loop) {
+        
         initComponents();
         SizeAdapted();
         
@@ -72,7 +74,7 @@ public class ControlPanel extends javax.swing.JFrame {
         lblTime = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         cboxAnimals = new javax.swing.JComboBox<>();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        btnGenerate = new javax.swing.JToggleButton();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -101,7 +103,7 @@ public class ControlPanel extends javax.swing.JFrame {
 
         cboxAnimals.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jToggleButton1.setText("jToggleButton1");
+        btnGenerate.setText("Generate");
 
         javax.swing.GroupLayout menuGameLayout = new javax.swing.GroupLayout(menuGame);
         menuGame.setLayout(menuGameLayout);
@@ -114,12 +116,12 @@ public class ControlPanel extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(256, 256, 256)
-                .addComponent(jToggleButton1)
+                .addComponent(btnGenerate)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(236, Short.MAX_VALUE))
+                .addContainerGap(270, Short.MAX_VALUE))
         );
         menuGameLayout.setVerticalGroup(
             menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,7 +130,7 @@ public class ControlPanel extends javax.swing.JFrame {
                     .addGroup(menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnPause, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jToggleButton1))
+                        .addComponent(btnGenerate))
                     .addGroup(menuGameLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel1)
@@ -194,13 +196,13 @@ public class ControlPanel extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar bMenuGame;
+    private javax.swing.JToggleButton btnGenerate;
     private javax.swing.JButton btnPause;
     private javax.swing.JButton btnStartTime;
     private javax.swing.JComboBox<String> cboxAnimals;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel lblTime;
     private javax.swing.JPanel menuGame;
     private javax.swing.JPanel panelGame;

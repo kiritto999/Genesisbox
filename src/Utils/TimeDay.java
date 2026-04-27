@@ -46,7 +46,7 @@ public class TimeDay {
                 hour = hour % 24;
             }
 
-            if (day >= 512) {
+            if (day >= 5 12) {
                 year += day / 512;
                 day = day % 512;
             }

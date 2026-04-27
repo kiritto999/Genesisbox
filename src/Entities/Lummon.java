@@ -18,8 +18,8 @@ public class Lummon extends Animal {
 
         name = "Lummon";
         maxHealth = 50;
+        
         health = 25 + random.nextInt(25);
-
         energy = 150 + random.nextInt(150);
 
         sex = random.nextBoolean() ? Sex.MALE : Sex.FEMALE;
