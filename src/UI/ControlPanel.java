@@ -17,6 +17,7 @@ import java.util.Random;
 import Utils.Mode;
 import Utils.Tool;
 import java.awt.Color;
+import Game.Game;
 /**
  *
  * @author blope
@@ -29,7 +30,7 @@ public class ControlPanel extends javax.swing.JFrame {
      * Creates new form ControlPanel
      */
     Random rng = new Random();
-    
+    private Game game;
     private GamePanel GP;  
     private GameLoop GLoop;
     private World world;
@@ -481,11 +482,13 @@ public class ControlPanel extends javax.swing.JFrame {
 
     private void MitemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemSaveActionPerformed
         // TODO add your handling code here:
+        game.getEntityManager().saveToDatabase();
         
     }//GEN-LAST:event_MitemSaveActionPerformed
 
     private void MitemLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemLoadActionPerformed
         // TODO add your handling code here:
+      //  GP.getEntityManager().loadFromDatabase();
     }//GEN-LAST:event_MitemLoadActionPerformed
 
     /**

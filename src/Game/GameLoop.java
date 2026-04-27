@@ -61,11 +61,15 @@ public class GameLoop implements Runnable{
 
             if (!timeDay.isPaused()) {
                 timeDay.updateTime(deltaTime);
-                if (entitymanager != null) entitymanager.update(deltaTime);
+                if (entitymanager != null) {
+                    synchronized (entitymanager) {
+                        entitymanager.update(deltaTime);
+                    }
+                }
             }
 
             if (gamePanel != null) {
-                gamePanel.repaint(); // ← ESTO faltaba
+                gamePanel.repaint();
             }
 
             try { Thread.sleep(16); } catch (InterruptedException e) { e.printStackTrace(); }
