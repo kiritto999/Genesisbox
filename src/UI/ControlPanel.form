@@ -83,11 +83,18 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="lblTime" min="-2" pref="67" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="271" max="-2" attributes="0"/>
-                  <Component id="btnPause" min="-2" pref="56" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="btnStartTime" min="-2" pref="49" max="-2" attributes="0"/>
-                  <EmptySpace pref="419" max="32767" attributes="0"/>
+                  <Component id="btnPause" min="-2" pref="50" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="btnStartTime" min="-2" pref="50" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="256" max="-2" attributes="0"/>
+                  <Component id="jToggleButton1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jLabel1" min="-2" pref="50" max="-2" attributes="0"/>
+                      <Component id="cboxAnimals" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="236" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -98,10 +105,17 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnStartTime" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
                           <Component id="btnPause" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
+                          <Component id="jToggleButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cboxAnimals" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="lblTime" alignment="0" min="-2" pref="26" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="0" pref="84" max="32767" attributes="0"/>
+                  <EmptySpace pref="83" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -109,9 +123,9 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="btnStartTime">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&#x25b6;&#xfe0f;"/>
+            <Property name="text" type="java.lang.String" value="&#x25b6;"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-              <Color id="Hand Cursor"/>
+              <Color id="Cursor Por defecto"/>
             </Property>
           </Properties>
           <Events>
@@ -120,7 +134,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnPause">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&#x23f8;&#xfe0f;"/>
+            <Property name="text" type="java.lang.String" value="&#x23f8;"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPauseActionPerformed"/>
@@ -129,6 +143,31 @@
         <Component class="javax.swing.JLabel" name="lblTime">
           <Properties>
             <Property name="text" type="java.lang.String" value="Time"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Animals"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="cboxAnimals">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="4">
+                <StringItem index="0" value="Item 1"/>
+                <StringItem index="1" value="Item 2"/>
+                <StringItem index="2" value="Item 3"/>
+                <StringItem index="3" value="Item 4"/>
+              </StringArray>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="jToggleButton1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jToggleButton1"/>
           </Properties>
         </Component>
       </SubComponents>

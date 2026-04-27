@@ -28,14 +28,16 @@ public class ControlPanel extends javax.swing.JFrame {
     public ControlPanel(GameLoop loop) {
         initComponents();
         SizeAdapted();
-
+        
         this.GLoop = loop;
-
         GP = new GamePanel();
 
+        //agrega el panel visible con el redujo
         panelGame.setLayout(new BorderLayout());
         panelGame.add(GP, BorderLayout.CENTER);
         panelGame.revalidate();
+        
+        //va modificando el tiempo 
         lblTime.setText("");
         new javax.swing.Timer(100, new java.awt.event.ActionListener() {
             @Override
@@ -45,6 +47,8 @@ public class ControlPanel extends javax.swing.JFrame {
         }).start();
     }   
     
+    
+    //adapta la ventana a la pantalla
     public void SizeAdapted(){
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         int width = screen.width ;
@@ -66,6 +70,9 @@ public class ControlPanel extends javax.swing.JFrame {
         btnStartTime = new javax.swing.JButton();
         btnPause = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        cboxAnimals = new javax.swing.JComboBox<>();
+        jToggleButton1 = new javax.swing.JToggleButton();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -81,14 +88,20 @@ public class ControlPanel extends javax.swing.JFrame {
         menuGame.setBackground(new java.awt.Color(102, 102, 102));
         menuGame.setPreferredSize(new java.awt.Dimension(0, 137));
 
-        btnStartTime.setText("▶️");
-        btnStartTime.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnStartTime.setText("▶");
+        btnStartTime.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnStartTime.addActionListener(this::btnStartTimeActionPerformed);
 
-        btnPause.setText("⏸️");
+        btnPause.setText("⏸");
         btnPause.addActionListener(this::btnPauseActionPerformed);
 
         lblTime.setText("Time");
+
+        jLabel1.setText("Animals");
+
+        cboxAnimals.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jToggleButton1.setText("jToggleButton1");
 
         javax.swing.GroupLayout menuGameLayout = new javax.swing.GroupLayout(menuGame);
         menuGame.setLayout(menuGameLayout);
@@ -96,11 +109,17 @@ public class ControlPanel extends javax.swing.JFrame {
             menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(menuGameLayout.createSequentialGroup()
                 .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(271, 271, 271)
-                .addComponent(btnPause, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(419, Short.MAX_VALUE))
+                .addComponent(btnPause, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(256, 256, 256)
+                .addComponent(jToggleButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(236, Short.MAX_VALUE))
         );
         menuGameLayout.setVerticalGroup(
             menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,9 +127,15 @@ public class ControlPanel extends javax.swing.JFrame {
                 .addGroup(menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(menuGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnPause, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnPause, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jToggleButton1))
+                    .addGroup(menuGameLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 84, Short.MAX_VALUE))
+                .addContainerGap(83, Short.MAX_VALUE))
         );
 
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
@@ -171,8 +196,11 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JMenuBar bMenuGame;
     private javax.swing.JButton btnPause;
     private javax.swing.JButton btnStartTime;
+    private javax.swing.JComboBox<String> cboxAnimals;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel lblTime;
     private javax.swing.JPanel menuGame;
     private javax.swing.JPanel panelGame;
