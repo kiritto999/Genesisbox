@@ -77,6 +77,8 @@ public class ControlPanel extends javax.swing.JFrame {
         new javax.swing.Timer(100, e -> {
             lblTime.setText(GLoop.getTimeDay().getTimeString());
         }).start();
+        
+        new javax.swing.Timer(16, e -> GP.repaint()).start();
 
         // combobox
         for (String animal : animals) { 

@@ -80,7 +80,7 @@ public class Food extends Resource {
     }
 
     public float getVisualSize() {
-        return stage == Etapa.MADURA ? 0.45f : 0.35f; // madura es más grande
+        return stage == Etapa.MADURA ? 0.45f : 0.35f; 
     }
 
     public Etapa getStage() { return stage; }

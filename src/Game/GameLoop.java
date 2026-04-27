@@ -2,6 +2,7 @@ package Game;
 
 import Entities.Animal;
 import Entities.Entitymanager;
+import UI.GamePanel;
 import Utils.TimeDay;
 import World.World;
 
@@ -45,24 +46,31 @@ public class GameLoop implements Runnable{
     }
 
     
-@Override
-public void run() {
-    while (running) {
-        long now = System.nanoTime();
-        double deltaTime = (now - lastTime) / 1_000_000_000.0;
-        lastTime = now;
+    private GamePanel gamePanel;
 
-        if (!timeDay.isPaused()) {
-            timeDay.updateTime(deltaTime);
-            if (entitymanager != null) {
-                entitymanager.update(deltaTime);  
-            }
-            
-        }
-
-        try { Thread.sleep(16); } catch (InterruptedException e) { e.printStackTrace(); }
+    public void setGamePanel(GamePanel gp) {
+        this.gamePanel = gp;
     }
-}
+
+    @Override
+    public void run() {
+        while (running) {
+            long now = System.nanoTime();
+            double deltaTime = (now - lastTime) / 1_000_000_000.0;
+            lastTime = now;
+
+            if (!timeDay.isPaused()) {
+                timeDay.updateTime(deltaTime);
+                if (entitymanager != null) entitymanager.update(deltaTime);
+            }
+
+            if (gamePanel != null) {
+                gamePanel.repaint(); // ← ESTO faltaba
+            }
+
+            try { Thread.sleep(16); } catch (InterruptedException e) { e.printStackTrace(); }
+        }
+    }
 
         
         

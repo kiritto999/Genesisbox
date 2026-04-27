@@ -26,6 +26,7 @@ public class Game {
         World world = new World();
         Entitymanager manager = new Entitymanager(world);
         InfoPanel infoP = new InfoPanel();
+        
 
         gameLoop = new GameLoop();
         gameLoop.setEntitymanager(manager);  // primero inyectar
