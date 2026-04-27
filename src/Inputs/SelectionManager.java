@@ -9,5 +9,5 @@ package Inputs;
  * @author blope
  */
 public class SelectionManager {
-    
+    //contrlara todos las funciones y gestion del mouse junto el mouser para no juntar codigo dcon el gamepanel 
 }

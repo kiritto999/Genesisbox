@@ -3,12 +3,30 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Friedrick/Desktop/Genesisbox_Galaxy/src/Entities/Animal.java</file>
-            <file>file:/C:/Users/Friedrick/Desktop/Genesisbox_Galaxy/src/Entities/Food.java</file>
-            <file>file:/C:/Users/Friedrick/Desktop/Genesisbox_Galaxy/src/Entities/Tree.java</file>
-            <file>file:/C:/Users/Friedrick/Desktop/Genesisbox_Galaxy/src/Entities/Nero.java</file>
-            <file>file:/C:/Users/Friedrick/Desktop/Genesisbox_Galaxy/src/UI/ControlPanel.java</file>
-            <file>file:/C:/Users/Friedrick/Desktop/Genesisbox_Galaxy/src/Entities/Lummon.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Entity.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Animal.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/UI/InfoPanel.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/UI/ControlPanel.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Resource.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/UI/GamePanel.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Lummon.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Game/GameLoop.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Entitymanager.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Food.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Tree.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Utils/TimeDay.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Zyrox.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Entities/Nero.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/World/World.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Game/Game.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Inputs/Mouser.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/World/MapGenerator.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Inputs/Camera.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/World/Tile.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Utils/Mode.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Utils/Tool.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/Inputs/SelectionManager.java</file>
+            <file>file:/C:/Users/kirit/Documents/GenesisBox/Genesisbox_Galaxy/src/genesisbox_galaxy/main/main.java</file>
         </group>
     </open-files>
 </project-private>

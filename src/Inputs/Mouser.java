@@ -11,9 +11,7 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
     private Camera camera;
     private GamePanel jpanel;
     private World world;
-
     private Tool currentTool = Tool.NONE;
-
     private int lastX, lastY;
     private boolean dragging = false;
 
@@ -37,13 +35,11 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
         lastX = x;
         lastY = y;
 
-
+        
         if (currentTool == Tool.NONE) {
             jpanel.handleClick(x, y);
             dragging = true;
-        } 
-
-        else {
+        }else {
             handleBuild(x, y);
         }
     }
@@ -120,8 +116,8 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
         double worldY = (y - camera.Cameray) / camera.zoom;
 
         // ?convertir a tile usando floor ya que si lo haces normal no lo hace en un lugar exacto
-        int col = (int)Math.floor(worldX / tileSize);
-        int row = (int)Math.floor(worldY / tileSize);
+        int col = (int)Math.floor(worldX / tileSize);//en qué fila del mapa estoy haciendo click
+        int row = (int)Math.floor(worldY / tileSize);//floor =asegura que caiga en el bloque correcto/Esto evita bugs en bordes o con cámara
 
         // límites 
         if (row < 0 || col < 0 || row >= world.getRows() || col >= world.getColums()) {
