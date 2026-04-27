@@ -14,6 +14,7 @@ public abstract class Entity {
     protected int health;
     protected int maxHealth;
     protected boolean alive;
+    protected int slot = 0; // posición dentro del tile
     protected Entitymanager manager;    
     public enum EntityType {
         ANIMAL, RESOURCE

@@ -49,12 +49,14 @@ public class Zyrox extends Animal {
 
     @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
-        g.setColor(new Color(210, 120, 40)); // Naranjita Naranjón Pipolón
-        g.fillOval(
-            cameraX + tileX * tileSize + tileSize / 5,
-            cameraY + tileY * tileSize + tileSize / 5,
-            tileSize * 3/5,   // un poco más grande que el Lummon
-            tileSize * 3/5
-        );
+        int[] slotOffsetX = {0, 1, 0, 1, 0};
+        int[] slotOffsetY = {0, 0, 1, 1, 2};
+        int half = tileSize / 2;
+
+        int px = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
+        int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
+
+        g.setColor(new Color(210, 120, 40));
+        g.fillOval(px + half / 5, py + half / 5, half * 3 / 5, half * 3 / 5);
     }
 }

@@ -35,12 +35,16 @@ public class Nero extends Resource {
     
         @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
+        int[] slotOffsetX = {0, 1, 0, 1, 0};
+        int[] slotOffsetY = {0, 0, 1, 1, 2};
+        int half = tileSize / 2;
+
+        int px = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
+        int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
+
         float visualSize = getVisualSize();
-        int size  = (int)(tileSize * visualSize);
-        int offset = (tileSize - size) / 2;
- 
-        int px = cameraX + tileX * tileSize;
-        int py = cameraY + tileY * tileSize;
+        int size = (int)(half * visualSize);
+        int offset = (half - size) / 2;
  
         // Cuerpo de la piedra
         g.setColor(getCurrentColor());

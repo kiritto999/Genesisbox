@@ -413,15 +413,14 @@ public class ControlPanel extends javax.swing.JFrame {
             if (cboxAnimals.getSelectedIndex() == 0 ){
                 return;
             }else{
-                EManager.getAnimals().add(makeAnimal(cboxAnimals.getSelectedIndex(), rngX, rngY,EManager));
+                EManager.addAnimal(makeAnimal(cboxAnimals.getSelectedIndex(), rngX, rngY, EManager));
             }
         }
         if (RbtnResource.isSelected()){
             if (cboxResource.getSelectedIndex() == 0 ){
                 return;
             }else{
-
-                EManager.getResources().add(makeResourse(cboxResource.getSelectedIndex(), rngX, rngY));
+                EManager.addResourse(makeResourse(cboxResource.getSelectedIndex(), rngX, rngY));
             }
         }
         repaint();

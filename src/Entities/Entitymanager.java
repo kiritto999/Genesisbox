@@ -96,23 +96,18 @@ public class Entitymanager {
     // Utilidades 
  
     private boolean tileOcupado(int x, int y) {
-        for (Entity e : entities) {
-            if (e.getTileX() == x && e.getTileY() == y) return true;
-        }
-        for (Animal a : animals) {
-            if (a.getTileX() == x && a.getTileY() == y) return true;
-        }
-        return false;
+        return contarEspacioTile(x, y) >= 5;
     }
- 
+    
     private void agregarEntidad(Entity e) {
+        e.slot = getSlotLibre(e.getTileX(), e.getTileY());
         entities.add(e);
         if (e instanceof Resource r) resources.add(r);
     }
     
     private void agregarAnimal(Animal a) {
+        a.slot = getSlotLibre(a.getTileX(), a.getTileY());
         animals.add(a);
-        entities.add(a);
     }
     
     public int contarEspacioTile(int x, int y){
@@ -130,12 +125,26 @@ public class Entitymanager {
         }
         return espacio;
     }
+    
+    public int getSlotLibre(int x, int y) {
+    boolean[] ocupados = new boolean[5];
+    for (Entity e : entities) {
+        if (e.getTileX() == x && e.getTileY() == y) ocupados[e.slot] = true;
+    }
+    for (Animal a : animals) {
+        if (a.getTileX() == x && a.getTileY() == y) ocupados[a.slot] = true;
+    }
+    for (int i = 0; i < 5; i++) {
+        if (!ocupados[i]) return i;
+    }
+    return 0;
+}
  
     public ArrayList<Entity>   getEntities()  { return entities;  }
     public ArrayList<Resource> getResources() { return resources; }
     public ArrayList<Animal> getAnimals() {return animals;}
     public void addEntity(Entity e) {toAdd.add(e);}
-    public void addAnimal(Animal a) {animals.add(a); entities.add(a); }
-    public void addResourse (Resource r) {resources.add(r);}
+    public void addAnimal(Animal a) {animals.add(a); entities.add(a); a.slot = getSlotLibre(a.getTileX(), a.getTileY()); }
+    public void addResourse (Resource r) {entities.add(r); resources.add(r); r.slot = getSlotLibre(r.getTileX(), r.getTileY());}
     
 }

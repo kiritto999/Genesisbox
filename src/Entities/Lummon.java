@@ -34,8 +34,8 @@ public class Lummon extends Animal {
         hunger = CAP_HAMBRE; // empieza lleno
         thirst = CAP_SED;    // empieza lleno
         speed        = 2 + random.nextInt(3);   // 2-4
-        attack       = 4 + random.nextInt(6);   // 4-7
-        intelligence = 3 + random.nextInt(3);   // 3-5
+        attack       = 2 + random.nextInt(3);   // 2-4
+        intelligence = 3 + random.nextInt(3);   // 3-4
     }
 
     @Override
@@ -49,12 +49,14 @@ public class Lummon extends Animal {
  
     @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
+        int[] slotOffsetX = {0, 1, 0, 1, 0};
+        int[] slotOffsetY = {0, 0, 1, 1, 2};
+        int half = tileSize / 2;
+
+        int px = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
+        int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
+
         g.setColor(Color.WHITE);
-        g.fillOval(
-            cameraX + tileX * tileSize + tileSize / 4,
-            cameraY + tileY * tileSize + tileSize / 4,
-            tileSize / 4,
-            tileSize / 4
-        );
+        g.fillOval(px + half / 4, py + half / 4, half / 2, half / 2);
     }
 }

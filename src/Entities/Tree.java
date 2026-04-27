@@ -52,17 +52,21 @@ public class Tree extends Resource {
     
     @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
+        int[] slotOffsetX = {0, 1, 0, 1, 0};
+        int[] slotOffsetY = {0, 0, 1, 1, 2};
+        int half = tileSize / 2;
+ 
+        int px = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
+        int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
+        
         float visualSize = getVisualSize();
-        int size = (int)(tileSize * visualSize);
-        int offset = (tileSize - size) / 2;
- 
-        int px = cameraX + tileX * tileSize;
-        int py = cameraY + tileY * tileSize;
- 
+        int size = (int)(half * visualSize);
+        int offset = (half - size) / 2;
+
         // Tronco
         g.setColor(new Color(100, 60, 20));
-        int tw = Math.max(3, size / 4);
-        int th = Math.max(3, size / 3);
+        int tw = Math.max(3, size / 6);
+        int th = Math.max(3, size / 4);
         g.fillRect(px + offset + (size - tw) / 2, py + offset + size - th, tw, th);
  
         // Copa
@@ -92,10 +96,10 @@ public class Tree extends Resource {
  
     public float getVisualSize() {
         return switch (stage) {
-            case SEMILLA -> 0.3f;
-            case JOVEN   -> 0.55f;
-            case MADURO  -> 0.85f;
-            case VIEJO   -> 1.0f;
+            case SEMILLA -> 0.10f;
+            case JOVEN   -> 0.60f;
+            case MADURO  -> 0.90f;
+            case VIEJO   -> 1.20f;
         };
     }
 

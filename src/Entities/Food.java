@@ -52,22 +52,19 @@ public class Food extends Resource {
     }
 
     @Override
-    public int harvest(int amount) {
-        int taken = super.harvest(amount);
-        if (taken > 0) stage = Etapa.NORMAL; // vuelve a normal tras cosechar
-        tiempoCrecimiento = 0;
-        return taken;
-    }
-
-    @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
+        int[] slotOffsetX = {0, 1, 0, 1, 0};
+        int[] slotOffsetY = {0, 0, 1, 1, 2};
+        int half = tileSize / 2;
+
+        int px = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
+        int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
+
         float visualSize = getVisualSize();
-        int size = Math.max(6, (int)(tileSize * visualSize));
-        int offset = (tileSize - size) / 2;
-
-        int px = cameraX + tileX * tileSize;
-        int py = cameraY + tileY * tileSize;
-
+        int size = Math.max(6, (int)(half * visualSize));
+        int offset = (half - size) / 2;
+        
+        //Color
         g.setColor(getCurrentColor());
         int bs = size / 3;
         g.fillOval(px + offset,            py + offset,      bs, bs);
