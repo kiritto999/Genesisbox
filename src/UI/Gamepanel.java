@@ -9,10 +9,7 @@ import Inputs.*;
 import World.*;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.HashSet;
 import javax.swing.JPanel;
-import Game.GameLoop;
-import java.util.ArrayList;
 
 /**
  *
@@ -20,7 +17,7 @@ import java.util.ArrayList;
  */
 public class GamePanel extends JPanel {
 
-    private final int UNIT_SIZE = 25; //unidad de medida de las casillas
+    public final int UNIT_SIZE = 32; //unidad de medida de las casillas 32pixeles
     
     InfoPanel infoP;
     World world;
@@ -31,19 +28,13 @@ public class GamePanel extends JPanel {
     Color Beach_blue = new Color(73, 201, 252);
     Color ocean = new Color(89, 131, 171);
     boolean dgrid= false;
-    public GamePanel(World world, Entitymanager entitymanager,InfoPanel infoPanel){
+    
+    public GamePanel(World world, Entitymanager entitymanager, InfoPanel infoPanel, Camera camera){
         this.setBackground(ocean);
-
-        this.infoP=infoPanel;
+        this.infoP = infoPanel;
         this.world = world;
         this.entitymanager = entitymanager;
-
-        camera = new Camera();
-
-        Mouser mouse = new Mouser(camera, this);        
-        addMouseListener(mouse);
-        addMouseMotionListener(mouse);
-        
+        this.camera = camera;
     }
 
     
@@ -117,6 +108,7 @@ public class GamePanel extends JPanel {
         }       
     }
     
+
    public void limitForCamera(Camera camera) {
 
     int tileSize = (int)(UNIT_SIZE * camera.zoom);
@@ -189,6 +181,16 @@ public class GamePanel extends JPanel {
             infoP.updateInfo(tileX, tileY, tile, entity, resource);
         }
     }
+
+    public int getUNIT_SIZE() {
+        return UNIT_SIZE;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+   
+    
 }
     
     

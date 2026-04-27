@@ -12,6 +12,7 @@ public class Tile {
     public static final int WATER = 0;
     public static final int GRASS = 1;
 
+    
     private int type;
 
     public Tile(int type) {

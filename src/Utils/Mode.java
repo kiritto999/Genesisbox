@@ -6,8 +6,9 @@ package Utils;
 
 /**
  *
- * @author blope
+ * @author kirit
  */
-public class Constantes {
-    
+public enum Mode {
+    SPAWN,
+    BUILD
 }

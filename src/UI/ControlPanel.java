@@ -9,13 +9,13 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import Game.GameLoop;
 import Entities.*;
+import Inputs.Camera;
+import Inputs.Mouser;
 import World.World;
+import java.awt.CardLayout;
 import java.util.Random;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
+import Utils.Mode;
+import Utils.Tool;
 /**
  *
  * @author blope
@@ -34,7 +34,10 @@ public class ControlPanel extends javax.swing.JFrame {
     private World world;
     private Entitymanager EManager;
     private InfoPanel infoPanel;
-    
+    private Mouser mouser;
+    private Camera camera;
+    private Mode currentMode = Mode.SPAWN; 
+    private Tool currentBuildTool = Tool.NONE;
     
     String[] animals = {"Elegir","Lummon", "Zyrox"};
     String[] resources = {"Elegir","Food","Nero","Zenthra",};
@@ -48,11 +51,13 @@ public class ControlPanel extends javax.swing.JFrame {
         this.EManager = manager;
         this.infoPanel = infoPanel; 
 
-
-        GP = new GamePanel(world, EManager, this.infoPanel);
+        camera = new Camera();
+        GP = new GamePanel(world, EManager, this.infoPanel, camera);
+        mouser = new Mouser(camera, GP, world);
         
+        //se agreg el redibujado 
         GLoop.setGamePanel(GP);      
-
+        
         panelGame.setLayout(new BorderLayout());
         panelGame.add(GP, BorderLayout.CENTER);
         panelGame.revalidate();
@@ -83,7 +88,13 @@ public class ControlPanel extends javax.swing.JFrame {
         }
 
         //la info empieza oculta
-        panelInfo.setVisible(true);
+        panelInfo.setVisible(false);
+        
+        //modos
+        rbtnMGenerate.setSelected(true);
+        panelMode.add(panelMSpawn,"Spawn");
+        panelMode.add(panelMBuilt,"Built");
+        
     }
     
     
@@ -120,6 +131,19 @@ public class ControlPanel extends javax.swing.JFrame {
                 return null;
         }
     }
+    //cambiar el modo de juego
+    private void chansemode(String modo) {
+        CardLayout cl = (CardLayout) panelMode.getLayout();
+        cl.show(panelMode, modo);
+    }
+    
+    //imprime el tool que se esta utilizando
+    private void setTool(Tool tool) {
+        if (mouser != null) {
+            mouser.setTool(tool);
+            System.out.println("Tool actual: " + tool);
+        }
+    }
 
     
   
@@ -130,21 +154,33 @@ public class ControlPanel extends javax.swing.JFrame {
 
         btnGSpawn = new javax.swing.ButtonGroup();
         jTextField1 = new javax.swing.JTextField();
+        btnGmodes = new javax.swing.ButtonGroup();
+        btnGMBuilts = new javax.swing.ButtonGroup();
         panelGame = new javax.swing.JPanel();
         menuGame = new javax.swing.JPanel();
         btnStartTime = new javax.swing.JButton();
         btnPause = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
+        btnInformationshow = new javax.swing.JButton();
+        rbtnMGenerate = new javax.swing.JRadioButton();
+        rbtnMbuilt = new javax.swing.JRadioButton();
+        panelMode = new javax.swing.JPanel();
+        panelMSpawn = new javax.swing.JPanel();
+        RbtnResource = new javax.swing.JRadioButton();
+        cboxResource = new javax.swing.JComboBox<>();
+        RbtnAnimals = new javax.swing.JRadioButton();
         cboxAnimals = new javax.swing.JComboBox<>();
         btnGenerate = new javax.swing.JToggleButton();
-        RbtnAnimals = new javax.swing.JRadioButton();
-        cboxResource = new javax.swing.JComboBox<>();
-        RbtnResource = new javax.swing.JRadioButton();
-        btnGrid = new javax.swing.JButton();
+        panelMBuilt = new javax.swing.JPanel();
+        rbtnBNone = new javax.swing.JRadioButton();
+        rbtnBWater = new javax.swing.JRadioButton();
+        rbtnBGlass = new javax.swing.JRadioButton();
         panelInfo = new javax.swing.JPanel();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
+        MitemGrid = new javax.swing.JMenuItem();
 
         jTextField1.setText("jTextField1");
 
@@ -176,33 +212,98 @@ public class ControlPanel extends javax.swing.JFrame {
         menuGame.add(lblTime);
         lblTime.setBounds(0, 0, 67, 26);
 
-        menuGame.add(cboxAnimals);
-        cboxAnimals.setBounds(540, 30, 76, 26);
+        btnInformationshow.setText("Information");
+        btnInformationshow.addActionListener(this::btnInformationshowActionPerformed);
+        menuGame.add(btnInformationshow);
+        btnInformationshow.setBounds(10, 60, 110, 27);
 
-        btnGenerate.setText("Generate");
-        btnGenerate.addActionListener(this::btnGenerateActionPerformed);
-        menuGame.add(btnGenerate);
-        btnGenerate.setBounds(435, 13, 81, 27);
+        btnGmodes.add(rbtnMGenerate);
+        rbtnMGenerate.setText("Generater");
+        rbtnMGenerate.addActionListener(this::rbtnMGenerateActionPerformed);
+        menuGame.add(rbtnMGenerate);
+        rbtnMGenerate.setBounds(500, 0, 110, 20);
 
-        RbtnAnimals.setBackground(new java.awt.Color(102, 102, 102));
-        btnGSpawn.add(RbtnAnimals);
-        RbtnAnimals.setText("Animals");
-        menuGame.add(RbtnAnimals);
-        RbtnAnimals.setBounds(530, 10, 110, 21);
+        btnGmodes.add(rbtnMbuilt);
+        rbtnMbuilt.setText("Constructor");
+        rbtnMbuilt.addActionListener(this::rbtnMbuiltActionPerformed);
+        menuGame.add(rbtnMbuilt);
+        rbtnMbuilt.setBounds(500, 20, 110, 21);
 
-        menuGame.add(cboxResource);
-        cboxResource.setBounds(690, 30, 76, 26);
+        panelMode.setLayout(new java.awt.CardLayout());
 
         RbtnResource.setBackground(new java.awt.Color(102, 102, 102));
         btnGSpawn.add(RbtnResource);
         RbtnResource.setText("Resources");
-        menuGame.add(RbtnResource);
-        RbtnResource.setBounds(670, 10, 110, 21);
 
-        btnGrid.setText("Grid");
-        btnGrid.addActionListener(this::btnGridActionPerformed);
-        menuGame.add(btnGrid);
-        btnGrid.setBounds(0, 60, 79, 27);
+        RbtnAnimals.setBackground(new java.awt.Color(102, 102, 102));
+        btnGSpawn.add(RbtnAnimals);
+        RbtnAnimals.setText("Animals");
+
+        btnGenerate.setText("Generate");
+        btnGenerate.addActionListener(this::btnGenerateActionPerformed);
+
+        javax.swing.GroupLayout panelMSpawnLayout = new javax.swing.GroupLayout(panelMSpawn);
+        panelMSpawn.setLayout(panelMSpawnLayout);
+        panelMSpawnLayout.setHorizontalGroup(
+            panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMSpawnLayout.createSequentialGroup()
+                .addGap(141, 141, 141)
+                .addComponent(btnGenerate)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(panelMSpawnLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(RbtnResource, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelMSpawnLayout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(cboxResource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelMSpawnLayout.createSequentialGroup()
+                        .addGap(152, 152, 152)
+                        .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(56, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMSpawnLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(RbtnAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34))))
+        );
+        panelMSpawnLayout.setVerticalGroup(
+            panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMSpawnLayout.createSequentialGroup()
+                .addGap(13, 13, 13)
+                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(RbtnResource)
+                    .addComponent(RbtnAnimals))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cboxResource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(btnGenerate)
+                .addContainerGap(23, Short.MAX_VALUE))
+        );
+
+        panelMode.add(panelMSpawn, "card3");
+
+        btnGMBuilts.add(rbtnBNone);
+        rbtnBNone.setText("None");
+        rbtnBNone.addActionListener(this::rbtnBNoneActionPerformed);
+        panelMBuilt.add(rbtnBNone);
+
+        btnGMBuilts.add(rbtnBWater);
+        rbtnBWater.setText("Water");
+        rbtnBWater.addActionListener(this::rbtnBWaterActionPerformed);
+        panelMBuilt.add(rbtnBWater);
+
+        btnGMBuilts.add(rbtnBGlass);
+        rbtnBGlass.setText("Glass");
+        rbtnBGlass.addActionListener(this::rbtnBGlassActionPerformed);
+        panelMBuilt.add(rbtnBGlass);
+
+        panelMode.add(panelMBuilt, "card2");
+
+        menuGame.add(panelMode);
+        panelMode.setBounds(610, 0, 400, 140);
 
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
 
@@ -217,6 +318,15 @@ public class ControlPanel extends javax.swing.JFrame {
 
         jMenu2.setText("Edit");
         bMenuGame.add(jMenu2);
+
+        jMenu3.setText("View");
+
+        MitemGrid.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
+        MitemGrid.setText("Grid");
+        MitemGrid.addActionListener(this::MitemGridActionPerformed);
+        jMenu3.add(MitemGrid);
+
+        bMenuGame.add(jMenu3);
 
         setJMenuBar(bMenuGame);
 
@@ -255,12 +365,43 @@ public class ControlPanel extends javax.swing.JFrame {
         repaint();
     }//GEN-LAST:event_btnGenerateActionPerformed
 
-    private void btnGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGridActionPerformed
+    private void btnInformationshowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInformationshowActionPerformed
         //intercambia la vista del grid
-        GP.dgrid=!GP.dgrid;
-        panelInfo.setVisible(GP.dgrid);
+        panelInfo.setVisible(!panelInfo.isVisible());
         repaint();
-    }//GEN-LAST:event_btnGridActionPerformed
+    }//GEN-LAST:event_btnInformationshowActionPerformed
+
+    private void MitemGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemGridActionPerformed
+        // TODO add your handling code here:
+       GP.dgrid=!GP.dgrid;
+       repaint();
+    }//GEN-LAST:event_MitemGridActionPerformed
+
+    private void rbtnMGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMGenerateActionPerformed
+        // TODO add your handling code here:
+        if(rbtnMGenerate.isSelected()){
+            chansemode("Spawn");
+            setTool(Tool.NONE);
+        }
+    }//GEN-LAST:event_rbtnMGenerateActionPerformed
+
+    private void rbtnMbuiltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMbuiltActionPerformed
+        if(rbtnMbuilt.isSelected()){
+            chansemode("Built");
+        }
+    }//GEN-LAST:event_rbtnMbuiltActionPerformed
+
+    private void rbtnBWaterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBWaterActionPerformed
+        setTool(Tool.WATER);
+    }//GEN-LAST:event_rbtnBWaterActionPerformed
+
+    private void rbtnBGlassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBGlassActionPerformed
+           setTool(Tool.GRASS);
+    }//GEN-LAST:event_rbtnBGlassActionPerformed
+
+    private void rbtnBNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBNoneActionPerformed
+        setTool(Tool.NONE);
+    }//GEN-LAST:event_rbtnBNoneActionPerformed
 
     /**
      * @param args the command line arguments
@@ -295,22 +436,34 @@ public class ControlPanel extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem MitemGrid;
     private javax.swing.JRadioButton RbtnAnimals;
     private javax.swing.JRadioButton RbtnResource;
     private javax.swing.JMenuBar bMenuGame;
+    private javax.swing.ButtonGroup btnGMBuilts;
     private javax.swing.ButtonGroup btnGSpawn;
     private javax.swing.JToggleButton btnGenerate;
-    private javax.swing.JButton btnGrid;
+    private javax.swing.ButtonGroup btnGmodes;
+    private javax.swing.JButton btnInformationshow;
     private javax.swing.JButton btnPause;
     private javax.swing.JButton btnStartTime;
     private javax.swing.JComboBox<String> cboxAnimals;
     private javax.swing.JComboBox<String> cboxResource;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblTime;
     private javax.swing.JPanel menuGame;
     private javax.swing.JPanel panelGame;
     private javax.swing.JPanel panelInfo;
+    private javax.swing.JPanel panelMBuilt;
+    private javax.swing.JPanel panelMSpawn;
+    private javax.swing.JPanel panelMode;
+    private javax.swing.JRadioButton rbtnBGlass;
+    private javax.swing.JRadioButton rbtnBNone;
+    private javax.swing.JRadioButton rbtnBWater;
+    private javax.swing.JRadioButton rbtnMGenerate;
+    private javax.swing.JRadioButton rbtnMbuilt;
     // End of variables declaration//GEN-END:variables
 }

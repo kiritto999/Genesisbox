@@ -1,49 +1,52 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Inputs;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelListener;
-import javax.swing.JPanel;
+import java.awt.event.*;
 import UI.GamePanel;
-import java.awt.event.MouseWheelEvent;
+import Utils.Tool;
+import World.World;
+import World.Tile;
 
-/**
- *
- * @author blope
- */
-public class Mouser implements MouseListener,MouseMotionListener, MouseWheelListener{
-    
+public class Mouser implements MouseListener, MouseMotionListener, MouseWheelListener {
+
     private Camera camera;
     private GamePanel jpanel;
-    
-    private int lastX,lastY;
-    boolean dragging = false;
-    
-    
-    public Mouser(Camera camera, GamePanel panel) {
+    private World world;
+
+    private Tool currentTool = Tool.NONE;
+
+    private int lastX, lastY;
+    private boolean dragging = false;
+
+    public Mouser(Camera camera, GamePanel panel, World world) {
         this.camera = camera;
         this.jpanel = panel;
-        
+        this.world = world;
+
+        jpanel.addMouseListener(this);
+        jpanel.addMouseMotionListener(this);
         jpanel.addMouseWheelListener(this);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        dragging = true;
-        lastX = e.getX();
-        lastY = e.getY();
-        jpanel.handleClick(e.getX(), e.getY());
+
+        int x = e.getX();
+        int y = e.getY();
+
+        lastX = x;
+        lastY = y;
+
+
+        if (currentTool == Tool.NONE) {
+            jpanel.handleClick(x, y);
+            dragging = true;
+        } 
+
+        else {
+            handleBuild(x, y);
+        }
     }
-    
 
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -51,50 +54,103 @@ public class Mouser implements MouseListener,MouseMotionListener, MouseWheelList
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-
-    @Override
     public void mouseDragged(MouseEvent e) {
-        if(!dragging) return ;
-        int dx = e.getX() - lastX;
-        int dy = e.getY() - lastY;
+
+        int x = e.getX();
+        int y = e.getY();
+
+
+        if (currentTool != Tool.NONE) {
+            handleBuild(x, y);
+            return;
+        }
+
+
+        if (!dragging) return;
+
+        int dx = x - lastX;
+        int dy = y - lastY;
 
         camera.Camerax += dx;
         camera.Cameray += dy;
-        
-        lastX = e.getX();
-        lastY = e.getY();
+
+        lastX = x;
+        lastY = y;
+
         jpanel.limitForCamera(camera);
-        
         jpanel.repaint();
     }
 
-    @Override
-    public void mouseMoved(MouseEvent e) {
-    }
-    
+
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 
+
+        if (currentTool != Tool.NONE) return;
+
+        int mouseX = e.getX();
+        int mouseY = e.getY();
+
         double oldZoom = camera.zoom;
+
         if (e.getWheelRotation() < 0) {
             camera.zoom *= 1.1;
         } else {
             camera.zoom *= 0.9;
         }
+
         camera.zoom = Math.max(0.5, Math.min(camera.zoom, 3.0));
+
         double scale = camera.zoom / oldZoom;
 
-        camera.Camerax = (int)(lastX - (lastX - camera.Camerax) * scale);
-        camera.Cameray = (int)(lastY - (lastY - camera.Cameray) * scale);
+        camera.Camerax = (int)(mouseX - (mouseX - camera.Camerax) * scale);
+        camera.Cameray = (int)(mouseY - (mouseY - camera.Cameray) * scale);
 
         jpanel.limitForCamera(camera);
         jpanel.repaint();
     }
-    
+
+
+    private void handleBuild(int x, int y) {
+
+        int tileSize = jpanel.getUNIT_SIZE();
+
+        // ?convertir a coordenadas del mundo de entero a double
+        double worldX = (x - camera.Camerax) / camera.zoom;
+        double worldY = (y - camera.Cameray) / camera.zoom;
+
+        // ?convertir a tile usando floor ya que si lo haces normal no lo hace en un lugar exacto
+        int col = (int)Math.floor(worldX / tileSize);
+        int row = (int)Math.floor(worldY / tileSize);
+
+        // límites 
+        if (row < 0 || col < 0 || row >= world.getRows() || col >= world.getColums()) {
+            return;
+        }
+
+        switch (currentTool) {
+
+            case WATER:
+                world.setTile(row, col, Tile.WATER);
+                break;
+
+            case GRASS:
+                world.setTile(row, col, Tile.GRASS);
+                break;
+        }
+
+        jpanel.repaint();
+    }
+
+
+    public void setTool(Tool tool) {
+        this.currentTool = tool;
+        System.out.println("Tool: " + tool);
+    }
+
+
+    @Override public void mouseClicked(MouseEvent e) {}
+    @Override public void mouseEntered(MouseEvent e) {}
+    @Override public void mouseExited(MouseEvent e) {}
+    @Override public void mouseMoved(MouseEvent e) {}
 }
