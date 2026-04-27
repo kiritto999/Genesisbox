@@ -65,8 +65,8 @@ public class Tree extends Resource {
 
         // Tronco
         g.setColor(new Color(100, 60, 20));
-        int tw = Math.max(3, size / 6);
-        int th = Math.max(3, size / 4);
+        int tw = Math.max(5, size / 5);
+        int th = Math.max(6, size / 2);
         g.fillRect(px + offset + (size - tw) / 2, py + offset + size - th, tw, th);
  
         // Copa

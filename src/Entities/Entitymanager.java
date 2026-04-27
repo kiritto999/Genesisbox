@@ -51,9 +51,9 @@ public class Entitymanager {
             if (world.getMap()[y][x].getType() != Tile.GRASS) continue;
 
             int capacidad = 0;
-            if (clazz == Tree.class) capacidad = 3;
+            if (clazz == Tree.class) capacidad = 1;
             else if (clazz == Nero.class) capacidad = 4;
-            else if (clazz == Food.class) capacidad = 2;
+            else if (clazz == Food.class) capacidad = 1;
 
             if (contarEspacioTile(x, y) + capacidad > 5) continue;
 
@@ -78,6 +78,7 @@ public void update(double deltaTime) {
     // Agregar pendientes PRIMERO, antes de iterar
     for (Entity e : toAdd) {
         entities.add(e);
+        if (e instanceof Animal an) animals.add(an); 
         if (e instanceof Resource r) resources.add(r);
     }
     toAdd.clear();
@@ -128,9 +129,9 @@ public void update(double deltaTime) {
         int espacio = 0;
         for (Entity e : entities){
             if (e.getTileX() == x && e.getTileY() == y) {
-                if (e instanceof Tree)  espacio += 3;
+                if (e instanceof Tree)  espacio += 1;
                 else if (e instanceof Nero)  espacio += 4;
-                else if (e instanceof Food)  espacio += 2;
+                else if (e instanceof Food)  espacio += 1;
                 else espacio += 1;
             }
         }
@@ -141,9 +142,9 @@ public void update(double deltaTime) {
     }
     
     private int obtenerCapacidad(Entity e) {
-    if (e instanceof Tree) return 3;
+    if (e instanceof Tree) return 1;
     if (e instanceof Nero) return 4;
-    if (e instanceof Food) return 2;
+    if (e instanceof Food) return 1;
     if (e instanceof Animal a) return a.getCapacity();
     return 1;
     }
@@ -188,7 +189,7 @@ public void update(double deltaTime) {
         if (a.slot == -1) return;
         
         toAdd.add(a);
-        animals.add(a);
+        
         
     }
 

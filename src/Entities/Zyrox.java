@@ -59,6 +59,6 @@ public class Zyrox extends Animal {
         int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
 
         g.setColor(new Color(210, 120, 40));
-        g.fillOval(px + half / 5, py + half / 5, half * 3 / 5, half * 3 / 5);
+        g.fillOval(px + half / 5, py + half / 5, half * 3 / 6, half * 3 / 6);
     }
 }

@@ -112,7 +112,7 @@ public abstract class Animal extends Entity {
                 if (nuevoSlot == -1) continue; // ← no hay espacio, probar otra dirección
                 tileX = nx;
                 tileY = ny;
-                slot = entitymanager.getSlotLibre(nx, ny, capacity);
+                slot = nuevoSlot;
                 return;
             }
         }
