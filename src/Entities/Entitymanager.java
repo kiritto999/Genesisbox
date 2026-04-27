@@ -63,12 +63,13 @@ public class Entitymanager {
  // Actualización 
  
     public void update(double deltaTime) {
-        // Actualizar recursos
+        // Solo recursos con update simple
         for (Entity e : entities) {
-        e.update(world);
-    }
- 
-        // Actualizar animales con deltaTime
+            if (!(e instanceof Animal)) {
+                e.update(world);
+            }
+        }
+        // Animales con deltaTime
         for (Animal a : animals) {
             a.update(world, deltaTime);
         }

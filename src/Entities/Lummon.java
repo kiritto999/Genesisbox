@@ -30,12 +30,11 @@ public class Lummon extends Animal {
         sex          = random.nextBoolean() ? Sex.MALE : Sex.FEMALE;
         habitat      = Tile.GRASS;
         foodType     = FoodType.CARNIVORE;
- 
+        
         hunger = CAP_HAMBRE; // empieza lleno
         thirst = CAP_SED;    // empieza lleno
- 
         speed        = 2 + random.nextInt(3);   // 2-4
-        attack       = 4 + random.nextInt(6);   // 4-9
+        attack       = 4 + random.nextInt(6);   // 4-7
         intelligence = 3 + random.nextInt(3);   // 3-5
     }
 

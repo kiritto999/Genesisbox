@@ -50,6 +50,8 @@ public class ControlPanel extends javax.swing.JFrame {
 
 
         GP = new GamePanel(world, EManager, this.infoPanel);
+        
+        GLoop.setGamePanel(GP);      
 
         panelGame.setLayout(new BorderLayout());
         panelGame.add(GP, BorderLayout.CENTER);
