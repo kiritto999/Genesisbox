@@ -96,7 +96,6 @@ public class Tree extends Resource {
             case VIEJO   -> 1.0f;
         };
     }
-    public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {}
 }
     
 

@@ -68,6 +68,4 @@ public class Food extends Resource {
     }
  
     public float getVisualSize() { return 0.35f; }
-    public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
-    }
 }

@@ -8,10 +8,7 @@ import World.World;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
-<<<<<<< HEAD
-=======
 import java.awt.Graphics2D;
->>>>>>> 05993db (Se agregó el metodo draw a los recursos)
 /**
  *
  * @author Friedrick
@@ -60,5 +57,4 @@ public class Stone extends Resource {
  
     public float getVisualSize() { return 0.6f; }
     
-    public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {}
 }

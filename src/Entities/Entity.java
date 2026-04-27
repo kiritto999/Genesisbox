@@ -40,7 +40,6 @@ public Entity(String name, int tileX, int tileY, int maxHealth, EntityType type)
 
     public abstract void update(World.World world);
             
-    public abstract void draw(Graphics g, int tileSize, int cameraX, int cameraY);
 
 
     public void takeDamage(int amount) {
