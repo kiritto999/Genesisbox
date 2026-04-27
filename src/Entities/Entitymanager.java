@@ -108,4 +108,5 @@ public class Entitymanager {
     public void addEntity(Entity e) {toAdd.add(e);}
     public void addAnimal(Animal a) {animals.add(a);}
     public void addResourse (Resource r) {resources.add(r);}
+    
 }
