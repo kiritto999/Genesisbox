@@ -16,60 +16,75 @@ import javax.swing.JPanel;
 import Inputs.Mouser;
 import Game.GameLoop;
 import java.util.ArrayList;
+import Entities.Entitymanager;
 
 /**
  *
  * @author blope
  */
-public class GamePanel extends JPanel{
+public class GamePanel extends JPanel {
+
     private final int UNIT_SIZE = 25;
+
     World world;
     Camera camera;
-    GameLoop gameLoop;
-    Color ground=new Color(132, 232, 222);
-    Color Beach_blue=new Color(73, 201, 252);
-    Color ocean = new Color (89, 131, 171);
-    ArrayList<Entity> entities = new ArrayList<>();
+    Entitymanager entitymanager;
 
-    public GamePanel(){
+    Color ground = new Color(16, 79, 23);
+    Color Beach_blue = new Color(73, 201, 252);
+    Color ocean = new Color(89, 131, 171);
+
+    public GamePanel(World world, Entitymanager entitymanager){
         this.setBackground(ocean);
-        world = new World();
+
+        this.world = world;
+        this.entitymanager = entitymanager;
+
         camera = new Camera();
-        gameLoop = new GameLoop();
+
         Mouser mouse = new Mouser(camera, this);        
         addMouseListener(mouse);
         addMouseMotionListener(mouse);
-        
     }
+
     
     
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         DrawIsland(g);
-        //DrawTest(g);
-        //drawGrid(g);
+        DrawTest(g);
+        drawGrid(g);
     }
     
    
     
     private void drawGrid(Graphics g) {
-        int columns = world.getColums();
-        int rows = world.getRows();
-        int mapWidth = columns * UNIT_SIZE;
-        int mapHeight = rows * UNIT_SIZE;
-        int offsetX = (getWidth() - mapWidth) / 2;
-        int offsetY = (getHeight() - mapHeight) / 2;
 
-        g.setColor(Color.BLACK);
+    int size = (int)(UNIT_SIZE * camera.zoom);
 
-        for (int i = 0; i <= columns; i++) {
-            int x = offsetX + i * UNIT_SIZE;
-            g.drawLine(x, offsetY, x, offsetY + mapHeight);
-        }
-        for (int i = 0; i <= rows; i++) {
-            int y = offsetY + i * UNIT_SIZE;
-            g.drawLine(offsetX, y, offsetX + mapWidth, y);
-        }
+    g.setColor(Color.BLACK);
+
+    // líneas verticales
+    for (int c = 0; c <= world.getColums(); c++) {
+        int x = camera.Camerax + (int)(c * size);
+        g.drawLine(
+            x,
+            camera.Cameray,
+            x,
+            camera.Cameray + world.getRows() * size
+        );
+    }
+
+    // líneas horizontales
+    for (int r = 0; r <= world.getRows(); r++) {
+        int y = camera.Cameray + (int)(r * size);
+        g.drawLine(
+            camera.Camerax,
+            y,
+            camera.Camerax + world.getColums() * size,
+            y
+        );
+    }
     }
     
     public void DrawIsland(Graphics g){
@@ -126,15 +141,19 @@ public class GamePanel extends JPanel{
     }
 }
    public void DrawTest(Graphics g){
-       entities.add(new Lummon(5, 5));
-        for (Entity e : entities) {
+
+        for (Entity e : entitymanager.getEntities()) {
+            e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
+        }
+        for (Entity e : entitymanager.getAnimals()) {
             e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
         }
    }
-    
-    
-    
 }
+    
+    
+    
+
     
     
    

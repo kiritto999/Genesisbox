@@ -1,5 +1,6 @@
 package Entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 /**
@@ -39,8 +40,8 @@ public Entity(String name, int tileX, int tileY, int maxHealth, EntityType type)
 }
 
     public abstract void update(World.World world);
-            
-
+    
+    public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {}
 
     public void takeDamage(int amount) {
         health = Math.max(0, health - amount);

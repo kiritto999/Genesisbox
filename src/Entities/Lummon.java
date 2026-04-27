@@ -46,8 +46,8 @@ public class Lummon extends Animal {
         g.fillOval(
             cameraX + tileX * tileSize + tileSize / 4,
             cameraY + tileY * tileSize + tileSize / 4,
-            tileSize / 2,
-            tileSize / 2
+            tileSize / 4,
+            tileSize / 4
         );
     }
 }

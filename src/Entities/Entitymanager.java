@@ -17,8 +17,9 @@ import java.util.Random;
  */
 public class Entitymanager {
  
-    private final List<Entity>   entities  = new ArrayList<>();
-    private final List<Resource> resources = new ArrayList<>();
+    private ArrayList<Entity> entities  = new ArrayList<>();
+    private ArrayList<Animal> animals = new ArrayList<>();
+    private ArrayList<Resource> resources = new ArrayList<>();
     private final List<Entity>   toAdd     = new ArrayList<>();
  
     private final Random rng = new Random();
@@ -28,7 +29,7 @@ public class Entitymanager {
         this.world = world;
         spawnInicial();
     }
- 
+    
     // Spawn inicial 
  
     private void spawnInicial() {
@@ -101,6 +102,10 @@ public class Entitymanager {
     }
  
  
-    public List<Entity>   getEntities()  { return entities;  }
-    public List<Resource> getResources() { return resources; }
+    public ArrayList<Entity>   getEntities()  { return entities;  }
+    public ArrayList<Resource> getResources() { return resources; }
+    public ArrayList<Animal> getAnimals() {return animals;}
+    public void addEntity(Entity e) {toAdd.add(e);}
+    public void addAnimal(Animal a) {animals.add(a);}
+    public void addResourse (Resource r) {resources.add(r);}
 }
