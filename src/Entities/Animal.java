@@ -4,19 +4,23 @@
  */
 package Entities;
 
-import World.Tile;
+import World.World;
 
-enum Sex { MALE, FEMALE }
-enum FoodType { HERBIVORE, CARNIVORE }
-
+/**
+ *
+ * @author blope
+ */
 public abstract class Animal extends Entity {
 
+    protected boolean life;
+    
+    protected int health;
     protected int energy;
-
-    protected Sex sex;
+    
+    protected int sex;
     protected int habitat;
-    protected FoodType foodType;
-
+    protected int food;
+    
     protected int hunger;
     protected int thirst;
 
@@ -24,12 +28,13 @@ public abstract class Animal extends Entity {
     protected int attack;
     protected int intelligence;
 
-    public Animal(int tileX, int tileY) {
-        super(tileX, tileY);
+    public Animal(int x, int y) {
+        super(x, y);
     }
 
     @Override
-    public void update(World.World world) {
+    public void update(World world) {      
+    
         hunger++;
         thirst++;
         energy--;

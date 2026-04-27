@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Entities;
 
 import java.awt.Graphics;
@@ -51,15 +47,15 @@ public Entity(String name, int tileX, int tileY, int maxHealth, EntityType type)
     public void heal(int amount) {
         health = Math.min(maxHealth, health + amount);
     }
-
-    public abstract void draw(Graphics g, int tileSize, int cameraX, int cameraY);
     
-    public int getTileX()  { return tileX; }
-    public int getTileY()     { return tileY; }
-    public String getName()      { return name; }
-    public int getHealth()    { return health; }
-    public int  getMaxHealth() { return maxHealth; }
-    public boolean isAlive()      { return alive; }
+    public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {}
+
+    public int        getTileX()     { return tileX; }
+    public int        getTileY()     { return tileY; }
+    public String     getName()      { return name; }
+    public int        getHealth()    { return health; }
+    public int        getMaxHealth() { return maxHealth; }
+    public boolean    isAlive()      { return alive; }
     public EntityType getType()      { return type; }
 
     public void setTileX(int x) { this.tileX = x; }
