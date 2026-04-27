@@ -47,6 +47,26 @@ public class Tree extends Resource {
             avanzarCrecimiento();
         }
     }
+    
+    @Override
+    public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
+        float visualSize = getVisualSize();
+        int size = (int)(tileSize * visualSize);
+        int offset = (tileSize - size) / 2;
+ 
+        int px = cameraX + tileX * tileSize;
+        int py = cameraY + tileY * tileSize;
+ 
+        // Tronco
+        g.setColor(new Color(100, 60, 20));
+        int tw = Math.max(3, size / 4);
+        int th = Math.max(3, size / 3);
+        g.fillRect(px + offset + (size - tw) / 2, py + offset + size - th, tw, th);
+ 
+        // Copa
+        g.setColor(getCurrentColor());
+        g.fillOval(px + offset, py + offset, size, size - th / 2);
+    }
  
     private void avanzarCrecimiento() {
         switch (stage) {

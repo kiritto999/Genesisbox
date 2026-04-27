@@ -20,7 +20,7 @@ public abstract class Entity {
 
     protected EntityType type;
 
-// En Entity.java, dos constructores:
+// En Entity.java dos constructores:
 public Entity(int tileX, int tileY) {
     this.tileX   = tileX;
     this.tileY   = tileY;
@@ -33,11 +33,15 @@ public Entity(String name, int tileX, int tileY, int maxHealth, EntityType type)
     this.tileX     = tileX;
     this.tileY     = tileY;
     this.maxHealth = maxHealth;
+    this.health    = maxHealth;
     this.alive     = true;
     this.type      = type;
 }
 
     public abstract void update(World.World world);
+            
+    public abstract void draw(Graphics g, int tileSize, int cameraX, int cameraY);
+
 
     public void takeDamage(int amount) {
         health = Math.max(0, health - amount);

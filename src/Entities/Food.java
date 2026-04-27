@@ -41,6 +41,23 @@ public class Food extends Resource {
         if (taken > 0) madura = false;
         return taken;
     }
+    
+     @Override
+    public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
+        float visualSize = getVisualSize();
+        int size = Math.max(6, (int)(tileSize * visualSize));
+        int offset = (tileSize - size) / 2;
+ 
+        int px = cameraX + tileX * tileSize;
+        int py = cameraY + tileY * tileSize;
+ 
+        g.setColor(getCurrentColor());
+        int bs = size / 3;
+        // 3 bolitas formando un triángulo
+        g.fillOval(px + offset,              py + offset,      bs, bs);
+        g.fillOval(px + offset + bs,         py + offset + 2,  bs, bs);
+        g.fillOval(px + offset + bs / 2,     py + offset + bs, bs, bs);
+    }
  
     public boolean isMadura() { return madura; }
  
