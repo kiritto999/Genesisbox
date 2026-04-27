@@ -74,27 +74,26 @@ public class Entitymanager {
  
  // Actualización 
  
-    public void update(double deltaTime) {
-        // Solo recursos con update simple
-        for (Entity e : entities) {
-            if (!(e instanceof Animal)) {
-                e.update(world);
-            }
-        }
-        // Animales con deltaTime
-        for (Animal a : animals) {
-            a.update(world, deltaTime);
-        }
-        eliminarMuertas();
- 
-        for (Entity e : toAdd) {
-            entities.add(e);
-            if (e instanceof Resource r) resources.add(r);
-        }
-        toAdd.clear();
+public void update(double deltaTime) {
+    // Agregar pendientes PRIMERO, antes de iterar
+    for (Entity e : toAdd) {
+        entities.add(e);
+        if (e instanceof Resource r) resources.add(r);
     }
+    toAdd.clear();
+
+    for (Entity e : entities) {
+        if (!(e instanceof Animal)) {
+            e.update(world);
+        }
+    }
+    for (Animal a : animals) {
+        a.update(world, deltaTime);
+    }
+    // eliminarMuertas();
+}
  
-    private void eliminarMuertas() {
+    /**private void eliminarMuertas() {
         Iterator<Entity> it = entities.iterator();
         while (it.hasNext()) {
             Entity e = it.next();
@@ -103,7 +102,7 @@ public class Entitymanager {
                 resources.remove(e);
             }
         }
-    }
+    }*/
  
     // Utilidades 
     
@@ -150,35 +149,29 @@ public class Entitymanager {
     }
     
     public int getSlotLibre(int x, int y, int capacidad) {
+        if (capacidad < 1 || capacidad > 5) return -1;
+
         boolean[] ocupados = new boolean[5];
 
         for (Entity e : entities) {
             if (e.getTileX() == x && e.getTileY() == y) {
+                if (e.slot < 0 || e.slot >= 5) continue;
                 int cap = obtenerCapacidad(e);
-                for (int i = e.slot; i < e.slot + cap && i < 5; i++) {
+                int fin = Math.min(e.slot + cap, 5); // ← nunca pasa de 5
+                for (int i = e.slot; i < fin; i++) {
                     ocupados[i] = true;
                 }
             }
         }
 
-        for (Animal a : animals) {
-            if (a.getTileX() == x && a.getTileY() == y) {
-                for (int i = a.slot; i < a.slot + a.getCapacity() && i < 5; i++) {
-                    ocupados[i] = true;
-                }
-            }
-        }
+        // ← QUITAR el loop de animals, ya están en entities
+        // El loop duplicado era el problema real
 
         for (int i = 0; i <= 5 - capacidad; i++) {
             boolean libre = true;
-
             for (int j = i; j < i + capacidad; j++) {
-                if (ocupados[j]) {
-                    libre = false;
-                    break;
-                }
+                if (ocupados[j]) { libre = false; break; }
             }
-
             if (libre) return i;
         }
 
@@ -193,9 +186,10 @@ public class Entitymanager {
         a.slot = getSlotLibre(a.getTileX(), a.getTileY(), a.getCapacity());
 
         if (a.slot == -1) return;
-
+        
+        toAdd.add(a);
         animals.add(a);
-        entities.add(a);
+        
     }
 
     public void addResourse(Resource r) {

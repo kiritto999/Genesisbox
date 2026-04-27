@@ -108,6 +108,8 @@ public abstract class Animal extends Entity {
             int nx = tileX + dir[0];
             int ny = tileY + dir[1];
             if (esMovimientoValido(nx, ny, world)) {
+                int nuevoSlot = entitymanager.getSlotLibre(nx, ny, capacity);
+                if (nuevoSlot == -1) continue; // ← no hay espacio, probar otra dirección
                 tileX = nx;
                 tileY = ny;
                 slot = entitymanager.getSlotLibre(nx, ny, capacity);

@@ -49,6 +49,8 @@ public class Zyrox extends Animal {
 
     @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
+        if (slot < 0 || slot >= 5) return;
+        
         int[] slotOffsetX = {0, 1, 0, 1, 0};
         int[] slotOffsetY = {0, 0, 1, 1, 2};
         int half = tileSize / 2;

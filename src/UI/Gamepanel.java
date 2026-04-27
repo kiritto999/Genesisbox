@@ -121,27 +121,29 @@ public class GamePanel extends JPanel {
     int minY = panelHeight - mapHeight;
     int maxY = 0;
 
-    if (mapWidth <= panelWidth) {
-        camera.Camerax = (panelWidth - mapWidth) / 2;
-    } else {
-        camera.Camerax = Math.max(minX, Math.min(camera.Camerax, maxX));
-    }
-
-    if (mapHeight <= panelHeight) {
-        camera.Cameray = (panelHeight - mapHeight) / 2;
-    } else {
-        camera.Cameray = Math.max(minY, Math.min(camera.Cameray, maxY));
-    }
-}
-   public void DrawTest(Graphics g){
-
-        for (Entity e : entitymanager.getResources()) {
-            e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
+        if (mapWidth <= panelWidth) {
+            camera.Camerax = (panelWidth - mapWidth) / 2;
+        } else {
+            camera.Camerax = Math.max(minX, Math.min(camera.Camerax, maxX));
         }
-        for (Entity e : entitymanager.getAnimals()) {
-            e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
+
+        if (mapHeight <= panelHeight) {
+            camera.Cameray = (panelHeight - mapHeight) / 2;
+        } else {
+            camera.Cameray = Math.max(minY, Math.min(camera.Cameray, maxY));
         }
-   }
+    }
+   
+    public void DrawTest(Graphics g) {
+        synchronized (entitymanager) {
+            for (Entity e : entitymanager.getResources()) {
+                e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
+            }
+            for (Entity e : entitymanager.getAnimals()) {
+                e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
+            }
+        }
+    }
    
    //detector de entidades en las casiilas
    public void handleClick(int mouseX, int mouseY) {
