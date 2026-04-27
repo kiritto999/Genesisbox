@@ -48,4 +48,6 @@ public class World {
     public int getColums() {
         return colums;
     }
+    
+    
 }

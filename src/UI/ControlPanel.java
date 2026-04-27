@@ -179,6 +179,8 @@ public class ControlPanel extends javax.swing.JFrame {
         panelInfo = new javax.swing.JPanel();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        MitemSave = new javax.swing.JMenuItem();
+        MitemLoad = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         MitemGrid = new javax.swing.JMenuItem();
@@ -333,17 +335,15 @@ public class ControlPanel extends javax.swing.JFrame {
                         .addComponent(cboxResource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelMSpawnLayout.createSequentialGroup()
-                        .addGap(152, 152, 152)
+                        .addGap(26, 26, 26)
+                        .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42)
                         .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(60, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMSpawnLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(RbtnAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34))))
-            .addGroup(panelMSpawnLayout.createSequentialGroup()
-                .addGap(141, 141, 141)
-                .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         panelMSpawnLayout.setVerticalGroup(
             panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -352,13 +352,13 @@ public class ControlPanel extends javax.swing.JFrame {
                 .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(RbtnResource)
                     .addComponent(RbtnAnimals))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cboxResource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(btnGenerate, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cboxResource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         panelMode.add(panelMSpawn, "card3");
@@ -376,6 +376,15 @@ public class ControlPanel extends javax.swing.JFrame {
         bMenuGame.setAlignmentX(1.0F);
 
         jMenu1.setText("File");
+
+        MitemSave.setText("Save");
+        MitemSave.addActionListener(this::MitemSaveActionPerformed);
+        jMenu1.add(MitemSave);
+
+        MitemLoad.setText("Load");
+        MitemLoad.addActionListener(this::MitemLoadActionPerformed);
+        jMenu1.add(MitemLoad);
+
         bMenuGame.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -470,6 +479,15 @@ public class ControlPanel extends javax.swing.JFrame {
         setTool(Tool.NONE);
     }//GEN-LAST:event_rbtnBNoneActionPerformed
 
+    private void MitemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemSaveActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_MitemSaveActionPerformed
+
+    private void MitemLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemLoadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MitemLoadActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -504,6 +522,8 @@ public class ControlPanel extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem MitemGrid;
+    private javax.swing.JMenuItem MitemLoad;
+    private javax.swing.JMenuItem MitemSave;
     private javax.swing.JRadioButton RbtnAnimals;
     private javax.swing.JRadioButton RbtnResource;
     private javax.swing.JMenuBar bMenuGame;
