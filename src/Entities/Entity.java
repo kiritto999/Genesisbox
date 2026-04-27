@@ -14,7 +14,7 @@ public abstract class Entity {
     protected int health;
     protected int maxHealth;
     protected boolean alive;
-
+    protected Entitymanager manager;    
     public enum EntityType {
         ANIMAL, RESOURCE
     }
@@ -22,11 +22,12 @@ public abstract class Entity {
     protected EntityType type;
 
 // En Entity.java dos constructores:
-public Entity(int tileX, int tileY) {
+public Entity(int tileX, int tileY, Entitymanager manager) {
     this.tileX   = tileX;
     this.tileY   = tileY;
     this.alive   = true;
     this.type    = EntityType.ANIMAL;
+    this.manager = manager;
 }
 
 public Entity(String name, int tileX, int tileY, int maxHealth, EntityType type) {

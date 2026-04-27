@@ -22,14 +22,15 @@ public class Game {
 
     public Game() {
         System.out.println("El game se esta ejecutado");
-
-        gameLoop = new GameLoop();
-        gameLoop.start();
-
+        
         World world = new World();
         Entitymanager manager = new Entitymanager(world);
         InfoPanel infoP = new InfoPanel();
         
+
+        gameLoop = new GameLoop();
+        gameLoop.setEntitymanager(manager);  // primero inyectar
+        gameLoop.start();                    // luego arrancar
         ControlPanel cp = new ControlPanel(gameLoop, world, manager,infoP);
 
         cp.setVisible(true);

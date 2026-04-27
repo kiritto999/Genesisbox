@@ -18,13 +18,13 @@ public class Zyrox extends Animal {
 
     Random random = new Random();
 
-    public Zyrox(int tileX, int tileY) {
-        super(tileX, tileY);
+    public Zyrox (int tileX, int tileY, Entitymanager manager) {
+        super(tileX, tileY, manager);  
 
-        name      = "Zyrox";
-        maxHealth = 40 + random.nextInt(21);  // 40-60
-        health    = maxHealth;
-
+        name         = "Zyrox";
+        maxHealth    = 40 + random.nextInt(21);  // 40-60
+        health       = maxHealth;
+        capacity     = 3;
         energy       = 50 + random.nextInt(21);  // 50-70
         sex          = random.nextBoolean() ? Sex.MALE : Sex.FEMALE;
         habitat      = Tile.GRASS;

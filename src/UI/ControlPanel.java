@@ -98,9 +98,9 @@ public class ControlPanel extends javax.swing.JFrame {
     public Animal makeAnimal(int tipo, int x, int y,Entitymanager emEntitymanager) {
         switch (tipo) {
             case 1:
-                return new Lummon(x, y);
+                return new Lummon(x, y,EManager);
             case 2:
-                return new Zyrox(x, y);
+                return new Zyrox(x, y,EManager);
             default:
                 return null;
         }
@@ -205,7 +205,7 @@ public class ControlPanel extends javax.swing.JFrame {
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
 
         panelInfo.setBackground(new java.awt.Color(102, 102, 102));
-        panelInfo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        panelInfo.setLayout(new java.awt.BorderLayout());
         getContentPane().add(panelInfo, java.awt.BorderLayout.LINE_END);
 
         bMenuGame.setAlignmentX(1.0F);

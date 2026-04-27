@@ -60,13 +60,18 @@ public class Entitymanager {
         return null;
     }
  
-    // Actualización Recursos
+ // Actualización 
  
-    public void update() {
+    public void update(double deltaTime) {
+        // Actualizar recursos
         for (Entity e : entities) {
-            e.update(world);
-        }
+        e.update(world);
+    }
  
+        // Actualizar animales con deltaTime
+        for (Animal a : animals) {
+            a.update(world, deltaTime);
+        }
         eliminarMuertas();
  
         for (Entity e : toAdd) {
@@ -93,6 +98,9 @@ public class Entitymanager {
         for (Entity e : entities) {
             if (e.getTileX() == x && e.getTileY() == y) return true;
         }
+        for (Animal a : animals) {
+            if (a.getTileX() == x && a.getTileY() == y) return true;
+        }
         return false;
     }
  
@@ -100,13 +108,33 @@ public class Entitymanager {
         entities.add(e);
         if (e instanceof Resource r) resources.add(r);
     }
- 
+    
+    private void agregarAnimal(Animal a) {
+        animals.add(a);
+        entities.add(a);
+    }
+    
+    public int contarEspacioTile(int x, int y){
+        int espacio = 0;
+        for (Entity e : entities){
+            if (e.getTileX() == x && e.getTileY() == y) {
+                if (e instanceof Tree)  espacio += 3;
+                else if (e instanceof Nero)  espacio += 4;
+                else if (e instanceof Food)  espacio += 2;
+                else espacio += 1;
+            }
+        }
+        for (Animal a : animals){
+            if (a.getTileX() == x && a.getTileY() == y) espacio += a.getCapacity();
+        }
+        return espacio;
+    }
  
     public ArrayList<Entity>   getEntities()  { return entities;  }
     public ArrayList<Resource> getResources() { return resources; }
     public ArrayList<Animal> getAnimals() {return animals;}
     public void addEntity(Entity e) {toAdd.add(e);}
-    public void addAnimal(Animal a) {animals.add(a);}
+    public void addAnimal(Animal a) {animals.add(a); entities.add(a); }
     public void addResourse (Resource r) {resources.add(r);}
     
 }

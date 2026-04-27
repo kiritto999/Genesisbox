@@ -17,7 +17,7 @@ public class Tree extends Resource {
  
     private Etapa_Crecimiento stage;
     private int Tiempo_Crecimiento;
-    private static final int INTERVALO_CRECIMIENTO = 20000;
+    private static final int INTERVALO_CRECIMIENTO = 700;
  
     public static final Color COLOR_SEMILLA = new Color(219, 54, 36);
     public static final Color COLOR_JOVEN = new Color(180, 44, 29);
@@ -28,8 +28,8 @@ public class Tree extends Resource {
         super("Arbol", tileX, tileY,
                 /*VidaMax*/   50,
                 /*CantMax*/ 10,
-                /*RangeRege*/    1,
-                /*RegeIntervalo*/100);
+                /*RangeRege*/    0,
+                /*RegeIntervalo*/0);
         
         this.stage             = Etapa_Crecimiento.SEMILLA;
         this.Tiempo_Crecimiento = 0;
@@ -46,6 +46,8 @@ public class Tree extends Resource {
             Tiempo_Crecimiento = 0;
             avanzarCrecimiento();
         }
+        // Morir si la vida llega a 0
+        if (health <= 0) alive = false;
     }
     
     @Override
