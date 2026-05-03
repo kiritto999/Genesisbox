@@ -1,93 +1,103 @@
 package Game;
 
-import Entities.Animal;
 import Entities.Entitymanager;
 import UI.GamePanel;
 import Utils.TimeDay;
-import World.World;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+public class GameLoop implements Runnable {
 
-/**
- *
- * @author blope
- */
-public class GameLoop implements Runnable{
-    
     private TimeDay timeDay;
-    private long lastTime;    
-    private boolean running = false; 
-    
-    // Referencias necesarias para actualizar animales
+    private long lastTime;
+    private boolean running = false;
+
     private Entitymanager entitymanager;
-    private World world;
-    
-    public GameLoop(){
-        timeDay = new TimeDay();
-        lastTime= System.nanoTime();
-    }
-    
-    // Setter para inyectar dependencias después de construir
-
-    public void setEntitymanager(Entitymanager em) {
-        this.entitymanager = em; 
-  
-    }
-    public void setWorld(World world) {
-        this.world = world;
-    }
-    public void update(double Ftime) {
-        if (timeDay.isPaused()) return;
-        timeDay.updateTime(Ftime);
-        if (entitymanager != null) entitymanager.update(Ftime); // ← agregar esto
-    }
-
-    
     private GamePanel gamePanel;
 
-    public void setGamePanel(GamePanel gp) {
-        this.gamePanel = gp;
+    private double speedMultiplier = 1.0;
+
+    public GameLoop() {
+        timeDay = new TimeDay();
+        lastTime = System.nanoTime();
+    }
+
+
+    public void pause() {
+        timeDay.setPaused(true);
+    }
+
+    public void resume() {
+        lastTime = System.nanoTime(); 
+        timeDay.setPaused(false);
     }
 
     @Override
     public void run() {
         while (running) {
+
             long now = System.nanoTime();
             double deltaTime = (now - lastTime) / 1_000_000_000.0;
             lastTime = now;
 
+            if (deltaTime > 0.1) {
+                deltaTime = 0.1;
+            }
+
+            double scaledDelta = deltaTime * speedMultiplier;
+
             if (!timeDay.isPaused()) {
-                timeDay.updateTime(deltaTime);
+
+                // Tiempo del juego
+                timeDay.updateTime(scaledDelta);
+
+                // Entidades
                 if (entitymanager != null) {
                     synchronized (entitymanager) {
-                        entitymanager.update(deltaTime);
+                        entitymanager.update(scaledDelta);
                     }
                 }
             }
 
+            // Render
             if (gamePanel != null) {
                 gamePanel.repaint();
             }
 
-            try { Thread.sleep(16); } catch (InterruptedException e) { e.printStackTrace(); }
+            try {
+                Thread.sleep(16); // ~60 FPS
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-        
-        
     public void start() {
         running = true;
         new Thread(this).start();
     }
 
-    public void stop()  { running = false; }
-    
-    public TimeDay getTimeDay() { return timeDay; }
+    public void stop() {
+        running = false;
+    }
 
-    
-    
-    
+    // Dependencias
+    public void setEntitymanager(Entitymanager em) {
+        this.entitymanager = em;
+    }
+
+    public void setGamePanel(GamePanel gp) {
+        this.gamePanel = gp;
+    }
+
+    // Velocidad
+    public void setSpeed(double speed) {
+        this.speedMultiplier = speed;
+    }
+
+    public double getSpeed() {
+        return speedMultiplier;
+    }
+
+    public TimeDay getTimeDay() {
+        return timeDay;
+    }
 }

@@ -49,14 +49,29 @@ public class Lummon extends Animal {
  
     @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
+
         int[] slotOffsetX = {0, 1, 0, 1, 0};
         int[] slotOffsetY = {0, 0, 1, 1, 2};
-        int half = tileSize / 2;
+
+        int half = tileSize / 3;
 
         int px = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
         int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
 
-        g.setColor(Color.WHITE);
-        g.fillOval(px + half / 4, py + half / 4, half / 2, half / 2);
+        //cuerpo
+        g.setColor(Color.CYAN);
+        g.fillOval(px, py, half, half);
+
+
+        //borde del cuerpo 
+        g.setColor(Color.BLACK);
+        g.drawOval(px, py, half, half);
+
+
+        //ojos
+        int eyeSize = half / 6;
+        g.setColor(Color.RED);
+        g.fillOval(px + half/4, py + half/3, eyeSize, eyeSize);
+        g.fillOval(px + half/2, py + half/3, eyeSize, eyeSize);
     }
 }

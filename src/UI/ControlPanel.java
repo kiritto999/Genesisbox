@@ -160,7 +160,6 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts = new javax.swing.ButtonGroup();
         panelGame = new javax.swing.JPanel();
         menuGame = new javax.swing.JPanel();
-        btnStartTime = new javax.swing.JButton();
         btnPause = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
         btnInformationshow = new javax.swing.JButton();
@@ -177,6 +176,11 @@ public class ControlPanel extends javax.swing.JFrame {
         RbtnAnimals = new javax.swing.JRadioButton();
         cboxAnimals = new javax.swing.JComboBox<>();
         btnGenerate = new javax.swing.JToggleButton();
+        RbtnGNone = new javax.swing.JRadioButton();
+        btnStartTime1 = new javax.swing.JButton();
+        btnTimeSpeed1 = new javax.swing.JButton();
+        btnTimeSpeed10 = new javax.swing.JButton();
+        btnTimeSpeed6 = new javax.swing.JButton();
         panelInfo = new javax.swing.JPanel();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -201,15 +205,6 @@ public class ControlPanel extends javax.swing.JFrame {
         menuGame.setBorder(javax.swing.BorderFactory.createMatteBorder(4, 4, 4, 4, new java.awt.Color(0, 0, 0)));
         menuGame.setPreferredSize(new java.awt.Dimension(0, 137));
         menuGame.setLayout(null);
-
-        btnStartTime.setBackground(new java.awt.Color(62, 62, 62));
-        btnStartTime.setForeground(new java.awt.Color(102, 153, 0));
-        btnStartTime.setText("▶");
-        btnStartTime.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnStartTime.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnStartTime.addActionListener(this::btnStartTimeActionPerformed);
-        menuGame.add(btnStartTime);
-        btnStartTime.setBounds(60, 40, 50, 53);
 
         btnPause.setBackground(new java.awt.Color(62, 62, 62));
         btnPause.setForeground(new java.awt.Color(51, 255, 0));
@@ -323,6 +318,14 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGenerate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnGenerate.addActionListener(this::btnGenerateActionPerformed);
 
+        RbtnGNone.setBackground(new java.awt.Color(0, 51, 51));
+        btnGSpawn.add(RbtnGNone);
+        RbtnGNone.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        RbtnGNone.setForeground(new java.awt.Color(255, 255, 255));
+        RbtnGNone.setText("None");
+        RbtnGNone.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        RbtnGNone.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
         javax.swing.GroupLayout panelMSpawnLayout = new javax.swing.GroupLayout(panelMSpawn);
         panelMSpawn.setLayout(panelMSpawnLayout);
         panelMSpawnLayout.setHorizontalGroup(
@@ -342,6 +345,8 @@ public class ControlPanel extends javax.swing.JFrame {
                         .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(60, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMSpawnLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(RbtnGNone, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(RbtnAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34))))
@@ -352,7 +357,8 @@ public class ControlPanel extends javax.swing.JFrame {
                 .addGap(13, 13, 13)
                 .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(RbtnResource)
-                    .addComponent(RbtnAnimals))
+                    .addComponent(RbtnAnimals)
+                    .addComponent(RbtnGNone))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -366,6 +372,42 @@ public class ControlPanel extends javax.swing.JFrame {
 
         menuGame.add(panelMode);
         panelMode.setBounds(610, 0, 400, 140);
+
+        btnStartTime1.setBackground(new java.awt.Color(62, 62, 62));
+        btnStartTime1.setForeground(new java.awt.Color(102, 153, 0));
+        btnStartTime1.setText("▶");
+        btnStartTime1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnStartTime1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnStartTime1.addActionListener(this::btnStartTime1ActionPerformed);
+        menuGame.add(btnStartTime1);
+        btnStartTime1.setBounds(60, 40, 50, 53);
+
+        btnTimeSpeed1.setBackground(new java.awt.Color(62, 62, 62));
+        btnTimeSpeed1.setForeground(new java.awt.Color(102, 153, 0));
+        btnTimeSpeed1.setText("1");
+        btnTimeSpeed1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnTimeSpeed1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTimeSpeed1.addActionListener(this::btnTimeSpeed1ActionPerformed);
+        menuGame.add(btnTimeSpeed1);
+        btnTimeSpeed1.setBounds(10, 90, 40, 40);
+
+        btnTimeSpeed10.setBackground(new java.awt.Color(62, 62, 62));
+        btnTimeSpeed10.setForeground(new java.awt.Color(102, 153, 0));
+        btnTimeSpeed10.setText("10");
+        btnTimeSpeed10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnTimeSpeed10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTimeSpeed10.addActionListener(this::btnTimeSpeed10ActionPerformed);
+        menuGame.add(btnTimeSpeed10);
+        btnTimeSpeed10.setBounds(90, 90, 40, 40);
+
+        btnTimeSpeed6.setBackground(new java.awt.Color(62, 62, 62));
+        btnTimeSpeed6.setForeground(new java.awt.Color(102, 153, 0));
+        btnTimeSpeed6.setText("5");
+        btnTimeSpeed6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnTimeSpeed6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTimeSpeed6.addActionListener(this::btnTimeSpeed6ActionPerformed);
+        menuGame.add(btnTimeSpeed6);
+        btnTimeSpeed6.setBounds(50, 90, 40, 40);
 
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
 
@@ -404,14 +446,10 @@ public class ControlPanel extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    //pausa el timepo
-    private void btnStartTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartTimeActionPerformed
-        GLoop.getTimeDay().setPaused(false);
-        System.out.println(GLoop.getTimeDay().isPaused());
-    }//GEN-LAST:event_btnStartTimeActionPerformed
-    //reanuda el timepo o inicia
+
+   //reanuda el timepo o inicia
     private void btnPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseActionPerformed
-        GLoop.getTimeDay().setPaused(true);
+        GLoop.pause();
         System.out.println(GLoop.getTimeDay().isPaused());
     }//GEN-LAST:event_btnPauseActionPerformed
 
@@ -482,7 +520,7 @@ public class ControlPanel extends javax.swing.JFrame {
 
     private void MitemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemSaveActionPerformed
         // TODO add your handling code here:
-        game.getEntityManager().saveToDatabase();
+    //    game.getEntityManager().saveToDatabase();
         
     }//GEN-LAST:event_MitemSaveActionPerformed
 
@@ -490,6 +528,26 @@ public class ControlPanel extends javax.swing.JFrame {
         // TODO add your handling code here:
       //  GP.getEntityManager().loadFromDatabase();
     }//GEN-LAST:event_MitemLoadActionPerformed
+
+    private void btnStartTime1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartTime1ActionPerformed
+        // TODO add your handling code here:
+        GLoop.resume();
+    }//GEN-LAST:event_btnStartTime1ActionPerformed
+
+    private void btnTimeSpeed1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeSpeed1ActionPerformed
+        // TODO add your handling code here:
+        GLoop.setSpeed(1);
+    }//GEN-LAST:event_btnTimeSpeed1ActionPerformed
+
+    private void btnTimeSpeed10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeSpeed10ActionPerformed
+        // TODO add your handling code here:
+        GLoop.setSpeed(10);
+    }//GEN-LAST:event_btnTimeSpeed10ActionPerformed
+
+    private void btnTimeSpeed6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeSpeed6ActionPerformed
+        // TODO add your handling code here:
+        GLoop.setSpeed(5);
+    }//GEN-LAST:event_btnTimeSpeed6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -528,6 +586,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JMenuItem MitemLoad;
     private javax.swing.JMenuItem MitemSave;
     private javax.swing.JRadioButton RbtnAnimals;
+    private javax.swing.JRadioButton RbtnGNone;
     private javax.swing.JRadioButton RbtnResource;
     private javax.swing.JMenuBar bMenuGame;
     private javax.swing.ButtonGroup btnGMBuilts;
@@ -536,7 +595,10 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.ButtonGroup btnGmodes;
     private javax.swing.JButton btnInformationshow;
     private javax.swing.JButton btnPause;
-    private javax.swing.JButton btnStartTime;
+    private javax.swing.JButton btnStartTime1;
+    private javax.swing.JButton btnTimeSpeed1;
+    private javax.swing.JButton btnTimeSpeed10;
+    private javax.swing.JButton btnTimeSpeed6;
     private javax.swing.JComboBox<String> cboxAnimals;
     private javax.swing.JComboBox<String> cboxResource;
     private javax.swing.JMenu jMenu1;

@@ -115,7 +115,7 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
         double worldX = (x - camera.Camerax) / camera.zoom;
         double worldY = (y - camera.Cameray) / camera.zoom;
 
-        // ?convertir a tile usando floor ya que si lo haces normal no lo hace en un lugar exacto
+        // <?convertir a tile usando floor ya que si lo haces normal no lo hace en un lugar exacto
         int col = (int)Math.floor(worldX / tileSize);//en qué fila del mapa estoy haciendo click
         int row = (int)Math.floor(worldY / tileSize);//floor =asegura que caiga en el bloque correcto/Esto evita bugs en bordes o con cámara
 
