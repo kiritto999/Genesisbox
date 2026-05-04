@@ -9,17 +9,18 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 /**
- *
- * @author Friedrick
+ * Nero: Piedra grande que ocupa 4 slots.
+ * Se dibuja cubriendo los 4 cuadrantes superiores del tile,
+ * dejando el slot 4 (esquina inferior izquierda) libre.
  */
 public class Nero extends Resource {
- 
-    public static final Color COLOR_LLENA  = new Color(49, 120, 34);
-    public static final Color COLOR_VACIA  = new Color(37, 77, 26);
- 
+
+    public static final Color COLOR_LLENA = new Color(49, 120, 34);
+    public static final Color COLOR_VACIA = new Color(37, 77, 26);
+
     public Nero(int tileX, int tileY) {
         super("Nero", tileX, tileY,
                 /*maxHealth*/   100,
@@ -27,40 +28,64 @@ public class Nero extends Resource {
                 /*regenRate*/     1,
                 /*regenInterval*/300);
     }
- 
+
     @Override
     public void update(World world) {
         super.update(world);
     }
-    
-        @Override
+
+    @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
-        int[] slotOffsetX = {0, 1, 0, 1, 0};
-        int[] slotOffsetY = {0, 0, 1, 1, 2};
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        int px = cameraX + tileX * tileSize;
+        int py = cameraY + tileY * tileSize;
+
+        // La piedra cubre los 4 cuadrantes superiores del tile
+        // Slots 0,1 = fila superior | Slots 2,3 = fila media
+        // Slot 4 (inferior izquierda) queda libre para otras entidades
         int half = tileSize / 2;
 
-        int px = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
-        int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
+        // Tamaño: ocupa 2x2 cuadrantes con un pequeño margen
+        int margin = (int)(tileSize * 0.05);
+        int stoneW = tileSize - margin * 2;       // ancho: casi todo el tile
+        int stoneH = (int)(tileSize * 0.65);      // alto: ~65% del tile (deja slot 4 libre abajo)
 
-        float visualSize = getVisualSize();
-        int size = (int)(half * visualSize);
-        int offset = (half - size) / 2;
- 
-        // Cuerpo de la piedra
-        g.setColor(getCurrentColor());
-        g.fillRoundRect(px + offset, py + offset + size / 4, size, size * 3 / 4, 8, 8);
- 
+        int sx = px + margin;
+        int sy = py + margin;
+
+        // Sombra
+        g2.setColor(new Color(0, 0, 0, 60));
+        g2.fillRoundRect(sx + 3, sy + 3, stoneW, stoneH, 14, 14);
+
+        // Cuerpo principal
+        g2.setColor(getCurrentColor());
+        g2.fillRoundRect(sx, sy, stoneW, stoneH, 14, 14);
+
+        // Brillo superior
+        g2.setColor(new Color(255, 255, 255, 40));
+        g2.fillRoundRect(sx + stoneW / 5, sy + stoneH / 10,
+                stoneW * 3 / 5, stoneH / 4, 8, 8);
+
+        // Grietas (Quitalos si no te gusta owo)
+        g2.setColor(getCurrentColor().darker().darker());
+        g2.setStroke(new BasicStroke(1.2f));
+        g2.drawLine(sx + stoneW / 3,       sy + stoneH / 4,
+                    sx + stoneW / 3 + 8,   sy + stoneH / 2);
+        g2.drawLine(sx + stoneW * 2 / 3,   sy + stoneH / 3,
+                    sx + stoneW * 2 / 3 - 6, sy + stoneH * 2 / 3);
+
         // Borde
-        Graphics2D g2 = (Graphics2D) g;
         g2.setColor(getCurrentColor().darker());
+        g2.setStroke(new BasicStroke(1.5f));
+        g2.drawRoundRect(sx, sy, stoneW, stoneH, 14, 14);
+
+
         g2.setStroke(new BasicStroke(1f));
-        g2.drawRoundRect(px + offset, py + offset + size / 4, size, size * 3 / 4, 8, 8);
     }
- 
+
     public Color getCurrentColor() {
         return isDepleted() ? COLOR_VACIA : COLOR_LLENA;
     }
- 
-    public float getVisualSize() { return 0.90f; }
-    
 }

@@ -10,130 +10,182 @@ enum Sex { MALE, FEMALE }
 enum FoodType { HERBIVORE, CARNIVORE }
 
 public abstract class Animal extends Entity {
-    
-    // ── Caps máximos globales ──────────────────────────────────────────
-    public static final int CAP_VIDA          = 300;
-    public static final int CAP_ENERGIA       = 150;
-    public static final int CAP_ATAQUE        = 50;
-    public static final int CAP_VELOCIDAD     = 10;
-    public static final int CAP_INTELIGENCIA  = 100;
-    public static final int CAP_HAMBRE        = 100;
-    public static final int CAP_SED           = 100;
-    
-    // ── Stats ─────────────────────────────────────────────────────────────
+
+    public static final int CAP_VIDA         = 300;
+    public static final int CAP_ENERGIA      = 150;
+    public static final int CAP_ATAQUE       = 50;
+    public static final int CAP_VELOCIDAD    = 10;
+    public static final int CAP_INTELIGENCIA = 100;
+    public static final int CAP_HAMBRE       = 100;
+    public static final int CAP_SED          = 100;
+
     protected int energy;
-    protected int hunger;   // empieza en MAX, baja con el tiempo
-    protected int thirst;   // empieza en MAX, baja con el tiempo
+    protected int hunger;
+    protected int thirst;
     protected int speed;
     protected int attack;
     protected int intelligence;
     protected int capacity;
-    
-    // ── Info ──────────────────────────────────────────────────────────────
+
     protected Sex      sex;
     protected int      habitat;
     protected FoodType foodType;
     protected Entitymanager entitymanager;
-    
-    // ── Timers de juego (en segundos reales) ─────────────────────────
-    private double moveTimer    = 0; // se mueve cada 2 segundos
-    private double hambreTimer  = 0; // hambre baja cada 10 segundos
-    private double sedTimer     = 0; // sed baja cada 7 segundos
-    private static final double MOVE_INTERVAL = 2.0; // 2 segundos 
+
+    // ── Timers ─────────────────────────────────────────────────────────
+    private double moveTimer   = 0;
+    private double hambreTimer = 0;
+    private double sedTimer    = 0;
+
     private static final double HAMBRE_INTERVAL = 1.0;
-    private static final double SED_INTERVAL    =  7.0;
- 
+    private static final double SED_INTERVAL    = 7.0;
+
+    // ── Combate ────────────────────────────────────────────────────────
+    private double attackTimer = 0;
+    private static final double ATTACK_INTERVAL = 0.6; // segundos entre ataques
+
     public Animal(int tileX, int tileY, Entitymanager manager) {
         super(tileX, tileY, manager);
         this.entitymanager = manager;
         this.hunger = CAP_HAMBRE;
         this.thirst = CAP_SED;
     }
- 
-    /**
-     * Recibe deltaTime en segundos reales desde el GameLoop.
-     * Se llama desde update(World, double).
-     */
+
     @Override
-    public void update(World.World world) {
-        // Sin deltaTime no hacemos nada aquí —
-        // usa update(World, double) desde el GameLoop
-    }
- 
+    public void update(World.World world) {}
+
     public void update(World.World world, double deltaTime) {
         if (!alive) return;
- 
-        // ── Hambre ───────────────────────────────────────────────────────
+
+        // ── Hambre ───────────────────────────────────────────────────
         hambreTimer += deltaTime;
         if (hambreTimer >= HAMBRE_INTERVAL) {
             hambreTimer = 0;
             hunger = Math.max(0, hunger - 1);
-            if (hunger == 0) takeDamage(2); // daño por inanición
+            if (hunger == 0) takeDamage(2);
         }
- 
-        // ── Sed ──────────────────────────────────────────────────────────
+
+        // ── Sed ──────────────────────────────────────────────────────
         sedTimer += deltaTime;
         if (sedTimer >= SED_INTERVAL) {
             sedTimer = 0;
             thirst = Math.max(0, thirst - 1);
-            if (thirst == 0) takeDamage(3); // sed es más mortal
+            if (thirst == 0) takeDamage(3);
         }
- 
-        // ── Movimiento ───────────────────────────────────────────────────
-        moveTimer += deltaTime;
-        double interval = 3.0 / speed;  // ← reemplaza MOVE_INTERVAL por esto
 
+        // ── Ataque timer ─────────────────────────────────────────────
+        attackTimer += deltaTime;
+
+        // ── Movimiento ───────────────────────────────────────────────
+        moveTimer += deltaTime;
+        double interval = 3.0 / Math.max(1, speed);
         if (moveTimer >= interval) {
             moveTimer = 0;
-            mover(world);
+            decidirAccion(world);
             energy = Math.max(0, energy - 1);
         }
     }
- 
+
     /**
-     * Mueve el animal a una casilla de hierba adyacente aleatoria.
+     * Punto central de decisión: cada subclase sobreescribe esto
+     * para definir su IA. Por defecto hace movimiento aleatorio.
      */
-    protected void mover(World.World world) {
-        System.out.println("MOVIENDO " + name + " desde " + tileX + "," + tileY);
-        int[][] move = {{0,-1},{0,1},{1,0},{-1,0}};
- 
-        // Mezcla las direcciones para movimiento aleatorio
+    protected void decidirAccion(World.World world) {
+        moverAleatorio(world);
+    }
+
+    // ── Movimiento aleatorio ────────────────────────────────────────────
+    protected void moverAleatorio(World.World world) {
+        int[][] dirs = {{0,-1},{0,1},{1,0},{-1,0}};
         java.util.Random rng = new java.util.Random();
-        for (int i = move.length - 1; i > 0; i--) {
+        for (int i = dirs.length - 1; i > 0; i--) {
             int j = rng.nextInt(i + 1);
-            int[] tmp = move[i]; move[i] = move[j]; move[j] = tmp;
+            int[] tmp = dirs[i]; dirs[i] = dirs[j]; dirs[j] = tmp;
         }
- 
-        for (int[] dir : move) {
+        for (int[] dir : dirs) {
             int nx = tileX + dir[0];
             int ny = tileY + dir[1];
             if (esMovimientoValido(nx, ny, world)) {
-                int nuevoSlot = entitymanager.getSlotLibre(nx, ny, capacity);
-                if (nuevoSlot == -1) continue; // ← no hay espacio, probar otra dirección
-                tileX = nx;
-                tileY = ny;
-                slot = nuevoSlot;
+                int slot2 = entitymanager.getSlotLibre(nx, ny, capacity);
+                if (slot2 == -1) continue;
+                tileX = nx; tileY = ny; slot = slot2;
                 return;
             }
         }
     }
- 
+
+    // ── Moverse hacia un objetivo (un paso por llamada) ────────────────
+    protected void moverHacia(int tx, int ty, World.World world) {
+        int dx = Integer.compare(tx, tileX);
+        int dy = Integer.compare(ty, tileY);
+
+        // intentar eje X primero, luego Y, luego diagonal
+        int[][] intentos = { {dx, 0}, {0, dy}, {dx, dy} };
+        for (int[] d : intentos) {
+            if (d[0] == 0 && d[1] == 0) continue;
+            int nx = tileX + d[0];
+            int ny = tileY + d[1];
+            if (esMovimientoValido(nx, ny, world)) {
+                int s = entitymanager.getSlotLibre(nx, ny, capacity);
+                if (s == -1) continue;
+                tileX = nx; tileY = ny; slot = s;
+                return;
+            }
+        }
+        // Si no pudo, movimiento aleatorio como fallback
+        moverAleatorio(world);
+    }
+
+    // ── Adyacente a tile objetivo ──────────────────────────────────────
+    protected boolean esAdyacente(int tx, int ty) {
+        int dx = Math.abs(tileX - tx);
+        int dy = Math.abs(tileY - ty);
+        return (dx + dy) == 1;
+    }
+
+    // ── Atacar entidad en tile adyacente ──────────────────────────────
+    protected boolean intentarAtacar(Entity objetivo) {
+        if (objetivo == null || !objetivo.isAlive()) return false;
+        if (!esAdyacente(objetivo.getTileX(), objetivo.getTileY())) return false;
+
+        if (attackTimer >= ATTACK_INTERVAL) {
+            attackTimer = 0;
+            objetivo.takeDamage(attack);
+            return true;
+        }
+        return false;
+    }
+
+    // ── Comer un recurso de comida adyacente o en la misma casilla ─────
+    protected boolean intentarComer(Food food) {
+        if (food == null || !food.isAlive() || food.isDepleted()) return false;
+        if (food.getTileX() != tileX || food.getTileY() != tileY) {
+            if (!esAdyacente(food.getTileX(), food.getTileY())) return false;
+        }
+        int cosechado = food.harvest(10);
+        if (cosechado > 0) {
+            hunger = Math.min(CAP_HAMBRE, hunger + cosechado * 5);
+            heal(cosechado * 2);
+            return true;
+        }
+        return false;
+    }
+
+    // ── Validación de movimiento ───────────────────────────────────────
     protected boolean esMovimientoValido(int nx, int ny, World.World world) {
         if (nx < 0 || ny < 0 || nx >= world.getColums() || ny >= world.getRows()) return false;
         if (world.getMap()[ny][nx].getType() != Tile.GRASS) return false;
-        if (entitymanager.contarEspacioTile(nx, ny) + capacity > 5) return false;
-        return world.getMap()[ny][nx].getType() == Tile.GRASS;
+        return entitymanager.contarEspacioTile(nx, ny) + capacity <= 5;
     }
- 
-    
-    public int getEnergy()       { return energy; }
-    public int getHunger()       { return hunger; }
-    public int getThirst()       { return thirst; }
-    public int getSpeed()        { return speed; }
-    public int getAttack()       { return attack; }
-    public int getIntelligence() { return intelligence; }
-    public Sex getSex()          { return sex; }
-    public FoodType getFoodType(){ return foodType; }
-    public int getCapacity()     { return capacity; }
-      
+
+    // ── Getters ────────────────────────────────────────────────────────
+    public int      getEnergy()       { return energy; }
+    public int      getHunger()       { return hunger; }
+    public int      getThirst()       { return thirst; }
+    public int      getSpeed()        { return speed; }
+    public int      getAttack()       { return attack; }
+    public int      getIntelligence() { return intelligence; }
+    public Sex      getSex()          { return sex; }
+    public FoodType getFoodType()     { return foodType; }
+    public int      getCapacity()     { return capacity; }
 }
