@@ -55,8 +55,8 @@ public class ControlPanel extends javax.swing.JFrame {
         
         camera = new Camera();
         GP = new GamePanel(world, EManager, this.infoPanel, camera);
-        mouser = new Mouser(camera, GP, world);
-        
+        mouser = new Mouser(camera, GP, world,EManager);
+        infoPanel.setGamePanel(GP);
         //se agreg el redibujado 
         GLoop.setGamePanel(GP);      
         
@@ -73,7 +73,7 @@ public class ControlPanel extends javax.swing.JFrame {
         
         
         //tamaño del panel lateral
-        panelInfo.setPreferredSize(new Dimension(250, 0));
+        panelInfo.setPreferredSize(new Dimension(360, 900));
 
         // tiempo
         lblTime.setText("");
@@ -85,6 +85,17 @@ public class ControlPanel extends javax.swing.JFrame {
         for (String animal : animals) { 
             cboxAnimals.addItem(animal);
         }
+        cboxAnimals.addActionListener(e -> {
+            if (!RbtnAnimals.isSelected()) return;
+
+            int animal = cboxAnimals.getSelectedIndex();
+
+            switch (animal) {
+                case 1 -> setTool(Tool.Lummon);
+                case 2 -> setTool(Tool.Zyrox);
+                default -> setTool(Tool.NONE);
+            }
+        });
         for (String resource : resources ){
             cboxResource.addItem(resource);
         }
@@ -111,27 +122,20 @@ public class ControlPanel extends javax.swing.JFrame {
     }
     //comparativa del cbox para saber el aniamal
     public Animal makeAnimal(int tipo, int x, int y,Entitymanager emEntitymanager) {
-        switch (tipo) {
-            case 1:
-                return new Lummon(x, y,EManager);
-            case 2:
-                return new Zyrox(x, y,EManager);
-            default:
-                return null;
-        }
+        return switch (tipo) {
+            case 1 -> new Lummon(x, y,EManager);
+            case 2 -> new Zyrox(x, y,EManager);
+            default -> null;
+        };
     }
     //comparativa del cbox para saber el recurso
     public Resource makeResourse(int tipo, int x, int y) {
-        switch (tipo) {
-            case 1:
-                return new Food(x, y);
-            case 2:
-                return new Nero(x, y);
-            case 3:
-                return new Tree(x, y);
-            default:
-                return null;
-        }
+        return switch (tipo) {
+            case 1 -> new Food(x, y);
+            case 2 -> new Nero(x, y);
+            case 3 -> new Tree(x, y);
+            default -> null;
+        };
     }
     //cambiar el modo de juego
     private void chansemode(String modo) {
@@ -189,6 +193,7 @@ public class ControlPanel extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         MitemGrid = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         jTextField1.setText("jTextField1");
 
@@ -306,6 +311,7 @@ public class ControlPanel extends javax.swing.JFrame {
         RbtnAnimals.setText("Animals");
         RbtnAnimals.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         RbtnAnimals.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        RbtnAnimals.addActionListener(this::RbtnAnimalsActionPerformed);
 
         cboxAnimals.setBackground(new java.awt.Color(0, 102, 102));
         cboxAnimals.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -325,6 +331,7 @@ public class ControlPanel extends javax.swing.JFrame {
         RbtnGNone.setText("None");
         RbtnGNone.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         RbtnGNone.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        RbtnGNone.addActionListener(this::RbtnGNoneActionPerformed);
 
         javax.swing.GroupLayout panelMSpawnLayout = new javax.swing.GroupLayout(panelMSpawn);
         panelMSpawn.setLayout(panelMSpawnLayout);
@@ -440,6 +447,11 @@ public class ControlPanel extends javax.swing.JFrame {
         MitemGrid.addActionListener(this::MitemGridActionPerformed);
         jMenu3.add(MitemGrid);
 
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        jMenuItem1.setText("Information");
+        jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
+        jMenu3.add(jMenuItem1);
+
         bMenuGame.add(jMenu3);
 
         setJMenuBar(bMenuGame);
@@ -493,6 +505,7 @@ public class ControlPanel extends javax.swing.JFrame {
             rbtnMbuilt.setBackground(new Color(51,51,51));
             chansemode("Spawn");
             setTool(Tool.NONE);
+            RbtnGNone.setSelected(true);
         }
     }//GEN-LAST:event_rbtnMGenerateActionPerformed
 
@@ -502,6 +515,8 @@ public class ControlPanel extends javax.swing.JFrame {
             rbtnMGenerate.setBackground(new Color(51,51,51));
             rbtnMbuilt.setBackground(new Color(43,35,58));
             chansemode("Built");
+            setTool(Tool.NONE);
+            rbtnBNone.setSelected(true);
         }
     }//GEN-LAST:event_rbtnMbuiltActionPerformed
 
@@ -548,6 +563,22 @@ public class ControlPanel extends javax.swing.JFrame {
         // TODO add your handling code here:
         GLoop.setSpeed(5);
     }//GEN-LAST:event_btnTimeSpeed6ActionPerformed
+
+    private void RbtnAnimalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RbtnAnimalsActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_RbtnAnimalsActionPerformed
+
+    private void RbtnGNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RbtnGNoneActionPerformed
+        // TODO add your handling code here:
+        setTool(Tool.NONE);
+    }//GEN-LAST:event_RbtnGNoneActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        panelInfo.setVisible(!panelInfo.isVisible());
+        repaint();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -604,6 +635,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblTime;
     private javax.swing.JPanel menuGame;

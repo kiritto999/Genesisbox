@@ -2,8 +2,8 @@ package World;
 
 public class World {
     
-    int rows = 60;
-    int colums = 60;
+    int rows = 40;
+    int colums = 40;
     Tile[][] map;
     
     public World(){

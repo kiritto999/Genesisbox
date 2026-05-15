@@ -31,7 +31,7 @@ public class Lummon extends Animal {
 
     public Lummon(int tileX, int tileY, Entitymanager manager) {
         super(tileX, tileY, manager);
-
+        this.baseColor = Color.WHITE;
         name         = "Lummon";
         maxHealth    = 15 + random.nextInt(11);
         health       = maxHealth;
@@ -163,11 +163,11 @@ public class Lummon extends Animal {
         int[] slotOffsetX = {0, 1, 0, 1, 0};
         int[] slotOffsetY = {0, 0, 1, 1, 2};
         int half = tileSize / 3;
-
+        Color renderColor = getRenderColor();
         int px = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
         int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
 
-        g.setColor(hunger <= HAMBRE_UMBRAL ? new Color(255, 80, 80) : Color.WHITE);
+        g.setColor(hunger <= HAMBRE_UMBRAL ? new Color(255, 80, 80) : renderColor);
         g.fillOval(px, py, half, half);
         g.setColor(Color.BLACK);
         g.drawOval(px, py, half, half);

@@ -5,6 +5,9 @@ import UI.GamePanel;
 import Utils.Tool;
 import World.World;
 import World.Tile;
+import Entities.Entitymanager;
+import Entities.Lummon;
+import Entities.Zyrox;
 
 public class Mouser implements MouseListener, MouseMotionListener, MouseWheelListener {
 
@@ -14,16 +17,20 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
     private Tool currentTool = Tool.NONE;
     private int lastX, lastY;
     private boolean dragging = false;
-
-    public Mouser(Camera camera, GamePanel panel, World world) {
+    private Entitymanager Emanager;
+    
+    public Mouser(Camera camera, GamePanel panel, World world,Entitymanager entityManager) {
         this.camera = camera;
         this.jpanel = panel;
         this.world = world;
+        this.Emanager = entityManager;
 
         jpanel.addMouseListener(this);
         jpanel.addMouseMotionListener(this);
         jpanel.addMouseWheelListener(this);
     }
+    
+    
 
 
     @Override
@@ -56,7 +63,7 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
         int y = e.getY();
 
 
-        if (currentTool != Tool.NONE) {
+        if (isPaintTool()) {
             handleBuild(x, y);
             return;
         }
@@ -118,7 +125,7 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
         // <?convertir a tile usando floor ya que si lo haces normal no lo hace en un lugar exacto
         int col = (int)Math.floor(worldX / tileSize);//en qué fila del mapa estoy haciendo click
         int row = (int)Math.floor(worldY / tileSize);//floor =asegura que caiga en el bloque correcto/Esto evita bugs en bordes o con cámara
-
+        
         // límites 
         if (row < 0 || col < 0 || row >= world.getRows() || col >= world.getColums()) {
             return;
@@ -127,15 +134,28 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
         switch (currentTool) {
 
             case WATER:
-                world.setTile(row, col, Tile.WATER);
-                break;
+        world.setTile(row, col, Tile.WATER);
+        break;
 
-            case GRASS:
-                world.setTile(row, col, Tile.GRASS);
-                break;
+        case GRASS:
+            world.setTile(row, col, Tile.GRASS);
+            break;
+
+        case Lummon:
+            Emanager.addEntity(new Lummon(col,row ,Emanager));
+            break;
+
+        case Zyrox:
+            Emanager.addEntity(new Zyrox(col, row,Emanager));
+            break;
         }
 
         jpanel.repaint();
+    }
+    
+    private boolean isPaintTool() {
+        return currentTool == Tool.WATER ||
+               currentTool == Tool.GRASS;
     }
 
 

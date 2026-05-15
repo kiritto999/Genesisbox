@@ -30,7 +30,7 @@ public class Zyrox extends Animal {
 
     public Zyrox(int tileX, int tileY, Entitymanager manager) {
         super(tileX, tileY, manager);
-
+        this.baseColor = new Color(210, 120, 40);
         name         = "Zyrox";
         maxHealth    = 40 + random.nextInt(21);
         health       = maxHealth;
@@ -218,7 +218,7 @@ public class Zyrox extends Animal {
         Color color;
         if (estaEnPeligroDeMuerte())      color = new Color(180, 30,  30);
         else if (hunger <= HAMBRE_UMBRAL) color = new Color(255, 210, 50);
-        else                              color = new Color(210, 120, 40);
+        else                              color = baseColor;
 
         int earW = size / 7, earH = size / 5;
         g.setColor(color.darker());

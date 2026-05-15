@@ -238,9 +238,29 @@ public class Entitymanager {
         }
         return -1;
     }
- 
+    //encontrar entidad por id
+    public Entity findById(int id) {
+        for (Entity e : entities) {
+            if (e.getId() == id) {
+                return e;
+            }
+        }
+        return null;
+    }
+    //encontrar entidad por nombre
+    public ArrayList<Entity> findByName(String name) {
+        ArrayList<Entity> found = new ArrayList<>();
+        for (Entity e : entities) {
+            if (e.getCustomName()
+                .equalsIgnoreCase(name)) {
+                found.add(e);
+            }
+        }
+        return found;
+    }
     // ── Getters ────────────────────────────────────────────────────────
     public ArrayList<Entity>   getEntities()  { return entities;  }
     public ArrayList<Resource> getResources() { return resources; }
     public ArrayList<Animal>   getAnimals()   { return animals;   }
+    
 }

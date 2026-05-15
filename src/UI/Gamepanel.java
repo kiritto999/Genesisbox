@@ -9,6 +9,7 @@ import Inputs.*;
 import World.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 
 /**
@@ -28,6 +29,7 @@ public class GamePanel extends JPanel {
     Color Beach_blue = new Color(73, 201, 252);
     Color ocean = new Color(89, 131, 171);
     boolean dgrid= false;
+    private Entity followedEntity;
     
     public GamePanel(World world, Entitymanager entitymanager, InfoPanel infoPanel, Camera camera){
         this.setBackground(ocean);
@@ -38,45 +40,55 @@ public class GamePanel extends JPanel {
     }
 
     
-    
     protected void paintComponent(Graphics g) {
+        if (followedEntity != null &&
+            followedEntity.isAlive()) {
+            int size = (int)(UNIT_SIZE * camera.zoom);
+            camera.Camerax =
+                getWidth()/2 -
+                (followedEntity.getTileX() * size);
+            camera.Cameray =
+                getHeight()/2 -
+                (followedEntity.getTileY() * size);
+            limitForCamera(camera);
+        }
         super.paintComponent(g);
         DrawIsland(g);
         DrawTest(g);
         drawGrid(g);
+        
     }
     
    
     
     private void drawGrid(Graphics g) {
-    
-    if (dgrid){
-        int size = (int)(UNIT_SIZE * camera.zoom);
+        if (dgrid){
+            int size = (int)(UNIT_SIZE * camera.zoom);
 
-        g.setColor(Color.BLACK);
+            g.setColor(Color.BLACK);
 
-        // líneas verticales
-        for (int c = 0; c <= world.getColums(); c++) {
-            int x = camera.Camerax + (int)(c * size);
-            g.drawLine(
-                x,
-                camera.Cameray,
-                x,
-                camera.Cameray + world.getRows() * size
-            );
+            // líneas verticales
+            for (int c = 0; c <= world.getColums(); c++) {
+                int x = camera.Camerax + (int)(c * size);
+                g.drawLine(
+                    x,
+                    camera.Cameray,
+                    x,
+                    camera.Cameray + world.getRows() * size
+                );
+            }
+
+            // líneas horizontales
+            for (int r = 0; r <= world.getRows(); r++) {
+                int y = camera.Cameray + (int)(r * size);
+                g.drawLine(
+                    camera.Camerax,
+                    y,
+                    camera.Camerax + world.getColums() * size,
+                    y
+                );
+            }
         }
-
-        // líneas horizontales
-        for (int r = 0; r <= world.getRows(); r++) {
-            int y = camera.Cameray + (int)(r * size);
-            g.drawLine(
-                camera.Camerax,
-                y,
-                camera.Camerax + world.getColums() * size,
-                y
-            );
-        }
-    }
     }
     
     public void DrawIsland(Graphics g){
@@ -147,43 +159,52 @@ public class GamePanel extends JPanel {
    
    //detector de entidades en las casiilas
    public void handleClick(int mouseX, int mouseY) {
-
         int size = (int)(UNIT_SIZE * camera.zoom);
 
         int tileX = (mouseX - camera.Camerax) / size;
         int tileY = (mouseY - camera.Cameray) / size;
+        
+        // límites
+        if (tileX < 0 || tileY < 0 ||
+            tileX >= world.getColums() ||
+            tileY >= world.getRows()) {
 
-        // validar límites
-        if (tileX < 0 || tileY < 0 || tileX >= world.getColums() || tileY >= world.getRows()) {
             return;
         }
-        
+
         Tile tile = world.getMap()[tileY][tileX];
-        
-        Entity entity = null;
-        Resource resource = null;
-
-        // buscar entidad
-        for (Entity e : entitymanager.getAnimals()) {
+        ArrayList<Entity> entitiesInTile = new ArrayList<>();
+        // buscar entidades
+        for (Entity e : entitymanager.getEntities()) { 
             if (e.getTileX() == tileX && e.getTileY() == tileY) {
-                entity = e;
-                break;
+                entitiesInTile.add(e);
             }
         }
-
-        // buscar recurso
-        for (Entity e : entitymanager.getResources()) {
-            if (e.getTileX() == tileX && e.getTileY() == tileY) {
-                resource = (Resource) e;
-                break;
-            }
-        }
-
+        // enviar info al InfoPanel
         if (infoP != null) {
-            infoP.updateInfo(tileX, tileY, tile, entity, resource);
+            infoP.setSelected(tileX,tileY, tile,null,null );
+            infoP.setTileEntities(entitiesInTile);
         }
     }
+   //seguimiento de la entidad
+   public void focusEntity(Entity e) {
+        int size = (int)(UNIT_SIZE * camera.zoom);
+        int targetX =getWidth()/2 - (e.getTileX() * size);
+        int targetY =getHeight()/2 - (e.getTileY() * size);
 
+        camera.Camerax = targetX;
+        camera.Cameray = targetY;
+
+        limitForCamera(camera);
+        repaint();
+    }
+   
+    public void followEntity(Entity e) {
+        followedEntity = e;
+    }
+    public void stopFollowing() {
+        followedEntity = null;
+    }
     public int getUNIT_SIZE() {
         return UNIT_SIZE;
     }
@@ -191,7 +212,9 @@ public class GamePanel extends JPanel {
     public Camera getCamera() {
         return camera;
     }
-   
+   public Entitymanager getEntityManager() {
+        return entitymanager;
+   }
     
 }
     
