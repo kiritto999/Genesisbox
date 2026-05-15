@@ -16,12 +16,10 @@ public abstract class Animal extends Entity {
     public static final int CAP_ATAQUE       = 50;
     public static final int CAP_VELOCIDAD    = 10;
     public static final int CAP_INTELIGENCIA = 100;
-    public static final int CAP_HAMBRE       = 100;
-    public static final int CAP_SED          = 100;
+    public static final int CAP_HAMBRE       = 200;
 
     protected int energy;
     protected int hunger;
-    protected int thirst;
     protected int speed;
     protected int attack;
     protected int intelligence;
@@ -35,20 +33,17 @@ public abstract class Animal extends Entity {
     // ── Timers ─────────────────────────────────────────────────────────
     private double moveTimer   = 0;
     private double hambreTimer = 0;
-    private double sedTimer    = 0;
 
     private static final double HAMBRE_INTERVAL = 1.0;
-    private static final double SED_INTERVAL    = 7.0;
 
     // ── Combate ────────────────────────────────────────────────────────
     private double attackTimer = 0;
-    private static final double ATTACK_INTERVAL = 0.6; // segundos entre ataques
+    private static final double ATTACK_INTERVAL = 0.6;
 
     public Animal(int tileX, int tileY, Entitymanager manager) {
         super(tileX, tileY, manager);
         this.entitymanager = manager;
         this.hunger = CAP_HAMBRE;
-        this.thirst = CAP_SED;
     }
 
     @Override
@@ -65,14 +60,6 @@ public abstract class Animal extends Entity {
             if (hunger == 0) takeDamage(2);
         }
 
-        // ── Sed ──────────────────────────────────────────────────────
-        sedTimer += deltaTime;
-        if (sedTimer >= SED_INTERVAL) {
-            sedTimer = 0;
-            thirst = Math.max(0, thirst - 1);
-            if (thirst == 0) takeDamage(3);
-        }
-
         // ── Ataque timer ─────────────────────────────────────────────
         attackTimer += deltaTime;
 
@@ -86,10 +73,6 @@ public abstract class Animal extends Entity {
         }
     }
 
-    /**
-     * Punto central de decisión: cada subclase sobreescribe esto
-     * para definir su IA. Por defecto hace movimiento aleatorio.
-     */
     protected void decidirAccion(World.World world) {
         moverAleatorio(world);
     }
@@ -114,12 +97,11 @@ public abstract class Animal extends Entity {
         }
     }
 
-    // ── Moverse hacia un objetivo (un paso por llamada) ────────────────
+    // ── Moverse hacia un objetivo ──────────────────────────────────────
     protected void moverHacia(int tx, int ty, World.World world) {
         int dx = Integer.compare(tx, tileX);
         int dy = Integer.compare(ty, tileY);
 
-        // intentar eje X primero, luego Y, luego diagonal
         int[][] intentos = { {dx, 0}, {0, dy}, {dx, dy} };
         for (int[] d : intentos) {
             if (d[0] == 0 && d[1] == 0) continue;
@@ -132,7 +114,6 @@ public abstract class Animal extends Entity {
                 return;
             }
         }
-        // Si no pudo, movimiento aleatorio como fallback
         moverAleatorio(world);
     }
 
@@ -156,7 +137,7 @@ public abstract class Animal extends Entity {
         return false;
     }
 
-    // ── Comer un recurso de comida adyacente o en la misma casilla ─────
+    // ── Comer un recurso de comida ─────────────────────────────────────
     protected boolean intentarComer(Food food) {
         if (food == null || !food.isAlive() || food.isDepleted()) return false;
         if (food.getTileX() != tileX || food.getTileY() != tileY) {
@@ -166,6 +147,20 @@ public abstract class Animal extends Entity {
         if (cosechado > 0) {
             hunger = Math.min(CAP_HAMBRE, hunger + cosechado * 5);
             heal(cosechado * 2);
+            return true;
+        }
+        return false;
+    }
+
+    // ── Comer un cadáver ───────────────────────────────────────────────
+    protected boolean intentarComerCadaver(Corpse corpse) {
+        if (corpse == null || !corpse.isAlive() || corpse.isDepleted()) return false;
+        if (corpse.getTileX() != tileX && !esAdyacente(corpse.getTileX(), corpse.getTileY())) return false;
+
+        int cosechado = corpse.harvest(1);
+        if (cosechado > 0) {
+            hunger = Math.min(CAP_HAMBRE, hunger + 40);
+            heal(20);
             return true;
         }
         return false;
@@ -181,7 +176,6 @@ public abstract class Animal extends Entity {
     // ── Getters ────────────────────────────────────────────────────────
     public int      getEnergy()       { return energy; }
     public int      getHunger()       { return hunger; }
-    public int      getThirst()       { return thirst; }
     public int      getSpeed()        { return speed; }
     public int      getAttack()       { return attack; }
     public int      getIntelligence() { return intelligence; }

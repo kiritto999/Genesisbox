@@ -166,8 +166,7 @@ public class InfoPanel extends JPanel {
             lblEntityName.setText("Name: " + a.getClass().getSimpleName());
             lblHealth.setText("Heal: " + a.getHealth());
             lblEnergy.setText("Energy: " + a.getEnergy());
-            lblHunger.setText("Hunger: " + a.getHunger());
-            lblThirst.setText("Thirst: " + a.getThirst());
+            lblHunger.setText("Hunger: " + a.getHunger());           
             lblSpeed.setText("Speed: " + a.getSpeed());
             lblStrength.setText("Strenght: " + a.getAttack());
 

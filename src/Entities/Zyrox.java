@@ -11,44 +11,43 @@ import World.Tile;
 
 /**
  * Zyrox: Zorro herbívoro, presa del Lummon.
- * - Se agrupa hasta MAX_GRUPO (2) en la misma casilla.
+ * - capacity = 3 → no caben 2 en el mismo tile.
+ * - Se agrupa de a 2 en tiles adyacentes. Si ya tiene pareja, los demás
+ *   buscan otro Zyrox sin pareja.
  * - Come bayas maduras cuando tiene hambre.
- * - Si fue golpeado este tick, contraataca al Lummon adyacente.
- * - Si HP < 20%, huye sin importar nada más.
+ * - Contraataca si fue golpeado.
+ * - Huye si HP < 20%.
  */
 public class Zyrox extends Animal {
 
     private static final int    MAX_GRUPO     = 2;
-    private static final int    HAMBRE_UMBRAL = CAP_HAMBRE / 2;  // 50%
+    private static final int    HAMBRE_UMBRAL = CAP_HAMBRE / 2;
     private static final int    RANGO_COMIDA  = 8;
-    private static final double VIDA_HUIDA    = 0.20;             // 20% HP
+    private static final double VIDA_HUIDA    = 0.20;
 
     private final Random random = new Random();
-    private int hpUltimoTick = -1; // para detectar si fue golpeado
+    private int hpUltimoTick = -1;
 
     public Zyrox(int tileX, int tileY, Entitymanager manager) {
         super(tileX, tileY, manager);
 
         name         = "Zyrox";
-        maxHealth    = 40 + random.nextInt(21); // 40-60
+        maxHealth    = 40 + random.nextInt(21);
         health       = maxHealth;
         capacity     = 3;
-        energy       = 50 + random.nextInt(21); // 50-70
+        energy       = 50 + random.nextInt(21);
         sex          = random.nextBoolean() ? Sex.MALE : Sex.FEMALE;
         habitat      = Tile.GRASS;
         foodType     = FoodType.HERBIVORE;
+        hunger       = CAP_HAMBRE;
 
-        hunger = CAP_HAMBRE;
-        thirst = CAP_SED;
-
-        speed        = 3 + random.nextInt(3);  // 3-5
-        attack       = 3 + random.nextInt(3);  // 3-5
-        intelligence = 1 + random.nextInt(3);  // 1-3
+        speed        = 3 + random.nextInt(3);
+        attack       = 3 + random.nextInt(3);
+        intelligence = 1 + random.nextInt(3);
 
         hpUltimoTick = maxHealth;
     }
 
-    // ── IA principal ────────────────────────────────────────────────────
     @Override
     protected void decidirAccion(World.World world) {
 
@@ -64,9 +63,8 @@ public class Zyrox extends Animal {
             return;
         }
 
-        // Prioridad 2: Contraatacar si fue golpeado este tick
-        boolean fueGolpeado = (hpUltimoTick > health);
-        if (fueGolpeado) {
+        // Prioridad 2: Contraatacar si fue golpeado
+        if (hpUltimoTick > health) {
             Lummon objetivo = buscarLummonAdyacente();
             if (objetivo != null) {
                 intentarAtacar(objetivo);
@@ -90,7 +88,7 @@ public class Zyrox extends Animal {
             }
         }
 
-        // Prioridad 4: Agruparse o moverse
+        // Prioridad 4: Agruparse o moverse aleatorio
         if (!intentarAgruparse(world)) {
             moverAleatorio(world);
         }
@@ -98,12 +96,68 @@ public class Zyrox extends Animal {
         hpUltimoTick = health;
     }
 
-    // ── HP menor al 20% ────────────────────────────────────────────────
+    // ── Agrupación ─────────────────────────────────────────────────────
+    /**
+     * Cuenta cuántos Zyrox están en tiles adyacentes a (cx, cy).
+     */
+    private int contarZyroxAdyacentesA(int cx, int cy) {
+        int count = 0;
+        for (Animal a : entitymanager.getAnimals()) {
+            if (!(a instanceof Zyrox z) || !z.isAlive() || z == this) continue;
+            int dist = Math.abs(z.getTileX() - cx) + Math.abs(z.getTileY() - cy);
+            if (dist == 1) count++;
+        }
+        return count;
+    }
+
+    /**
+     * ¿Tengo ya una pareja adyacente? (al menos 1 Zyrox adyacente a mí)
+     */
+    private boolean tengoParejaAdyacente() {
+        return contarZyroxAdyacentesA(tileX, tileY) >= 1;
+    }
+
+    /**
+     * Intenta moverse hacia un Zyrox sin pareja.
+     * Si ya tengo pareja, me quedo (sigo moviéndome con ella aleatoriamente).
+     * Si no tengo pareja, busco un Zyrox que tampoco tenga y me acerco.
+     */
+    private boolean intentarAgruparse(World.World world) {
+
+        // Si ya tengo pareja, moverme aleatorio junto a ella (no buscar más)
+        if (tengoParejaAdyacente()) {
+            moverAleatorio(world);
+            return true;
+        }
+
+        // No tengo pareja: buscar el Zyrox más cercano que tampoco tenga pareja
+        Zyrox objetivo = null;
+        int mejorDist = Integer.MAX_VALUE;
+        for (Animal a : entitymanager.getAnimals()) {
+            if (!(a instanceof Zyrox z) || z == this || !z.isAlive()) continue;
+            // Solo me acerco a Zyrox sin pareja
+            if (z.tengoParejaAdyacente()) continue;
+            int dist = Math.abs(z.getTileX() - tileX) + Math.abs(z.getTileY() - tileY);
+            if (dist > 0 && dist < mejorDist) {
+                mejorDist = dist;
+                objetivo  = z;
+            }
+        }
+
+        if (objetivo != null) {
+            moverHacia(objetivo.getTileX(), objetivo.getTileY(), world);
+            return true;
+        }
+
+        return false; // no hay nadie con quien agruparse → moverAleatorio
+    }
+
+    // ── Utilidades ─────────────────────────────────────────────────────
+
     private boolean estaEnPeligroDeMuerte() {
         return health < (int)(maxHealth * VIDA_HUIDA);
     }
 
-    // ── Buscar Lummon vivo adyacente ───────────────────────────────────
     private Lummon buscarLummonAdyacente() {
         for (Animal a : entitymanager.getAnimals()) {
             if (a instanceof Lummon l && l.isAlive() && esAdyacente(l.getTileX(), l.getTileY())) {
@@ -113,7 +167,6 @@ public class Zyrox extends Animal {
         return null;
     }
 
-    // ── Buscar Food madura más cercana ─────────────────────────────────
     private Food buscarComidaMasCercana(int radio) {
         Food mejor = null;
         int mejorDist = radio + 1;
@@ -126,7 +179,6 @@ public class Zyrox extends Animal {
         return mejor;
     }
 
-    // ── Huir en dirección opuesta ──────────────────────────────────────
     private void huirDe(int peligroX, int peligroY, World.World world) {
         int dx = Integer.compare(tileX, peligroX);
         int dy = Integer.compare(tileY, peligroY);
@@ -142,33 +194,8 @@ public class Zyrox extends Animal {
         moverAleatorio(world);
     }
 
-    // ── Agruparse con otro Zyrox ───────────────────────────────────────
-    private boolean intentarAgruparse(World.World world) {
-        if (contarZyroxEnCasilla(tileX, tileY) >= MAX_GRUPO) return false;
-        int[][] dirs = {{0,-1},{0,1},{1,0},{-1,0}};
-        int mejorX = -1, mejorY = -1, mejorCount = 0;
-        for (int[] d : dirs) {
-            int nx = tileX + d[0], ny = tileY + d[1];
-            if (!esMovimientoValido(nx, ny, world)) continue;
-            int z = contarZyroxEnCasilla(nx, ny);
-            if (z > mejorCount && z < MAX_GRUPO) { mejorCount = z; mejorX = nx; mejorY = ny; }
-        }
-        if (mejorX != -1) {
-            int s = entitymanager.getSlotLibre(mejorX, mejorY, capacity);
-            if (s != -1) { tileX = mejorX; tileY = mejorY; slot = s; return true; }
-        }
-        return false;
-    }
+    // ── Update ─────────────────────────────────────────────────────────
 
-    private int contarZyroxEnCasilla(int cx, int cy) {
-        int count = 0;
-        for (Animal a : entitymanager.getAnimals()) {
-            if (a instanceof Zyrox && a.isAlive() && a.getTileX() == cx && a.getTileY() == cy) count++;
-        }
-        return count;
-    }
-
-    // ── Heredadas ──────────────────────────────────────────────────────
     @Override public void update(World.World world) {}
 
     @Override
@@ -177,8 +204,8 @@ public class Zyrox extends Animal {
         super.update(world, deltaTime);
     }
 
-    // ── Dibujo: más grande que el Lummon ──────────────────────────────
-    // Lummon usa tileSize/3 (~33%) — Zyrox usa 70% del tile
+    // ── Dibujo ─────────────────────────────────────────────────────────
+
     @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
         if (slot < 0 || slot >= 5) return;
@@ -188,37 +215,25 @@ public class Zyrox extends Animal {
         int py    = cameraY + tileY * tileSize + (tileSize - size) / 2;
         int bodyH = (int)(size * 0.60);
 
-        // Color según estado
         Color color;
-        if (estaEnPeligroDeMuerte()) {
-            color = new Color(180, 30, 30);   // rojo → huyendo
-        } else if (hunger <= HAMBRE_UMBRAL) {
-            color = new Color(255, 210, 50);  // amarillo → hambriento
-        } else {
-            color = new Color(210, 120, 40);  // naranja base
-        }
+        if (estaEnPeligroDeMuerte())      color = new Color(180, 30,  30);
+        else if (hunger <= HAMBRE_UMBRAL) color = new Color(255, 210, 50);
+        else                              color = new Color(210, 120, 40);
 
-        // Orejas puntiagudas
         int earW = size / 7, earH = size / 5;
         g.setColor(color.darker());
-        g.fillOval(px + size / 5,             py - earH / 2, earW, earH);
-        g.fillOval(px + size / 2,             py - earH / 2, earW, earH);
+        g.fillOval(px + size / 5, py - earH / 2, earW, earH);
+        g.fillOval(px + size / 2, py - earH / 2, earW, earH);
 
-        // Cuerpo
         g.setColor(color);
         g.fillOval(px, py, size, bodyH);
 
-        // Hocico
         int snoutW = size / 4, snoutH = bodyH / 3;
         g.setColor(new Color(230, 160, 100));
         g.fillOval(px + size - snoutW, py + bodyH / 2 - snoutH / 2, snoutW, snoutH);
 
-        // Borde cuerpo
         g.setColor(Color.BLACK);
         g.drawOval(px, py, size, bodyH);
-
-        // Ojo
-        g.setColor(Color.BLACK);
         g.fillOval(px + size * 3 / 4, py + bodyH / 3, Math.max(2, size / 10), Math.max(2, size / 10));
     }
 }

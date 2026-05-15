@@ -2,6 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Entities;
 
 import World.Tile;
@@ -103,17 +111,47 @@ public class Entitymanager {
     }
  
     private void eliminarMuertas() {
-        // Marcar muertos
+        List<Corpse> cadaveresNuevos = new ArrayList<>();
+ 
+        // 1) Marcar muertos y preparar cadaveres SIN modificar listas todavia
         for (Entity e : entities) {
-            if (!e.isAlive()) toRemove.add(e);
+            if (!e.isAlive()) {
+                if (e instanceof Zyrox z) {
+                    int cazadores = contarLummonsAdyacentesAl(z);
+                    if (cazadores > 0) {
+                        Corpse c = new Corpse(z.getTileX(), z.getTileY(), cazadores);
+                        c.slot = 0;
+                        cadaveresNuevos.add(c);
+                    }
+                }
+                toRemove.add(e);
+            }
         }
-        // Remover de todas las listas
+ 
+        // 2) Remover muertos (iteracion terminada, seguro modificar)
         for (Entity e : toRemove) {
             entities.remove(e);
             resources.remove(e);
             if (e instanceof Animal a) animals.remove(a);
         }
         toRemove.clear();
+ 
+        // 3) Agregar cadaveres (el Zyrox ya fue removido, tile libre)
+        for (Corpse c : cadaveresNuevos) {
+            entities.add(c);
+            resources.add(c);
+        }
+    }
+
+    private int contarLummonsAdyacentesAl(Zyrox z) {
+        int count = 0;
+        for (Animal a : animals) {
+            if (!(a instanceof Lummon l) || !l.isAlive()) continue;
+            int dx = Math.abs(l.getTileX() - z.getTileX());
+            int dy = Math.abs(l.getTileY() - z.getTileY());
+            if (dx + dy <= 1) count++; // adyacente o mismo tile
+        }
+        return Math.max(1, Math.min(4, count)); // mínimo 1, máximo 4
     }
  
     // ── Agregar directamente (solo en init, antes de cualquier iteración) ──

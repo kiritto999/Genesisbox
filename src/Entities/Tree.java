@@ -10,9 +10,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-/**
- * Tree (Synthra): Árbol con etapas de crecimiento.
- */
 public class Tree extends Resource {
 
     public enum Etapa_Crecimiento { SEMILLA, JOVEN, MADURO, VIEJO }
@@ -27,11 +24,7 @@ public class Tree extends Resource {
     public static final Color COLOR_VIEJO   = new Color( 79, 20,  13);
 
     public Tree(int tileX, int tileY) {
-        super("Arbol", tileX, tileY,
-                /*VidaMax*/   50,
-                /*CantMax*/   10,
-                /*RegeRate*/   0,
-                /*RegeInter*/  0);
+        super("Arbol", tileX, tileY, 50, 10, 0, 0);
         this.stage              = Etapa_Crecimiento.SEMILLA;
         this.Tiempo_Crecimiento = 0;
         this.quantity           = 2;
@@ -58,43 +51,44 @@ public class Tree extends Resource {
         int[] slotOffsetY = {0, 0, 1, 1, 2};
         int half = tileSize / 2;
 
-        int px = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
-        int py = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
+        int sx = cameraX + tileX * tileSize + slotOffsetX[slot] * half;
+        int sy = cameraY + tileY * tileSize + slotOffsetY[slot] * half;
+        int cx = sx + half / 2;
 
-        float vs   = getVisualSize();
-        // Limitar el tamaño al cuadrante (half) para respetar el slot
-        int size   = (int)(half * Math.min(vs, 0.95f));
-        // Centro del slot
-        int cx = px + half / 2;
-        int cy = py + half / 2;
-
+        // SEMILLA: solo un punto
         if (stage == Etapa_Crecimiento.SEMILLA) {
+            int r = Math.max(3, half / 6);
             g2.setColor(COLOR_SEMILLA);
-            int s = Math.max(4, size);
-            g2.fillOval(cx - s / 2, cy - s / 2, s, s);
+            g2.fillOval(cx - r, sy + half / 2 - r, r * 2, r * 2);
             return;
         }
 
-        // Tronco centrado en el slot
-        int tw = Math.max(4, size / 4);
-        int th = Math.max(6, size / 2);
+        // Radio de copa según etapa
+        int copaR = switch (stage) {
+            case JOVEN  -> Math.max(4, (int)(half * 0.30));
+            case MADURO -> Math.max(5, (int)(half * 0.38));
+            case VIEJO  -> Math.max(5, (int)(half * 0.43));
+            default     -> Math.max(4, (int)(half * 0.30));
+        };
+
+        // Tronco anclado en la base del slot
+        int tw = Math.max(2, half / 8);
+        int th = Math.max(4, half / 3);
+        int trunkX = cx - tw / 2;
+        int trunkY = sy + half - th;
+
+        // Copa justo encima del tronco, sin salirse por arriba
+        int copaY = Math.max(sy, trunkY - copaR * 2);
+        
+        // Tronco (dibujado DESPUÉS para que quede encima de la copa)
         g2.setColor(new Color(100, 60, 20));
-        g2.fillRect(cx - tw / 2, cy + size / 2 - th, tw, th);
-
-        // Copa centrada en el slot
+        g2.fillRect(trunkX, trunkY, tw, th);
+        
+        // Copa — un solo círculo
         g2.setColor(getCurrentColor());
-        g2.fillOval(cx - size / 2, cy - size / 2, size, size - th / 3);
+        g2.fillOval(cx - copaR, copaY, copaR * 2, copaR * 2);
 
-        // Copa secundaria
-        if (stage == Etapa_Crecimiento.MADURO || stage == Etapa_Crecimiento.VIEJO) {
-            g2.setColor(getCurrentColor().darker());
-            int s2 = (int)(size * 0.60);
-            g2.fillOval(cx - s2 / 2 + size / 4, cy - s2 / 4, s2, s2);
-        }
-
-        // Brillo
-        g2.setColor(new Color(255, 255, 255, 35));
-        g2.fillOval(cx - size / 4, cy - size / 3, size / 3, size / 4);
+        
     }
 
     private void avanzarCrecimiento() {
@@ -116,16 +110,4 @@ public class Tree extends Resource {
             case VIEJO   -> COLOR_VIEJO;
         };
     }
-
-    // Tamaños aumentados respecto a la versión anterior
-    public float getVisualSize() {
-        return switch (stage) {
-            case SEMILLA -> 0.18f;  
-            case JOVEN   -> 0.80f;  
-            case MADURO  -> 1.20f;  
-            case VIEJO   -> 1.60f;  
-        };
-    }
 }
-    
-
