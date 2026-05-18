@@ -71,6 +71,9 @@ public class GameLoop implements Runnable {
     }
 
     public void start() {
+        if(running){
+            return;
+        }
         running = true;
         new Thread(this).start();
     }
@@ -90,6 +93,9 @@ public class GameLoop implements Runnable {
 
     // Velocidad
     public void setSpeed(double speed) {
+        if(speed < 0.1){
+            speed = 0.1;
+        }
         this.speedMultiplier = speed;
     }
 
@@ -99,5 +105,9 @@ public class GameLoop implements Runnable {
 
     public TimeDay getTimeDay() {
         return timeDay;
+    }
+    
+    public void setTime(TimeDay time) {
+        this.timeDay = time;
     }
 }

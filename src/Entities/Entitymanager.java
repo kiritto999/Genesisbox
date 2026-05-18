@@ -104,8 +104,14 @@ public class Entitymanager {
     private void flushPending() {
         for (Entity e : toAdd) {
             entities.add(e);
-            if (e instanceof Animal an) animals.add(an);
-            if (e instanceof Resource r) resources.add(r);
+            if (e instanceof Animal) {
+                Animal an = (Animal) e;
+                animals.add(an);
+            }
+            if (e instanceof Resource) {
+                Resource r = (Resource) e;
+                resources.add(r);
+            }
         }
         toAdd.clear();
     }
@@ -116,7 +122,8 @@ public class Entitymanager {
         // 1) Marcar muertos y preparar cadaveres SIN modificar listas todavia
         for (Entity e : entities) {
             if (!e.isAlive()) {
-                if (e instanceof Zyrox z) {
+                if (e instanceof Zyrox) {
+                    Zyrox z = (Zyrox) e;
                     int cazadores = contarLummonsAdyacentesAl(z);
                     if (cazadores > 0) {
                         Corpse c = new Corpse(z.getTileX(), z.getTileY(), cazadores);
@@ -132,7 +139,10 @@ public class Entitymanager {
         for (Entity e : toRemove) {
             entities.remove(e);
             resources.remove(e);
-            if (e instanceof Animal a) animals.remove(a);
+            if (e instanceof Animal){
+                Animal a = (Animal) e;
+                animals.remove(a);
+            }
         }
         toRemove.clear();
  
@@ -146,7 +156,9 @@ public class Entitymanager {
     private int contarLummonsAdyacentesAl(Zyrox z) {
         int count = 0;
         for (Animal a : animals) {
-            if (!(a instanceof Lummon l) || !l.isAlive()) continue;
+            if (!(a instanceof Lummon)) continue;
+            Lummon l = (Lummon) a;
+            if (!l.isAlive()) continue;
             int dx = Math.abs(l.getTileX() - z.getTileX());
             int dy = Math.abs(l.getTileY() - z.getTileY());
             if (dx + dy <= 1) count++; // adyacente o mismo tile
@@ -161,8 +173,14 @@ public class Entitymanager {
         if (e.slot == -1) return;
  
         entities.add(e);
-        if (e instanceof Resource r) resources.add(r);
-        if (e instanceof Animal a)   animals.add(a);
+        if (e instanceof Resource) {
+            Resource r = (Resource) e;
+            resources.add(r);
+        }
+        if (e instanceof Animal ) {
+            Animal a = (Animal) e;
+            animals.add(a);
+        }
     }
  
     // ── API pública para agregar durante el juego (usa buffer) ─────────
@@ -202,7 +220,10 @@ public class Entitymanager {
  
     private int obtenerCapacidad(Entity e) {
         if (e instanceof Nero)   return 4;
-        if (e instanceof Animal a) return a.getCapacity();
+        if (e instanceof Animal) {
+            Animal a = (Animal) e;
+            return a.getCapacity();
+        }
         return 1;
     }
  
@@ -238,9 +259,45 @@ public class Entitymanager {
         }
         return -1;
     }
- 
+    //encontrar entidad por id
+    public Entity findById(int id) {
+        for (Entity e : entities) {
+            if (e.getId() == id) {
+                return e;
+            }
+        }
+        return null;
+    }
+    //encontrar entidad por nombre
+    public ArrayList<Entity> findByName(String name) {
+        ArrayList<Entity> found = new ArrayList<>();
+        for (Entity e : entities) {
+            if (e.getCustomName()
+                .equalsIgnoreCase(name)) {
+                found.add(e);
+            }
+        }
+        return found;
+    }
+    //elimina la entidad por casilla 
+   public void removeEntitiesAt(int x, int y) {
+    Iterator<Entity> it = entities.iterator();
+    while(it.hasNext()){
+        Entity e = it.next();
+        if(e.getTileX() == x && e.getTileY() == y){
+            it.remove();
+            if(e instanceof Animal){
+                animals.remove(e);
+            }
+            if(e instanceof Resource){
+                resources.remove(e);
+            }
+        }
+    }
+}
     // ── Getters ────────────────────────────────────────────────────────
     public ArrayList<Entity>   getEntities()  { return entities;  }
     public ArrayList<Resource> getResources() { return resources; }
     public ArrayList<Animal>   getAnimals()   { return animals;   }
+    
 }

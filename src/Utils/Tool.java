@@ -11,5 +11,7 @@ package Utils;
 public enum Tool {
     WATER,
     GRASS,
-    NONE
+    NONE,
+    Lummon,
+    Zyrox
 }

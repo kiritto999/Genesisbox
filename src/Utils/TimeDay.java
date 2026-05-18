@@ -39,16 +39,16 @@ public class TimeDay {
                 minute = minute % 60;
             }
 
-            if (hour >= 18) {
-                int daysPassed = hour / 18;
+            if (hour >= 5) {
+                int daysPassed = hour / 5;
                 day += daysPassed;
                 totaldays += daysPassed;
-                hour = hour % 18;
+                hour = hour % 5;
             }
 
-            if (day >= 312) {
-                year += day / 312;
-                day = day % 312;
+            if (day >= 160) {
+                year += day / 160;
+                day = day % 160;
             }
         }
     }
@@ -70,5 +70,7 @@ public class TimeDay {
     public boolean isPaused() {
         return paused;
     }
+
+    public int getHour() {return hour;}
     
 }
