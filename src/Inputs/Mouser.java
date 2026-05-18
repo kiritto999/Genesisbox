@@ -134,20 +134,21 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
         switch (currentTool) {
 
             case WATER:
-        world.setTile(row, col, Tile.WATER);
-        break;
-
-        case GRASS:
-            world.setTile(row, col, Tile.GRASS);
+            world.setTile(row, col, Tile.WATER);
+            Emanager.removeEntitiesAt(col, row);
             break;
 
-        case Lummon:
-            Emanager.addEntity(new Lummon(col,row ,Emanager));
-            break;
+            case GRASS:
+                world.setTile(row, col, Tile.GRASS);
+                break;
 
-        case Zyrox:
-            Emanager.addEntity(new Zyrox(col, row,Emanager));
-            break;
+            case Lummon:
+                Emanager.addEntity(new Lummon(col,row ,Emanager));
+                break;
+
+            case Zyrox:
+                Emanager.addEntity(new Zyrox(col, row,Emanager));
+                break;
         }
 
         jpanel.repaint();

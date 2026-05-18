@@ -58,10 +58,18 @@ public class InfoPanel extends JPanel {
         
         // PANEL BASE
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0,0));
         setBackground(new Color(28, 30, 34));
+        JPanel content = new JPanel();
+        content.setPreferredSize(
+            new Dimension(320, 1200)
+        );
+        content.setLayout(
+            new BoxLayout(content, BoxLayout.Y_AXIS)
+        );
+        content.setBackground(new Color(28, 30, 34));
         setBorder(
-            BorderFactory.createEmptyBorder(14, 14, 14, 14)
+            BorderFactory.createEmptyBorder(14, 14, 14, 36)
         );
         Font titleFont = new Font("Arial", Font.BOLD, 22);
         Font valueFont = new Font("Arial", Font.PLAIN, 15);
@@ -70,7 +78,6 @@ public class InfoPanel extends JPanel {
 
         // POSITION
  
-
         JPanel panelPos = new JPanel();
         panelPos.setLayout(new BoxLayout(panelPos, BoxLayout.Y_AXIS));
         panelPos.setBackground(panelColor);
@@ -82,19 +89,19 @@ public class InfoPanel extends JPanel {
         panelPos.setBorder(
             BorderFactory.createCompoundBorder(
                 borderPos,
-                BorderFactory.createEmptyBorder(10, 12, 10, 12)
+                BorderFactory.createEmptyBorder(10, 12, 10, 36)
             )
         );
 
         panelPos.setMaximumSize(
-             new Dimension(Integer.MAX_VALUE, 90)
+             new Dimension(Integer.MAX_VALUE, 46)
         );
         lblPos = new JLabel("0,0");
         lblPos.setFont(valueFont);
         lblPos.setForeground(Color.WHITE);
         panelPos.add(lblPos);
-        add(panelPos);
-        add(Box.createVerticalStrut(14));
+        content.add(panelPos);
+        content.add(Box.createVerticalStrut(14));
 
         // TILE
         JPanel panelTile = new JPanel();
@@ -111,14 +118,14 @@ public class InfoPanel extends JPanel {
         );
 
         panelTile.setMaximumSize(
-            new Dimension(Integer.MAX_VALUE, 90)
+            new Dimension(Integer.MAX_VALUE, 50)
         );
         lblTileType = new JLabel("-");
         lblTileType.setFont(valueFont);
         lblTileType.setForeground(Color.WHITE);
         panelTile.add(lblTileType);
-        add(panelTile);
-        add(Box.createVerticalStrut(14));
+        content.add(panelTile);
+        content.add(Box.createVerticalStrut(14));
 
   
         // ENTITY LIST
@@ -146,16 +153,16 @@ public class InfoPanel extends JPanel {
         );
 
         scroll.setMaximumSize(
-            new Dimension(Integer.MAX_VALUE, 140)
+            new Dimension(Integer.MAX_VALUE, 100)
         );
 
         scroll.setPreferredSize(
             new Dimension(320, 110)
         );
 
-        add(scroll);
+        content.add(scroll);
 
-        add(Box.createVerticalStrut(14));
+        content.add(Box.createVerticalStrut(14));
 
         // ENTITY INFO
 
@@ -175,7 +182,7 @@ public class InfoPanel extends JPanel {
         );
 
         panelEntity.setMaximumSize(
-            new Dimension(Integer.MAX_VALUE, 260)
+            new Dimension(Integer.MAX_VALUE, 200)
         );
 
         lblEntityName = new JLabel("-");
@@ -207,8 +214,8 @@ public class InfoPanel extends JPanel {
         panelEntity.add(lblSpeed);
         panelEntity.add(Box.createVerticalStrut(6));
         panelEntity.add(lblStrength);
-        add(panelEntity);
-        add(Box.createVerticalStrut(14));
+        content.add(panelEntity);
+        content.add(Box.createVerticalStrut(14));
 
         //Resources
         JPanel panelResource = new JPanel();
@@ -228,7 +235,7 @@ public class InfoPanel extends JPanel {
         );
 
         panelResource.setMaximumSize(
-            new Dimension(Integer.MAX_VALUE, 260)
+            new Dimension(Integer.MAX_VALUE, 80)
         );
 
         lblResourceName = new JLabel("-");
@@ -240,8 +247,8 @@ public class InfoPanel extends JPanel {
         panelResource.add(lblResourceName);
         panelResource.add(Box.createVerticalStrut(4));
         panelResource.add(lblResourceAmount);
-        add(panelResource);
-        add(Box.createVerticalStrut(14));
+        content.add(panelResource);
+        content.add(Box.createVerticalStrut(14));
 
         //editor
         JPanel panelEdit = new JPanel();
@@ -260,7 +267,7 @@ public class InfoPanel extends JPanel {
         );
 
         panelEdit.setMaximumSize(
-            new Dimension(Integer.MAX_VALUE, 340)
+            new Dimension(Integer.MAX_VALUE, 260)
         );
 
         JLabel lblRename = new JLabel("Rename");
@@ -273,7 +280,7 @@ public class InfoPanel extends JPanel {
         txtName.setForeground(Color.WHITE);
         txtName.setCaretColor(Color.WHITE);
         txtName.setMaximumSize(
-            new Dimension(Integer.MAX_VALUE, 340)
+            new Dimension(Integer.MAX_VALUE, 36)
         );
 
         JPanel panelRename = new JPanel();
@@ -336,7 +343,7 @@ public class InfoPanel extends JPanel {
         txtSearch.setForeground(Color.WHITE);
         txtSearch.setCaretColor(Color.WHITE);
         txtSearch.setMaximumSize(
-            new Dimension(5000, 90)
+            new Dimension(Integer.MAX_VALUE, 36)
         );
 
         btnSearch = new JButton("Search");
@@ -349,9 +356,9 @@ public class InfoPanel extends JPanel {
         panelSearch.add(btnSearch, java.awt.BorderLayout.EAST);
         panelEdit.add(panelSearch);
 
-        add(panelEdit);
+        content.add(panelEdit);
 
-        add(Box.createVerticalStrut(14));
+        content.add(Box.createVerticalStrut(14));
 
         entityList.addListSelectionListener(e -> {
 
@@ -359,8 +366,8 @@ public class InfoPanel extends JPanel {
             if (index >= 0 &&
                 index < tileEntities.size()) {
                 selectedEntity = tileEntities.get(index);
-                if (selectedEntity instanceof Resource r) {
-                    selectedResource = r;
+                if (selectedEntity instanceof Resource) {
+                    selectedResource = (Resource) selectedEntity;
                 } else {
                     selectedResource = null;
                 }
@@ -431,7 +438,8 @@ public class InfoPanel extends JPanel {
             }
         });
         Dimension btnSize = new Dimension(110, 36);
-
+        
+        
         btnFocus.setPreferredSize(btnSize);
         btnFollow.setPreferredSize(btnSize);
         btnStopFollow.setPreferredSize(btnSize);
@@ -443,6 +451,8 @@ public class InfoPanel extends JPanel {
         panelEntity.setAlignmentX(Component.LEFT_ALIGNMENT);
         panelResource.setAlignmentX(Component.LEFT_ALIGNMENT);
         panelEdit.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        add(content);
     }
     
     public void setSelected( int tileX,int tileY,Tile tile,Entity entity,Resource resource){
@@ -468,8 +478,8 @@ public class InfoPanel extends JPanel {
         if (!entities.isEmpty()) {
 
             selectedEntity = entities.get(0);
-            if (selectedEntity instanceof Resource r) {
-                selectedResource = r;
+            if (selectedEntity instanceof Resource) {
+                selectedResource = (Resource) selectedEntity;
             } else {
                 selectedResource = null;
             }
@@ -507,35 +517,30 @@ public class InfoPanel extends JPanel {
         }
 
         // ENTITY
-        if (selectedEntity instanceof Animal a) {
+        if (selectedEntity instanceof Animal) {
+            Animal a = (Animal) selectedEntity;
             if (!a.isAlive()) {
                 selectedEntity = null;
                 return;
             }
             lblEntityName.setText(
-                "Name: " + a.getCustomName() +  "( " +a.getClass().getSimpleName() +") "
+                "Name: " + a.getCustomName() + "( " + a.getClass().getSimpleName() + " ) "
             );
-
             lblHealth.setText(
                 "Health: " + a.getHealth()
             );
-
             lblEnergy.setText(
                 "Energy: " + a.getEnergy()
             );
-
             lblHunger.setText(
                 "Hunger: " + a.getHunger()
             );
-
             lblSpeed.setText(
                 "Speed: " + a.getSpeed()
             );
-
             lblStrength.setText(
                 "Strength: " + a.getAttack()
             );
-
         } else {
             lblEntityName.setText("-");
             lblHealth.setText("-");

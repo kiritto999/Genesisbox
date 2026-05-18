@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import javax.swing.JPanel;
+import Utils.TimeDay;
 
 /**
  *
@@ -24,25 +25,23 @@ public class GamePanel extends JPanel {
     World world;
     Camera camera;
     Entitymanager entitymanager;
-
-    Color ground = new Color(16, 79, 23);
-    Color Beach_blue = new Color(73, 201, 252);
     Color ocean = new Color(89, 131, 171);
     boolean dgrid= false;
     private Entity followedEntity;
+    private TimeDay time;
     
-    public GamePanel(World world, Entitymanager entitymanager, InfoPanel infoPanel, Camera camera){
+    public GamePanel(World world, Entitymanager entitymanager, InfoPanel infoPanel, Camera camera,TimeDay time){
         this.setBackground(ocean);
         this.infoP = infoPanel;
         this.world = world;
         this.entitymanager = entitymanager;
         this.camera = camera;
+        this.time= time;
     }
 
     
     protected void paintComponent(Graphics g) {
-        if (followedEntity != null &&
-            followedEntity.isAlive()) {
+        if (followedEntity != null && followedEntity.isAlive()) {
             int size = (int)(UNIT_SIZE * camera.zoom);
             camera.Camerax =
                 getWidth()/2 -
@@ -57,10 +56,9 @@ public class GamePanel extends JPanel {
         DrawTest(g);
         drawGrid(g);
         
+        drawNight(g);
     }
-    
-   
-    
+    //dibuja la malla(drid)
     private void drawGrid(Graphics g) {
         if (dgrid){
             int size = (int)(UNIT_SIZE * camera.zoom);
@@ -90,34 +88,51 @@ public class GamePanel extends JPanel {
             }
         }
     }
-    
+    //dibuja la isla predetermianda
     public void DrawIsland(Graphics g){
-        Tile[][] map= world.getMap();
-        
-        int mapWidth = (int)(world.getColums() * UNIT_SIZE * camera.zoom);
-        int mapHeight = (int)(world.getRows() * UNIT_SIZE * camera.zoom);
-        
+        Tile[][] map = world.getMap();
         int size = (int)(UNIT_SIZE * camera.zoom);
-        
-        
-        for (int r=0 ; r < world.getRows() ; r++){
-            for (int c=0;c< world.getColums();c++){
-                if (map[r][c].getType() == Tile.WATER ){
-                    g.setColor(Beach_blue); 
-                }else{
-                    g.setColor(ground);
-                    }
-                
+        for (int r = 0; r < world.getRows(); r++){
+
+            for (int c = 0; c < world.getColums(); c++){
+
                 int x = camera.Camerax + (int)(c * size);
                 int y = camera.Cameray + (int)(r * size);
-                g.fillRect(
-                    x,
-                    y,  
-                    size,
-                    size
-                );
-            }       
-        }       
+
+                g.setColor(map[r][c].getColor());
+                g.fillRect( x, y, size, size);
+            }
+        }
+    }
+    
+    private void drawNight(Graphics g){
+        int hour = time.getHour();
+        int alpha = 0;
+        // atardecer
+        switch(hour){
+
+            case 0:
+                alpha = 110; // madrugada
+                break;
+
+            case 1:
+                alpha = 50; // amanecer
+                break;
+
+            case 2:
+                alpha = 0; // día
+                break;
+
+            case 3:
+                alpha = 60; // atardecer
+                break;
+
+            case 4:
+                alpha = 140; // noche
+                break;
+        }
+        g.setColor(new Color(0,0,0,alpha));
+        g.fillRect(0, 0, getWidth(), getHeight());
     }
     
 

@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import UI.ControlPanel;
 import UI.GamePanel;
 import UI.InfoPanel;
+import Utils.TimeDay;
 import World.World;
 
 public class Game {
@@ -23,7 +24,8 @@ public class Game {
 
     public Game() {
         System.out.println("El game se esta ejecutado");
-
+        
+        TimeDay time = new TimeDay();
         World world = new World();
         entityManager = new Entitymanager(world);
 
@@ -31,9 +33,10 @@ public class Game {
 
         gameLoop = new GameLoop();
         gameLoop.setEntitymanager(entityManager);
+        gameLoop.setTime(time);
         gameLoop.start();
 
-        ControlPanel cp = new ControlPanel(gameLoop, world, entityManager, infoP);
+        ControlPanel cp = new ControlPanel(gameLoop, world, entityManager, infoP,time);
         cp.setVisible(true);
     }
 

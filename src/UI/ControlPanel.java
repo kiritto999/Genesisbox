@@ -14,10 +14,14 @@ import Inputs.Mouser;
 import World.World;
 import java.awt.CardLayout;
 import java.util.Random;
-import Utils.Mode;
-import Utils.Tool;
+import Utils.*;
 import java.awt.Color;
 import Game.Game;
+import World.Tile;
+import java.util.Hashtable;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 /**
  *
  * @author blope
@@ -34,6 +38,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private GamePanel GP;  
     private GameLoop GLoop;
     private World world;
+    private TimeDay time;
     private Entitymanager EManager;
     private InfoPanel infoPanel;
     private Mouser mouser;
@@ -44,17 +49,18 @@ public class ControlPanel extends javax.swing.JFrame {
     String[] animals = {"Elegir","Lummon", "Zyrox"};
     String[] resources = {"Elegir","Food","Nero","Zenthra",};
     
-    public ControlPanel(GameLoop loop, World world, Entitymanager manager, InfoPanel infoPanel ) {
+    public ControlPanel(GameLoop loop, World world, Entitymanager manager, InfoPanel infoPanel,TimeDay time ) { 
         initComponents();
         SizeAdapted();
-
+        SetTextSlider();
         this.GLoop = loop;
         this.world = world;
         this.EManager = manager;
         this.infoPanel = infoPanel; 
+        this.time = time;
         
         camera = new Camera();
-        GP = new GamePanel(world, EManager, this.infoPanel, camera);
+        GP = new GamePanel(world, EManager, this.infoPanel, camera,time);
         mouser = new Mouser(camera, GP, world,EManager);
         infoPanel.setGamePanel(GP);
         //se agreg el redibujado 
@@ -64,16 +70,38 @@ public class ControlPanel extends javax.swing.JFrame {
         panelGame.add(GP, BorderLayout.CENTER);
         panelGame.revalidate();
 
-        // usar panelInfo como contenedor del InfoPanel
-        panelInfo.removeAll(); //por si acaso
-        panelInfo.setLayout(new BorderLayout()); 
-        panelInfo.add(infoPanel, BorderLayout.CENTER);  
+        // usar panelInfo como contenedor del InfoPanel y crearlo con scroll
+        panelInfo.removeAll();
+        panelInfo.setLayout(new BorderLayout());
+        
+        JScrollPane infoScroll = new JScrollPane(infoPanel); //crear el scroll
+        infoScroll.setVerticalScrollBarPolicy(
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS   //se activa el scroll en vertical
+        );
+        infoScroll.setHorizontalScrollBarPolicy(
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER   // desactiva scroll horizontal
+        );
+
+        infoScroll.getVerticalScrollBar().setPreferredSize(
+            new Dimension(0, 0)         // hace invisible la barra vertical
+        );
+
+        infoScroll.getViewport().setBackground(
+            new Color(28, 30, 34)
+        );
+        infoScroll.getVerticalScrollBar().setUnitIncrement(24);     // aumenta la velocidad/sensibilidad del scroll
+
+        infoScroll.setBorder(null);
+        infoScroll.getVerticalScrollBar().setBackground(
+            new Color(40,40,40)
+        );
+        panelInfo.add(infoScroll, BorderLayout.CENTER);        // agregamos el scroll al panel lateral
         panelInfo.revalidate();
         panelInfo.repaint();
-        
+
         
         //tamaño del panel lateral
-        panelInfo.setPreferredSize(new Dimension(360, 900));
+        panelInfo.setPreferredSize(new Dimension(340, 900));
 
         // tiempo
         lblTime.setText("");
@@ -91,9 +119,15 @@ public class ControlPanel extends javax.swing.JFrame {
             int animal = cboxAnimals.getSelectedIndex();
 
             switch (animal) {
-                case 1 -> setTool(Tool.Lummon);
-                case 2 -> setTool(Tool.Zyrox);
-                default -> setTool(Tool.NONE);
+                case 1:
+                    setTool(Tool.Lummon);
+                    break;
+                case 2:
+                    setTool(Tool.Zyrox);
+                    break;
+                default:
+                    setTool(Tool.NONE);
+                    break;
             }
         });
         for (String resource : resources ){
@@ -107,6 +141,35 @@ public class ControlPanel extends javax.swing.JFrame {
         rbtnMGenerate.setSelected(true);
         panelMode.add(panelMSpawn,"Spawn");
         panelMode.add(panelMBuilt,"Built");
+        
+        //controla la velocidad del timepo
+        
+        SliderSpeed.addChangeListener(e -> {
+            int value = SliderSpeed.getValue();
+            double speed = 1;
+            switch(value){
+                case 0:
+                    speed = 0.5;
+                    break;
+                case 1:
+                    speed = 1;
+                    break;
+                case 2:
+                    speed = 5;
+                    break;
+                case 3:
+                    speed = 20;
+                    break;
+                case 4:
+                    speed = 100;
+                    break;
+                case 5:
+                    speed = 1000;
+                    break;
+            }
+            GLoop.setSpeed(speed);
+            lblSpeed.setText("Speed: x" + speed);
+        });
         
     }
     
@@ -122,20 +185,27 @@ public class ControlPanel extends javax.swing.JFrame {
     }
     //comparativa del cbox para saber el aniamal
     public Animal makeAnimal(int tipo, int x, int y,Entitymanager emEntitymanager) {
-        return switch (tipo) {
-            case 1 -> new Lummon(x, y,EManager);
-            case 2 -> new Zyrox(x, y,EManager);
-            default -> null;
-        };
+        switch (tipo) {
+            case 1:
+                return new Lummon(x, y, EManager);
+            case 2:
+                return new Zyrox(x, y, EManager);
+            default:
+                return null;
+        }
     }
     //comparativa del cbox para saber el recurso
     public Resource makeResourse(int tipo, int x, int y) {
-        return switch (tipo) {
-            case 1 -> new Food(x, y);
-            case 2 -> new Nero(x, y);
-            case 3 -> new Tree(x, y);
-            default -> null;
-        };
+        switch (tipo) {
+            case 1:
+                return new Food(x, y);
+            case 2:
+                return new Nero(x, y);
+            case 3:
+                return new Tree(x, y);
+            default:
+                return null;
+        }
     }
     //cambiar el modo de juego
     private void chansemode(String modo) {
@@ -149,6 +219,21 @@ public class ControlPanel extends javax.swing.JFrame {
             mouser.setTool(tool);
             System.out.println("Tool actual: " + tool);
         }
+    }
+    
+    private void SetTextSlider(){
+        Hashtable<Integer, JLabel> labels = new Hashtable<>();
+        labels.put(0, new JLabel("0.5x"));
+        labels.put(1, new JLabel("1x"));
+        labels.put(2, new JLabel("5x"));
+        labels.put(3, new JLabel("20x"));
+        labels.put(4, new JLabel("100x"));
+        labels.put(5, new JLabel("1000x"));
+        for (JLabel label : labels.values()) {
+            label.setForeground(Color.WHITE);
+        }
+        SliderSpeed.setLabelTable(labels);
+        SliderSpeed.setPaintLabels(true);
     }
 
     
@@ -182,9 +267,8 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGenerate = new javax.swing.JToggleButton();
         RbtnGNone = new javax.swing.JRadioButton();
         btnStartTime1 = new javax.swing.JButton();
-        btnTimeSpeed1 = new javax.swing.JButton();
-        btnTimeSpeed10 = new javax.swing.JButton();
-        btnTimeSpeed6 = new javax.swing.JButton();
+        SliderSpeed = new javax.swing.JSlider();
+        lblSpeed = new javax.swing.JLabel();
         panelInfo = new javax.swing.JPanel();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -218,7 +302,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnPause.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnPause.addActionListener(this::btnPauseActionPerformed);
         menuGame.add(btnPause);
-        btnPause.setBounds(10, 40, 50, 53);
+        btnPause.setBounds(10, 40, 50, 30);
 
         lblTime.setBackground(new java.awt.Color(21, 21, 21));
         lblTime.setFont(new java.awt.Font("Palatino Linotype", 1, 14)); // NOI18N
@@ -237,7 +321,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnInformationshow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnInformationshow.addActionListener(this::btnInformationshowActionPerformed);
         menuGame.add(btnInformationshow);
-        btnInformationshow.setBounds(210, 20, 110, 22);
+        btnInformationshow.setBounds(220, 10, 110, 22);
 
         rbtnMGenerate.setBackground(new java.awt.Color(0, 102, 102));
         btnGmodes.add(rbtnMGenerate);
@@ -387,34 +471,26 @@ public class ControlPanel extends javax.swing.JFrame {
         btnStartTime1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnStartTime1.addActionListener(this::btnStartTime1ActionPerformed);
         menuGame.add(btnStartTime1);
-        btnStartTime1.setBounds(60, 40, 50, 53);
+        btnStartTime1.setBounds(60, 40, 50, 30);
 
-        btnTimeSpeed1.setBackground(new java.awt.Color(62, 62, 62));
-        btnTimeSpeed1.setForeground(new java.awt.Color(102, 153, 0));
-        btnTimeSpeed1.setText("1");
-        btnTimeSpeed1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnTimeSpeed1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTimeSpeed1.addActionListener(this::btnTimeSpeed1ActionPerformed);
-        menuGame.add(btnTimeSpeed1);
-        btnTimeSpeed1.setBounds(10, 90, 40, 40);
+        SliderSpeed.setBackground(new java.awt.Color(51, 51, 51));
+        SliderSpeed.setForeground(new java.awt.Color(255, 255, 255));
+        SliderSpeed.setMajorTickSpacing(1);
+        SliderSpeed.setMaximum(5);
+        SliderSpeed.setPaintLabels(true);
+        SliderSpeed.setPaintTicks(true);
+        SliderSpeed.setPaintTrack(false);
+        SliderSpeed.setSnapToTicks(true);
+        SliderSpeed.setToolTipText("");
+        SliderSpeed.setValue(1);
+        SliderSpeed.setName(""); // NOI18N
+        menuGame.add(SliderSpeed);
+        SliderSpeed.setBounds(10, 80, 190, 50);
 
-        btnTimeSpeed10.setBackground(new java.awt.Color(62, 62, 62));
-        btnTimeSpeed10.setForeground(new java.awt.Color(102, 153, 0));
-        btnTimeSpeed10.setText("10");
-        btnTimeSpeed10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnTimeSpeed10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTimeSpeed10.addActionListener(this::btnTimeSpeed10ActionPerformed);
-        menuGame.add(btnTimeSpeed10);
-        btnTimeSpeed10.setBounds(90, 90, 40, 40);
-
-        btnTimeSpeed6.setBackground(new java.awt.Color(62, 62, 62));
-        btnTimeSpeed6.setForeground(new java.awt.Color(102, 153, 0));
-        btnTimeSpeed6.setText("5");
-        btnTimeSpeed6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        btnTimeSpeed6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTimeSpeed6.addActionListener(this::btnTimeSpeed6ActionPerformed);
-        menuGame.add(btnTimeSpeed6);
-        btnTimeSpeed6.setBounds(50, 90, 40, 40);
+        lblSpeed.setForeground(new java.awt.Color(255, 255, 255));
+        lblSpeed.setText("Speed");
+        menuGame.add(lblSpeed);
+        lblSpeed.setBounds(90, 0, 140, 40);
 
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
 
@@ -466,24 +542,52 @@ public class ControlPanel extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPauseActionPerformed
 
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
-        // comparar cual button del buttongrou esta seleccionado para saber que tipo de entidad es 
-            int rngX = rng.nextInt(world.getColums()); //para determinar en que parte del mapa de manera aleatoria de generara
-            int rngY = rng.nextInt(world.getRows());
-        if (RbtnAnimals.isSelected()){      
-            if (cboxAnimals.getSelectedIndex() == 0 ){
-                return;
-            }else{
-                EManager.addAnimal(makeAnimal(cboxAnimals.getSelectedIndex(), rngX, rngY, EManager));
-            }
+
+    int rngX;
+    int rngY;
+
+    do{
+        rngX = rng.nextInt(world.getColums());
+        rngY = rng.nextInt(world.getRows());
+
+    }while(world.getTile(rngY, rngX).getType() == Tile.WATER);
+
+    
+    if (RbtnAnimals.isSelected()){      
+
+        if (cboxAnimals.getSelectedIndex() == 0 ){
+            return;
+
+        }else{
+            EManager.addAnimal(
+                makeAnimal(
+                    cboxAnimals.getSelectedIndex(),
+                    rngX,
+                    rngY,
+                    EManager
+                )
+            );
         }
-        if (RbtnResource.isSelected()){
-            if (cboxResource.getSelectedIndex() == 0 ){
-                return;
-            }else{
-                EManager.addResourse(makeResourse(cboxResource.getSelectedIndex(), rngX, rngY));
-            }
+    }
+
+    
+    if (RbtnResource.isSelected()){
+
+        if (cboxResource.getSelectedIndex() == 0 ){
+            return;
+
+        }else{
+            EManager.addResourse(
+                makeResourse(
+                    cboxResource.getSelectedIndex(),
+                    rngX,
+                    rngY
+                )
+            );
         }
-        repaint();
+    }
+
+    repaint();
     }//GEN-LAST:event_btnGenerateActionPerformed
 
     private void btnInformationshowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInformationshowActionPerformed
@@ -549,21 +653,6 @@ public class ControlPanel extends javax.swing.JFrame {
         GLoop.resume();
     }//GEN-LAST:event_btnStartTime1ActionPerformed
 
-    private void btnTimeSpeed1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeSpeed1ActionPerformed
-        // TODO add your handling code here:
-        GLoop.setSpeed(1);
-    }//GEN-LAST:event_btnTimeSpeed1ActionPerformed
-
-    private void btnTimeSpeed10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeSpeed10ActionPerformed
-        // TODO add your handling code here:
-        GLoop.setSpeed(10);
-    }//GEN-LAST:event_btnTimeSpeed10ActionPerformed
-
-    private void btnTimeSpeed6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeSpeed6ActionPerformed
-        // TODO add your handling code here:
-        GLoop.setSpeed(5);
-    }//GEN-LAST:event_btnTimeSpeed6ActionPerformed
-
     private void RbtnAnimalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RbtnAnimalsActionPerformed
         // TODO add your handling code here:
         
@@ -603,12 +692,14 @@ public class ControlPanel extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
+            TimeDay time = new TimeDay();
             GameLoop loop = new GameLoop();
             World world = new World();                    
             Entitymanager manager = new Entitymanager(world);
             InfoPanel infoP = new InfoPanel();
+            loop.setTime(time);
             loop.start();
-            new ControlPanel(loop, world, manager,infoP).setVisible(true); 
+            new ControlPanel(loop, world, manager,infoP,time).setVisible(true); 
         });
     }
 
@@ -619,6 +710,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JRadioButton RbtnAnimals;
     private javax.swing.JRadioButton RbtnGNone;
     private javax.swing.JRadioButton RbtnResource;
+    private javax.swing.JSlider SliderSpeed;
     private javax.swing.JMenuBar bMenuGame;
     private javax.swing.ButtonGroup btnGMBuilts;
     private javax.swing.ButtonGroup btnGSpawn;
@@ -627,9 +719,6 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JButton btnInformationshow;
     private javax.swing.JButton btnPause;
     private javax.swing.JButton btnStartTime1;
-    private javax.swing.JButton btnTimeSpeed1;
-    private javax.swing.JButton btnTimeSpeed10;
-    private javax.swing.JButton btnTimeSpeed6;
     private javax.swing.JComboBox<String> cboxAnimals;
     private javax.swing.JComboBox<String> cboxResource;
     private javax.swing.JMenu jMenu1;
@@ -637,6 +726,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblSpeed;
     private javax.swing.JLabel lblTime;
     private javax.swing.JPanel menuGame;
     private javax.swing.JPanel panelGame;

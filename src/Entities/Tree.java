@@ -64,12 +64,25 @@ public class Tree extends Resource {
         }
 
         // Radio de copa según etapa
-        int copaR = switch (stage) {
-            case JOVEN  -> Math.max(4, (int)(half * 0.30));
-            case MADURO -> Math.max(5, (int)(half * 0.38));
-            case VIEJO  -> Math.max(5, (int)(half * 0.43));
-            default     -> Math.max(4, (int)(half * 0.30));
-        };
+        int copaR;
+        switch (stage) {
+
+            case JOVEN:
+                copaR = Math.max(4, (int)(half * 0.30));
+                break;
+
+            case MADURO:
+                copaR = Math.max(5, (int)(half * 0.38));
+                break;
+
+            case VIEJO:
+                copaR = Math.max(5, (int)(half * 0.43));
+                break;
+
+            default:
+                copaR = Math.max(4, (int)(half * 0.30));
+                break;
+        }
 
         // Tronco anclado en la base del slot
         int tw = Math.max(2, half / 8);
@@ -93,21 +106,47 @@ public class Tree extends Resource {
 
     private void avanzarCrecimiento() {
         switch (stage) {
-            case SEMILLA -> { stage = Etapa_Crecimiento.JOVEN;  maxQuantity = 5; }
-            case JOVEN   -> { stage = Etapa_Crecimiento.MADURO; maxQuantity = 10; maxHealth = 80; health = Math.min(health + 20, 80); }
-            case MADURO  -> { stage = Etapa_Crecimiento.VIEJO;  maxQuantity = 6; }
-            case VIEJO   -> { /* ya no crece */ }
+            case SEMILLA:
+                stage = Etapa_Crecimiento.JOVEN;
+                maxQuantity = 5;
+                break;
+
+            case JOVEN:
+                stage = Etapa_Crecimiento.MADURO;
+                maxQuantity = 10;
+                maxHealth = 80;
+                health = Math.min(health + 20, 80);
+                break;
+
+            case MADURO:
+                stage = Etapa_Crecimiento.VIEJO;
+                maxQuantity = 6;
+                break;
+
+            case VIEJO:
+                // ya no crece
+                break;
         }
     }
 
     public Etapa_Crecimiento getStage() { return stage; }
 
     public Color getCurrentColor() {
-        return switch (stage) {
-            case SEMILLA -> COLOR_SEMILLA;
-            case JOVEN   -> COLOR_JOVEN;
-            case MADURO  -> COLOR_MADURO;
-            case VIEJO   -> COLOR_VIEJO;
-        };
+        switch (stage) {
+            case SEMILLA:
+                return COLOR_SEMILLA;
+
+            case JOVEN:
+                return COLOR_JOVEN;
+
+            case MADURO:
+                return COLOR_MADURO;
+
+            case VIEJO:
+                return COLOR_VIEJO;
+
+            default:
+                return COLOR_SEMILLA;
+        }
     }
 }

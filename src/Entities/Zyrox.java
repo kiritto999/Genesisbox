@@ -103,7 +103,9 @@ public class Zyrox extends Animal {
     private int contarZyroxAdyacentesA(int cx, int cy) {
         int count = 0;
         for (Animal a : entitymanager.getAnimals()) {
-            if (!(a instanceof Zyrox z) || !z.isAlive() || z == this) continue;
+            if (!(a instanceof Zyrox)) continue;
+            Zyrox z = (Zyrox) a;
+            if (!z.isAlive() || z == this) continue;
             int dist = Math.abs(z.getTileX() - cx) + Math.abs(z.getTileY() - cy);
             if (dist == 1) count++;
         }
@@ -134,7 +136,9 @@ public class Zyrox extends Animal {
         Zyrox objetivo = null;
         int mejorDist = Integer.MAX_VALUE;
         for (Animal a : entitymanager.getAnimals()) {
-            if (!(a instanceof Zyrox z) || z == this || !z.isAlive()) continue;
+            if (!(a instanceof Zyrox)) continue;
+            Zyrox z = (Zyrox) a;
+            if (z == this || !z.isAlive()) continue;
             // Solo me acerco a Zyrox sin pareja
             if (z.tengoParejaAdyacente()) continue;
             int dist = Math.abs(z.getTileX() - tileX) + Math.abs(z.getTileY() - tileY);
@@ -160,8 +164,11 @@ public class Zyrox extends Animal {
 
     private Lummon buscarLummonAdyacente() {
         for (Animal a : entitymanager.getAnimals()) {
-            if (a instanceof Lummon l && l.isAlive() && esAdyacente(l.getTileX(), l.getTileY())) {
-                return l;
+            if (a instanceof Lummon) {
+                Lummon l = (Lummon) a;
+                if (l.isAlive() && esAdyacente(l.getTileX(), l.getTileY())) {
+                    return l;
+                }
             }
         }
         return null;
@@ -171,7 +178,9 @@ public class Zyrox extends Animal {
         Food mejor = null;
         int mejorDist = radio + 1;
         for (Entity e : entitymanager.getResources()) {
-            if (!(e instanceof Food f) || !f.isAlive() || f.isDepleted()) continue;
+            if (!(e instanceof Food)) continue;
+            Food f = (Food) e;
+            if (!f.isAlive() || f.isDepleted()) continue;
             if (f.getStage() != Food.Etapa.MADURA) continue;
             int dist = Math.abs(f.getTileX() - tileX) + Math.abs(f.getTileY() - tileY);
             if (dist < mejorDist) { mejorDist = dist; mejor = f; }

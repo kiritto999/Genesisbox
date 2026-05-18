@@ -12,12 +12,19 @@ public class World {
     
     public void GenerateIsland(){
         map = new Tile[rows][colums];
+        int padding = 4;
         for (int r = 0; r < rows; r++){
+
             for (int c = 0; c < colums; c++){
-                
-                if (r == 0 || c == 0 || r == rows-1 || c == colums-1){
-                    map[r][c] = new Tile(Tile.WATER);
-                } else {
+
+                if( r < padding || c < padding || r >= rows - padding || c >= colums - padding){
+                    // borde profundo
+                    if(r < 2 || c < 2 || r >= rows - 2 || c >= colums - 2 ){
+                        map[r][c] = new Tile(Tile.WATER, 1);
+                    }else{
+                        map[r][c] = new Tile(Tile.WATER, 0);
+                    }
+                }else{
                     map[r][c] = new Tile(Tile.GRASS);
                 }
             }

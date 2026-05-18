@@ -95,7 +95,9 @@ public class Lummon extends Animal {
         Corpse mejor = null;
         int mejorDist = Integer.MAX_VALUE;
         for (Entity e : entitymanager.getResources()) {
-            if (!(e instanceof Corpse c) || !c.isAlive() || c.isDepleted()) continue;
+            if (!(e instanceof Corpse)) continue;
+            Corpse c = (Corpse) e;
+            if (!c.isAlive() || c.isDepleted()) continue;
             int dist = Math.abs(c.getTileX() - tileX) + Math.abs(c.getTileY() - tileY);
             if (dist < mejorDist) { mejorDist = dist; mejor = c; }
         }
@@ -106,7 +108,9 @@ public class Lummon extends Animal {
         Zyrox mejor = null;
         int mejorDist = Integer.MAX_VALUE;
         for (Animal a : entitymanager.getAnimals()) {
-            if (!(a instanceof Zyrox z) || !z.isAlive()) continue;
+            if (!(a instanceof Zyrox)) continue;
+            Zyrox z = (Zyrox) a;
+            if (!z.isAlive()) continue;
             int dist = Math.abs(z.getTileX() - tileX) + Math.abs(z.getTileY() - tileY);
             if (dist < mejorDist) { mejorDist = dist; mejor = z; }
         }
@@ -116,7 +120,9 @@ public class Lummon extends Animal {
     private int contarLummonsAdyacentesA(Zyrox presa) {
         int count = 0;
         for (Animal a : entitymanager.getAnimals()) {
-            if (!(a instanceof Lummon l) || !l.isAlive()) continue;
+            if (!(a instanceof Lummon)) continue;
+            Lummon l = (Lummon) a;
+            if (!l.isAlive()) continue;
             if (l.esAdyacente(presa.getTileX(), presa.getTileY())) count++;
         }
         return count;
