@@ -16,7 +16,7 @@ public abstract class Animal extends Entity {
     public static final int CAP_ATAQUE       = 50;
     public static final int CAP_VELOCIDAD    = 10;
     public static final int CAP_INTELIGENCIA = 100;
-    public static final int CAP_HAMBRE       = 200;
+    public static final int CAP_HAMBRE       = 150;
 
     protected int energy;
     protected int hunger;
@@ -159,7 +159,7 @@ public abstract class Animal extends Entity {
 
         int cosechado = corpse.harvest(1);
         if (cosechado > 0) {
-            hunger = Math.min(CAP_HAMBRE, hunger + 40);
+            hunger = Math.min(CAP_HAMBRE, hunger + 80);
             heal(20);
             return true;
         }
