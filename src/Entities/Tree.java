@@ -149,4 +149,11 @@ public class Tree extends Resource {
                 return COLOR_SEMILLA;
         }
     }
+    
+    public void setStage(Etapa_Crecimiento stage) {
+        this.stage = stage;
+    }
+    public void setTiempoCrecimiento(int tiempo) {
+        this.Tiempo_Crecimiento = tiempo;
+    }
 }

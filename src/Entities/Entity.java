@@ -81,6 +81,7 @@ public abstract class Entity {
         return baseColor;
     }
 
+    //--Getters---------------------------------------------
     public int getId() {return id;}
     public int getTileX() { return tileX;}
     public int getTileY() { return tileY;}
@@ -92,8 +93,16 @@ public abstract class Entity {
     public int getMaxHealth() { return maxHealth;}
     public boolean isAlive() {   return alive; }
     public EntityType getType() { return type; }
+    public int getSlot() {return slot;}
+    
+    //--- Setters---------------------------------------------
     public void setTileX(int x) {    this.tileX = x; }
     public void setTileY(int y) { this.tileY = y; }
     public void setCustomName(String name) {this.customName = name;  }
     public void setCustomColor(Color color) { this.customColor = color; }
+    public void setMaxHealth(int maxHealth) {this.maxHealth = maxHealth;}
+    public void setAlive(boolean alive) {this.alive = alive;}
+    public void setSlot(int slot) {this.slot = slot;}
+    
+    
 }

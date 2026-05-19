@@ -72,13 +72,10 @@ public class TimeDay {
     }
 
     public int getHour() {return hour;}
-
-    public int getYear() {
-        return year;
-    }
-
-    public int getDay() {
-        return day;
-    }
+    public int getYear() {return year;}
+    public int getDay() {return day;}
+    public int getMinute() {return minute;}
+    public int getSecond() {return second;}
+    
     
 }

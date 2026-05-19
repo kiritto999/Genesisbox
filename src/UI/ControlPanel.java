@@ -4,6 +4,7 @@
  */
 package UI;
 
+import Database.SaveManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -45,11 +46,12 @@ public class ControlPanel extends javax.swing.JFrame {
     private Camera camera;
     private Mode currentMode = Mode.SPAWN; 
     private Tool currentBuildTool = Tool.NONE;
+    private SaveManager SV;
     
     String[] animals = {"Elegir","Lummon", "Zyrox"};
     String[] resources = {"Elegir","Food","Nero","Zenthra",};
     
-    public ControlPanel(GameLoop loop, World world, Entitymanager manager, InfoPanel infoPanel,TimeDay time ) { 
+    public ControlPanel(GameLoop loop, World world, Entitymanager manager, InfoPanel infoPanel,TimeDay time,SaveManager sv ) { 
         initComponents();
         SizeAdapted();
         SetTextSlider();
@@ -58,6 +60,7 @@ public class ControlPanel extends javax.swing.JFrame {
         this.EManager = manager;
         this.infoPanel = infoPanel; 
         this.time = time;
+        this.SV = sv;
         
         camera = new Camera();
         GP = new GamePanel(world, EManager, this.infoPanel, camera,time);
@@ -703,7 +706,7 @@ public class ControlPanel extends javax.swing.JFrame {
 
     private void MitemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemSaveActionPerformed
         // TODO add your handling code here:
-    //    game.getEntityManager().saveToDatabase();
+        SV.saveGame(world,time,EManager);
         
     }//GEN-LAST:event_MitemSaveActionPerformed
 
@@ -753,17 +756,9 @@ public class ControlPanel extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            TimeDay time = new TimeDay();
-            GameLoop loop = new GameLoop();
-            World world = new World();                    
-            Entitymanager manager = new Entitymanager(world);
-            InfoPanel infoP = new InfoPanel();
-            loop.setTime(time);
-            loop.start();
-            new ControlPanel(loop, world, manager,infoP,time).setVisible(true); 
+            new MainMenu().setVisible(true);
         });
     }
 

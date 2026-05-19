@@ -81,7 +81,7 @@ public class MainMenu extends javax.swing.JFrame {
         btnPlay.setBackground(new java.awt.Color(10, 34, 63));
         btnPlay.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPlay.setForeground(new java.awt.Color(153, 153, 255));
-        btnPlay.setText("Play");
+        btnPlay.setText("New Game");
         btnPlay.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(0, 1, 59)));
         btnPlay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnPlay.addActionListener(new java.awt.event.ActionListener() {
@@ -92,7 +92,7 @@ public class MainMenu extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 56;
+        gridBagConstraints.ipadx = 13;
         gridBagConstraints.ipady = 26;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(53, 548, 0, 0);

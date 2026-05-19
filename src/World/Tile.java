@@ -74,4 +74,9 @@ public class Tile {
     public Color getColor(){
         return color;
     }
+
+    public int getVariant() {
+        return variant;
+    }
+    
 }

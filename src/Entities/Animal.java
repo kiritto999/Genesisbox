@@ -182,4 +182,17 @@ public abstract class Animal extends Entity {
     public Sex      getSex()          { return sex; }
     public FoodType getFoodType()     { return foodType; }
     public int      getCapacity()     { return capacity; }
+    public int      getHabitat()      {return habitat;}
+    
+    
+    // -- Setters ────────────────────────────────────────────────────────
+    public void setEnergy(int energy) {this.energy = energy;}
+    public void setHunger(int hunger) {this.hunger = hunger;}
+    public void setSpeed(int speed) {this.speed = speed;}
+    public void setAttack(int attack) {this.attack = attack;}
+    public void setIntelligence(int intelligence) {this.intelligence = intelligence;}
+    public void setCapacity(int capacity) {this.capacity = capacity;}
+    public void setHabitat(int habitat) {this.habitat = habitat;}
+    public void setSex(Sex sex) {this.sex = sex;}
+    public void setFoodType(FoodType foodType) {this.foodType = foodType;}
 }

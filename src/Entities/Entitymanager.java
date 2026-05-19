@@ -15,7 +15,6 @@ package Entities;
 import World.Tile;
 import World.World;
 import com.sun.jdi.connect.spi.Connection;
-import database.DatabaseManager;
 import database.EntitySV;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -299,5 +298,6 @@ public class Entitymanager {
     public ArrayList<Entity>   getEntities()  { return entities;  }
     public ArrayList<Resource> getResources() { return resources; }
     public ArrayList<Animal>   getAnimals()   { return animals;   }
+    
     
 }

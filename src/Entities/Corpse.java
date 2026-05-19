@@ -88,4 +88,8 @@ public class Corpse extends Resource {
             g2.fillOval(bx + 5 + i * 9, by + h - 7, 6, 6);
         }
     }
+
+    public int getAge() {return age;}
+    
+    
 }

@@ -1,18 +1,9 @@
 package Game;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author blope
- */
+import Database.DatabaseManager;
+import Database.SaveManager;
 import Entities.Entitymanager;
-import javax.swing.JFrame;
 import UI.ControlPanel;
-import UI.GamePanel;
 import UI.InfoPanel;
 import Utils.TimeDay;
 import World.World;
@@ -20,23 +11,48 @@ import World.World;
 public class Game {
 
     private GameLoop gameLoop;
+
     private Entitymanager entityManager;
 
     public Game() {
+
         System.out.println("El game se esta ejecutado");
+
+        // WORLD
         
         TimeDay time = new TimeDay();
         World world = new World();
         entityManager = new Entitymanager(world);
 
+        // DATABASE
+
+        DatabaseManager db = new DatabaseManager();
+        db.connect();
+        db.createTables();
+        SaveManager SV = new SaveManager(db);
+
+        // INFO PANEL
+
+
         InfoPanel infoP = new InfoPanel();
+
+        // GAME LOOP
 
         gameLoop = new GameLoop();
         gameLoop.setEntitymanager(entityManager);
         gameLoop.setTime(time);
         gameLoop.start();
 
-        ControlPanel cp = new ControlPanel(gameLoop, world, entityManager, infoP,time);
+        // CONTROL PANEL
+
+        ControlPanel cp = new ControlPanel(
+                gameLoop,
+                world,
+                entityManager,
+                infoP,
+                time,
+                SV
+        );
         cp.setVisible(true);
     }
 

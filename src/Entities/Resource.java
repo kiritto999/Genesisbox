@@ -60,6 +60,17 @@ public abstract class Resource extends Entity {
         return maxQuantity == 0 ? 0 : (float) quantity / maxQuantity;
     }
         public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {}
+
+    public int getRegenRate() {return regenRate;}
+    public int getRegenTimer() {return regenTimer;}
+    public int getRegenInterval() {return regenInterval;}
+  
+    public void setQuantity(int quantity) {this.quantity = quantity;}
+    public void setMaxQuantity(int maxQuantity) {this.maxQuantity = maxQuantity;}
+    public void setDepleted(boolean depleted) {this.depleted = depleted;}
+    public void setRegenRate(int regenRate) {this.regenRate = regenRate;}
+    public void setRegenTimer(int regenTimer) {this.regenTimer = regenTimer;}
+    public void setRegenInterval(int regenInterval) {this.regenInterval = regenInterval;}
         
     
 }
