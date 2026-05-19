@@ -107,6 +107,7 @@ public class ControlPanel extends javax.swing.JFrame {
         lblTime.setText("");
         new javax.swing.Timer(100, e -> {
             lblTime.setText(GLoop.getTimeDay().getTimeString());
+            updateLblD();
         }).start();
 
         // combobox
@@ -235,6 +236,16 @@ public class ControlPanel extends javax.swing.JFrame {
         SliderSpeed.setLabelTable(labels);
         SliderSpeed.setPaintLabels(true);
     }
+    
+    private void updateLblD(){
+
+        lblDDays.setText("Day: " + time.getDay());
+        lblDYear.setText("Year: " + time.getYear());
+
+        lblDAnimals.setText("Creatures: " + EManager.getAnimals().size());
+
+        lblDResources.setText("Recursos: " + EManager.getResources().size());
+    }
 
     
   
@@ -255,10 +266,6 @@ public class ControlPanel extends javax.swing.JFrame {
         rbtnMGenerate = new javax.swing.JRadioButton();
         rbtnMbuilt = new javax.swing.JRadioButton();
         panelMode = new javax.swing.JPanel();
-        panelMBuilt = new javax.swing.JPanel();
-        rbtnBNone = new javax.swing.JRadioButton();
-        rbtnBWater = new javax.swing.JRadioButton();
-        rbtnBGlass = new javax.swing.JRadioButton();
         panelMSpawn = new javax.swing.JPanel();
         RbtnResource = new javax.swing.JRadioButton();
         cboxResource = new javax.swing.JComboBox<>();
@@ -266,9 +273,18 @@ public class ControlPanel extends javax.swing.JFrame {
         cboxAnimals = new javax.swing.JComboBox<>();
         btnGenerate = new javax.swing.JToggleButton();
         RbtnGNone = new javax.swing.JRadioButton();
+        panelMBuilt = new javax.swing.JPanel();
+        rbtnBNone = new javax.swing.JRadioButton();
+        rbtnBWater = new javax.swing.JRadioButton();
+        rbtnBGlass = new javax.swing.JRadioButton();
         btnStartTime1 = new javax.swing.JButton();
         SliderSpeed = new javax.swing.JSlider();
         lblSpeed = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        lblDYear = new javax.swing.JLabel();
+        lblDDays = new javax.swing.JLabel();
+        lblDAnimals = new javax.swing.JLabel();
+        lblDResources = new javax.swing.JLabel();
         panelInfo = new javax.swing.JPanel();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -339,40 +355,9 @@ public class ControlPanel extends javax.swing.JFrame {
         rbtnMbuilt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         rbtnMbuilt.addActionListener(this::rbtnMbuiltActionPerformed);
         menuGame.add(rbtnMbuilt);
-        rbtnMbuilt.setBounds(500, 20, 110, 21);
+        rbtnMbuilt.setBounds(500, 20, 110, 20);
 
         panelMode.setLayout(new java.awt.CardLayout());
-
-        panelMBuilt.setBackground(new java.awt.Color(43, 35, 58));
-
-        rbtnBNone.setBackground(new java.awt.Color(47, 12, 39));
-        btnGMBuilts.add(rbtnBNone);
-        rbtnBNone.setForeground(new java.awt.Color(255, 255, 255));
-        rbtnBNone.setText("None");
-        rbtnBNone.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        rbtnBNone.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        rbtnBNone.addActionListener(this::rbtnBNoneActionPerformed);
-        panelMBuilt.add(rbtnBNone);
-
-        rbtnBWater.setBackground(new java.awt.Color(47, 12, 39));
-        btnGMBuilts.add(rbtnBWater);
-        rbtnBWater.setForeground(new java.awt.Color(0, 102, 255));
-        rbtnBWater.setText("Water");
-        rbtnBWater.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        rbtnBWater.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        rbtnBWater.addActionListener(this::rbtnBWaterActionPerformed);
-        panelMBuilt.add(rbtnBWater);
-
-        rbtnBGlass.setBackground(new java.awt.Color(47, 12, 39));
-        btnGMBuilts.add(rbtnBGlass);
-        rbtnBGlass.setForeground(new java.awt.Color(102, 255, 51));
-        rbtnBGlass.setText("Glass");
-        rbtnBGlass.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        rbtnBGlass.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        rbtnBGlass.addActionListener(this::rbtnBGlassActionPerformed);
-        panelMBuilt.add(rbtnBGlass);
-
-        panelMode.add(panelMBuilt, "card2");
 
         panelMSpawn.setBackground(new java.awt.Color(0, 102, 102));
 
@@ -461,6 +446,37 @@ public class ControlPanel extends javax.swing.JFrame {
 
         panelMode.add(panelMSpawn, "card3");
 
+        panelMBuilt.setBackground(new java.awt.Color(43, 35, 58));
+
+        rbtnBNone.setBackground(new java.awt.Color(47, 12, 39));
+        btnGMBuilts.add(rbtnBNone);
+        rbtnBNone.setForeground(new java.awt.Color(255, 255, 255));
+        rbtnBNone.setText("None");
+        rbtnBNone.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        rbtnBNone.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        rbtnBNone.addActionListener(this::rbtnBNoneActionPerformed);
+        panelMBuilt.add(rbtnBNone);
+
+        rbtnBWater.setBackground(new java.awt.Color(47, 12, 39));
+        btnGMBuilts.add(rbtnBWater);
+        rbtnBWater.setForeground(new java.awt.Color(0, 102, 255));
+        rbtnBWater.setText("Water");
+        rbtnBWater.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        rbtnBWater.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        rbtnBWater.addActionListener(this::rbtnBWaterActionPerformed);
+        panelMBuilt.add(rbtnBWater);
+
+        rbtnBGlass.setBackground(new java.awt.Color(47, 12, 39));
+        btnGMBuilts.add(rbtnBGlass);
+        rbtnBGlass.setForeground(new java.awt.Color(102, 255, 51));
+        rbtnBGlass.setText("Glass");
+        rbtnBGlass.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        rbtnBGlass.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        rbtnBGlass.addActionListener(this::rbtnBGlassActionPerformed);
+        panelMBuilt.add(rbtnBGlass);
+
+        panelMode.add(panelMBuilt, "card2");
+
         menuGame.add(panelMode);
         panelMode.setBounds(610, 0, 400, 140);
 
@@ -492,6 +508,53 @@ public class ControlPanel extends javax.swing.JFrame {
         menuGame.add(lblSpeed);
         lblSpeed.setBounds(90, 0, 140, 40);
 
+        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 153, 153)), "Details", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
+
+        lblDYear.setForeground(new java.awt.Color(255, 255, 255));
+        lblDYear.setText("Year:");
+
+        lblDDays.setForeground(new java.awt.Color(255, 255, 255));
+        lblDDays.setText("Dya:");
+
+        lblDAnimals.setForeground(new java.awt.Color(255, 255, 255));
+        lblDAnimals.setText("Creatures");
+
+        lblDResources.setForeground(new java.awt.Color(255, 255, 255));
+        lblDResources.setText("Resources:");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblDYear)
+                        .addGap(46, 46, 46)
+                        .addComponent(lblDDays))
+                    .addComponent(lblDResources)
+                    .addComponent(lblDAnimals))
+                .addContainerGap(239, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDYear)
+                    .addComponent(lblDDays))
+                .addGap(18, 18, 18)
+                .addComponent(lblDAnimals)
+                .addGap(18, 18, 18)
+                .addComponent(lblDResources)
+                .addGap(0, 13, Short.MAX_VALUE))
+        );
+
+        menuGame.add(jPanel1);
+        jPanel1.setBounds(1290, 10, 350, 120);
+
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
 
         panelInfo.setBackground(new java.awt.Color(102, 102, 102));
@@ -499,6 +562,7 @@ public class ControlPanel extends javax.swing.JFrame {
         panelInfo.setLayout(new java.awt.BorderLayout());
         getContentPane().add(panelInfo, java.awt.BorderLayout.LINE_END);
 
+        bMenuGame.setToolTipText("");
         bMenuGame.setAlignmentX(1.0F);
 
         jMenu1.setText("File");
@@ -725,7 +789,12 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblDAnimals;
+    private javax.swing.JLabel lblDDays;
+    private javax.swing.JLabel lblDResources;
+    private javax.swing.JLabel lblDYear;
     private javax.swing.JLabel lblSpeed;
     private javax.swing.JLabel lblTime;
     private javax.swing.JPanel menuGame;

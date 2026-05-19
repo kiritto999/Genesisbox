@@ -4,7 +4,8 @@
  */
 package genesisbox_galaxy.main;
 
-import Game.Game;
+
+import UI.MainMenu;
 
 /**
  *
@@ -13,6 +14,6 @@ import Game.Game;
 public class main {
     public static void main(String[] args) {
         System.out.println("MAIN FUNCIONA");
-        new Game();
+        new MainMenu().setVisible(true);
     }
 }
