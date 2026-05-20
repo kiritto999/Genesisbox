@@ -21,8 +21,10 @@ import Game.Game;
 import World.Tile;
 import java.util.Hashtable;
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 /**
  *
  * @author blope
@@ -293,6 +295,8 @@ public class ControlPanel extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         MitemSave = new javax.swing.JMenuItem();
         MitemLoad = new javax.swing.JMenuItem();
+        MitemExitManu = new javax.swing.JMenuItem();
+        MitemExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         MitemGrid = new javax.swing.JMenuItem();
@@ -578,6 +582,14 @@ public class ControlPanel extends javax.swing.JFrame {
         MitemLoad.addActionListener(this::MitemLoadActionPerformed);
         jMenu1.add(MitemLoad);
 
+        MitemExitManu.setText("Exit menu");
+        MitemExitManu.addActionListener(this::MitemExitManuActionPerformed);
+        jMenu1.add(MitemExitManu);
+
+        MitemExit.setText("Exit");
+        MitemExit.addActionListener(this::MitemExitActionPerformed);
+        jMenu1.add(MitemExit);
+
         bMenuGame.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -712,7 +724,7 @@ public class ControlPanel extends javax.swing.JFrame {
 
     private void MitemLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemLoadActionPerformed
         // TODO add your handling code here:
-      //  GP.getEntityManager().loadFromDatabase();
+        SV.loadGame(world,time,EManager);
     }//GEN-LAST:event_MitemLoadActionPerformed
 
     private void btnStartTime1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartTime1ActionPerformed
@@ -735,6 +747,18 @@ public class ControlPanel extends javax.swing.JFrame {
         panelInfo.setVisible(!panelInfo.isVisible());
         repaint();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void MitemExitManuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemExitManuActionPerformed
+        // TODO add your handling code here:
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        frame.dispose();
+        new MainMenu().setVisible(true);
+    }//GEN-LAST:event_MitemExitManuActionPerformed
+
+    private void MitemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemExitActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_MitemExitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -763,6 +787,8 @@ public class ControlPanel extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem MitemExit;
+    private javax.swing.JMenuItem MitemExitManu;
     private javax.swing.JMenuItem MitemGrid;
     private javax.swing.JMenuItem MitemLoad;
     private javax.swing.JMenuItem MitemSave;

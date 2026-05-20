@@ -11,17 +11,19 @@ import World.World;
 public class Game {
 
     private GameLoop gameLoop;
-
     private Entitymanager entityManager;
+    private World world;
+    private TimeDay time;
+    private SaveManager saveManager;
 
     public Game() {
 
         System.out.println("El game se esta ejecutado");
 
         // WORLD
-        
-        TimeDay time = new TimeDay();
-        World world = new World();
+
+        time = new TimeDay();
+        world = new World();
         entityManager = new Entitymanager(world);
 
         // DATABASE
@@ -29,10 +31,9 @@ public class Game {
         DatabaseManager db = new DatabaseManager();
         db.connect();
         db.createTables();
-        SaveManager SV = new SaveManager(db);
+        saveManager = new SaveManager(db);
 
         // INFO PANEL
-
 
         InfoPanel infoP = new InfoPanel();
 
@@ -44,18 +45,16 @@ public class Game {
         gameLoop.start();
 
         // CONTROL PANEL
+        ControlPanel cp = new ControlPanel(gameLoop,world,entityManager,infoP,time,saveManager);
 
-        ControlPanel cp = new ControlPanel(
-                gameLoop,
-                world,
-                entityManager,
-                infoP,
-                time,
-                SV
-        );
         cp.setVisible(true);
     }
 
+    public void loadGame() {
+
+        saveManager.loadGame(world,time,entityManager);
+        System.out.println("PARTIDA CARGADA");
+    }
     public Entitymanager getEntityManager() {
         return entityManager;
     }

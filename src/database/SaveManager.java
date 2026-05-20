@@ -12,6 +12,7 @@ import World.World;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
 
 public class SaveManager {
     private DatabaseManager db;
@@ -169,4 +170,131 @@ public class SaveManager {
         System.out.println("PARTIDA GUARDADA");
     }
     
+    public void loadWorld(World world, TimeDay time) {
+
+        try {
+
+            PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM world LIMIT 1"
+            );
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()) {
+                time.setDay(
+                    rs.getInt("day")
+                );
+                time.setYear(
+                    rs.getInt("year")
+                );
+                time.setHour(
+                    rs.getInt("hour")
+                );
+                time.setMinute(
+                    rs.getInt("minute")
+                );
+                time.setSecond(
+                    rs.getInt("second")
+                );
+                System.out.println("World cargado");
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+    }
+    public void loadTiles(World world) {
+
+        try {
+
+            PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM tiles"
+            );
+            
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                int x = rs.getInt("x");
+                int y = rs.getInt("y");
+                int type = rs.getInt("type");
+                int variant = rs.getInt("variant");
+                Tile tile = new Tile(type);
+                tile.setVariant(variant);
+                world.getMap()[y][x] = tile;
+                
+            }
+
+            System.out.println("Tiles cargados");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+    }
+    
+    public void loadEntities(Entitymanager manager) {
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM entities"
+            );
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+
+                String type = rs.getString("entityType");
+
+                int x = rs.getInt("x");
+                int y = rs.getInt("y");
+
+                Entity e = null;
+
+                switch(type) {
+
+                    case "Lummon":
+                        e = new Lummon(x, y,manager);
+                        break;
+
+                    case "Zyrox":
+                        e = new Zyrox(x, y,manager);
+                        break;
+
+                    case "Tree":
+                        e = new Tree(x, y);
+                        break;
+                    case "Nero":
+                        e = new Nero(x,y);
+                        break;
+                    case "Food":
+                        e = new Food(x,y);
+                        break;
+                }
+
+                if(e != null) {
+                    e.setHealth(rs.getInt("health"));
+                    e.setMaxHealth(rs.getInt("maxHealth"));
+                    e.setAlive(rs.getBoolean("alive"));
+                    e.setSlot(rs.getInt("slot"));
+                    e.setCustomName(rs.getString("customName"));
+
+                    manager.addEntity(e);
+                }
+            }
+
+            System.out.println("Entidades cargadas");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+    }
+    public void loadGame(World world,TimeDay time,Entitymanager manager) {
+
+        manager.getEntities().clear();
+        loadWorld(world, time);
+        loadTiles(world);
+        loadEntities(manager);
+        System.out.println("PARTIDA CARGADA");
+    }
 }

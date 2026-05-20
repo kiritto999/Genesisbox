@@ -78,5 +78,9 @@ public class Tile {
     public int getVariant() {
         return variant;
     }
+
+    public void setVariant(int variant) {
+        this.variant = variant;
+    }
     
 }

@@ -157,13 +157,17 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void btnPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayActionPerformed
         // TODO add your handling code here:
-          new Game();
+        new Game();
 
         dispose();
     }//GEN-LAST:event_btnPlayActionPerformed
 
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
         // TODO add your handling code here:
+            Game game = new Game();
+            game.loadGame();
+            dispose();
+        
     }//GEN-LAST:event_btnLoadActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed

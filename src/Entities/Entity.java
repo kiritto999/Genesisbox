@@ -103,6 +103,8 @@ public abstract class Entity {
     public void setMaxHealth(int maxHealth) {this.maxHealth = maxHealth;}
     public void setAlive(boolean alive) {this.alive = alive;}
     public void setSlot(int slot) {this.slot = slot;}
+    public void setHealth(int health) {this.health = health;}
+    
     
     
 }
