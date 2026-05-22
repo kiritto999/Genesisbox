@@ -29,11 +29,13 @@ public class MainMenu extends javax.swing.JFrame {
         btnPlay.setFocusable(false);
         btnLoad.setFocusable(false);
         btnExit.setFocusable(false);
+        
         Image icon = new ImageIcon(
-                getClass().getResource("/resources/Icon/Main.png")
+                getClass().getResource("/resources/Icon/Logo.png")
         ).getImage();
 
         setIconImage(icon);
+        
         CreateBackground();
         SizeAdapted();
     }
@@ -42,14 +44,6 @@ public class MainMenu extends javax.swing.JFrame {
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screen.width, screen.height);
         setLocationRelativeTo(null);
-        java.awt.EventQueue.invokeLater(() -> {
-            SetImageLabel(lblPAquilix, "/resources/Gifs/Aquilix.gif");
-            SetImageLabel(lblPMoon, "/resources/Gifs/Moon.gif");
-            SetImageLabel(lblGalaxi, "/resources/Gifs/Galaxy.gif");
-            SetImageLabel(lblPGas, "/resources/Gifs/Gas2.gif");
-            SetImageLabel(lblPurpleHole, "/resources/Gifs/Hole.gif");
-            
-        });
     }
 
     public void CreateBackground() {
@@ -86,26 +80,7 @@ public class MainMenu extends javax.swing.JFrame {
         repaint();
         revalidate();
     }
-    public void SetImageLabel(JLabel label, String ruta){
 
-        ImageIcon icon = new ImageIcon(getClass().getResource(ruta));
-        int labelWidth = label.getWidth();
-        int labelHeight = label.getHeight();
-
-        int iconWidth = icon.getIconWidth();
-        int iconHeight = icon.getIconHeight();
-        double scaleX = (double) labelWidth / iconWidth;
-        double scaleY = (double) labelHeight / iconHeight;
-        double scale = Math.min(scaleX, scaleY);
-        int newWidth = (int)(iconWidth * scale);
-        int newHeight = (int)(iconHeight * scale);
-        Image image = icon.getImage().getScaledInstance(
-                newWidth,
-                newHeight,
-                Image.SCALE_DEFAULT
-        );
-        label.setIcon(new ImageIcon(image));
-    }
 
 
     /**

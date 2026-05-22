@@ -19,8 +19,10 @@ import Utils.*;
 import java.awt.Color;
 import Game.Game;
 import World.Tile;
+import java.awt.Image;
 import java.util.Hashtable;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -71,8 +73,15 @@ public class ControlPanel extends javax.swing.JFrame {
         //se agreg el redibujado 
         GLoop.setGamePanel(GP);      
         
+        Image icon = new ImageIcon(
+                getClass().getResource("/resources/Gifs/Aqualix.gif")
+        ).getImage();
+
+        setIconImage(icon);
+        
         panelGame.setLayout(new BorderLayout());
         panelGame.add(GP, BorderLayout.CENTER);
+        GP.setOpaque(false);
         panelGame.revalidate();
 
         // usar panelInfo como contenedor del InfoPanel y crearlo con scroll
@@ -178,7 +187,10 @@ public class ControlPanel extends javax.swing.JFrame {
         });
         
     }
-    
+
+    public GamePanel getGamePanel() {
+        return GP;
+    }
     
     //adapta la ventana a la pantalla
     public void SizeAdapted(){
@@ -750,8 +762,13 @@ public class ControlPanel extends javax.swing.JFrame {
 
     private void MitemExitManuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemExitManuActionPerformed
         // TODO add your handling code here:
-        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        frame.dispose();
+        java.awt.Window window =
+        SwingUtilities.getWindowAncestor(this);
+
+        if(window != null){
+            window.dispose();
+        }
+
         new MainMenu().setVisible(true);
     }//GEN-LAST:event_MitemExitManuActionPerformed
 

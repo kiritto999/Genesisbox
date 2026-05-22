@@ -5,6 +5,7 @@ import Database.SaveManager;
 import Entities.Entitymanager;
 import UI.ControlPanel;
 import UI.InfoPanel;
+import Utils.Assets;
 import Utils.TimeDay;
 import World.World;
 
@@ -19,7 +20,9 @@ public class Game {
     public Game() {
 
         System.out.println("El game se esta ejecutado");
-
+        
+        //sprites 
+        Assets.init();
         // WORLD
 
         time = new TimeDay();
@@ -33,19 +36,40 @@ public class Game {
         db.createTables();
         saveManager = new SaveManager(db);
 
-        // INFO PANEL
+        /// INFO PANEL
 
         InfoPanel infoP = new InfoPanel();
 
         // GAME LOOP
 
         gameLoop = new GameLoop();
+
         gameLoop.setEntitymanager(entityManager);
+
         gameLoop.setTime(time);
-        gameLoop.start();
 
         // CONTROL PANEL
-        ControlPanel cp = new ControlPanel(gameLoop,world,entityManager,infoP,time,saveManager);
+
+        ControlPanel cp = new ControlPanel(
+                gameLoop,
+                world,
+                entityManager,
+                infoP,
+                time,
+                saveManager
+        );
+
+        // OBTENER GAME PANEL
+
+        var GP = cp.getGamePanel();
+
+        // CONECTAR
+
+        infoP.setGamePanel(GP);
+
+        // INICIAR LOOP
+
+        gameLoop.start();
 
         cp.setVisible(true);
     }

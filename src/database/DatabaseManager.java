@@ -17,14 +17,20 @@ public class DatabaseManager {
     private Connection connection;
     
     static {
+
         try {
+
             Properties props = new Properties();
-            props.load(new FileInputStream("db.properties"));
-            URL      = props.getProperty("db.url");
-            USER     = props.getProperty("db.user");
+            props.load(
+                DatabaseManager.class.getResourceAsStream("/db.properties")
+            );
+            URL = props.getProperty("db.url");
+            USER = props.getProperty("db.user");
             PASSWORD = props.getProperty("db.password");
+            System.out.println("db.properties cargado");
         } catch (IOException e) {
             System.err.println("No se encontró db.properties");
+            e.printStackTrace();
         }
     }
 

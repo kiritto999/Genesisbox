@@ -15,7 +15,6 @@ package Entities;
 import World.Tile;
 import World.World;
 import com.sun.jdi.connect.spi.Connection;
-import database.EntitySV;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

@@ -376,16 +376,28 @@ public class InfoPanel extends JPanel {
 
         btnFocus.addActionListener(e -> {
 
-            if (selectedEntity == null) return;
+            if (selectedEntity == null || GP == null) {
+                return;
+            }
+
             GP.focusEntity(selectedEntity);
         });
 
         btnFollow.addActionListener(e -> {
-            if (selectedEntity == null) return;
+
+            if (selectedEntity == null || GP == null) {
+                return;
+            }
+
             GP.followEntity(selectedEntity);
         });
 
         btnStopFollow.addActionListener(e -> {
+
+            if (GP == null) {
+                return;
+            }
+
             GP.stopFollowing();
         });
 

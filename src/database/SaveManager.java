@@ -218,9 +218,9 @@ public class SaveManager {
                 int y = rs.getInt("y");
                 int type = rs.getInt("type");
                 int variant = rs.getInt("variant");
-                Tile tile = new Tile(type);
-                tile.setVariant(variant);
-                world.getMap()[y][x] = tile;
+                //Tile tile = new Tile(type);
+                //tile.setVariant(variant);
+                //world.getMap()[y][x] = tile;
                 
             }
 
