@@ -28,9 +28,6 @@ public class DatabaseManager {
         }
     }
 
-    // =========================================
-    // CONECTAR
-    // =========================================
 
     public void connect() {
 

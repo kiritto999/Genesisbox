@@ -25,6 +25,15 @@ public class MainMenu extends javax.swing.JFrame {
 
     public MainMenu() {
         initComponents();
+        
+        btnPlay.setFocusable(false);
+        btnLoad.setFocusable(false);
+        btnExit.setFocusable(false);
+        Image icon = new ImageIcon(
+                getClass().getResource("/resources/Icon/Main.png")
+        ).getImage();
+
+        setIconImage(icon);
         CreateBackground();
         SizeAdapted();
     }
@@ -33,29 +42,70 @@ public class MainMenu extends javax.swing.JFrame {
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screen.width, screen.height);
         setLocationRelativeTo(null);
+        java.awt.EventQueue.invokeLater(() -> {
+            SetImageLabel(lblPAquilix, "/resources/Gifs/Aquilix.gif");
+            SetImageLabel(lblPMoon, "/resources/Gifs/Moon.gif");
+            SetImageLabel(lblGalaxi, "/resources/Gifs/Galaxy.gif");
+            SetImageLabel(lblPGas, "/resources/Gifs/Gas2.gif");
+            SetImageLabel(lblPurpleHole, "/resources/Gifs/Hole.gif");
+            
+        });
     }
 
     public void CreateBackground() {
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int width = screen.width;
-    int height = screen.height;
-    ImageIcon icon = new ImageIcon(
-        getClass().getResource("/resources/Gifs/stars-space.gif")
-    );
-    Image img = icon.getImage();
-    Image scaled = img.getScaledInstance(
-        width,
-        height,
-        Image.SCALE_DEFAULT
-    );
-    lblBackground = new JLabel();
-    lblBackground.setIcon(new ImageIcon(scaled));
-    lblBackground.setLayout(new BorderLayout());
-    jPanel1.setOpaque(false);
-    lblBackground.add(jPanel1, BorderLayout.CENTER);
-    setContentPane(lblBackground);
-}
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = screen.width;
+        int height = screen.height;
+        ImageIcon icon = new ImageIcon(
+            getClass().getResource("/resources/Gifs/stars-space.gif")
+        );
+        Image img = icon.getImage();
+        Image scaled = img.getScaledInstance(
+            width,
+            height,
+            Image.SCALE_DEFAULT
+        );
+        lblBackground = new JLabel();
+        lblBackground.setIcon(new ImageIcon(scaled));
+
+        lblBackground.setLayout(null);
+
+        jPanel1.setOpaque(false);
+        jPanel1.setBounds(0, 0, width, height);
+
+        jPanel2.setOpaque(false);
+        jPanel2.setBounds(0, 0, width, height);
+
+        
+        lblBackground.add(jPanel1);
+        lblBackground.add(jPanel2);
+
+        setContentPane(lblBackground);
+
+        repaint();
+        revalidate();
+    }
+    public void SetImageLabel(JLabel label, String ruta){
+
+        ImageIcon icon = new ImageIcon(getClass().getResource(ruta));
+        int labelWidth = label.getWidth();
+        int labelHeight = label.getHeight();
+
+        int iconWidth = icon.getIconWidth();
+        int iconHeight = icon.getIconHeight();
+        double scaleX = (double) labelWidth / iconWidth;
+        double scaleY = (double) labelHeight / iconHeight;
+        double scale = Math.min(scaleX, scaleY);
+        int newWidth = (int)(iconWidth * scale);
+        int newHeight = (int)(iconHeight * scale);
+        Image image = icon.getImage().getScaledInstance(
+                newWidth,
+                newHeight,
+                Image.SCALE_DEFAULT
+        );
+        label.setIcon(new ImageIcon(image));
+    }
 
 
     /**
@@ -66,14 +116,45 @@ public class MainMenu extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        jPanel2 = new javax.swing.JPanel();
+        lblPAquilix = new javax.swing.JLabel();
+        lblGalaxi = new javax.swing.JLabel();
+        lblPGas = new javax.swing.JLabel();
+        lblPMoon = new javax.swing.JLabel();
+        lblPurpleHole = new javax.swing.JLabel();
+        lblPIces = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         btnPlay = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        lblGenesisBox = new javax.swing.JLabel();
         btnLoad = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("GenesisBox 1.0.0");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblPAquilix.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/Aqualix.gif"))); // NOI18N
+        jPanel2.add(lblPAquilix, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 630, 260, 250));
+
+        lblGalaxi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/Galaxy.gif"))); // NOI18N
+        jPanel2.add(lblGalaxi, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 630, 550, 120));
+
+        lblPGas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/Gas3.gif"))); // NOI18N
+        jPanel2.add(lblPGas, new org.netbeans.lib.awtextra.AbsoluteConstraints(1530, -70, 530, 390));
+
+        lblPMoon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/MMoon.gif"))); // NOI18N
+        jPanel2.add(lblPMoon, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 880, 160, 110));
+
+        lblPurpleHole.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/Hole.gif"))); // NOI18N
+        jPanel2.add(lblPurpleHole, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 70, 350, 300));
+
+        lblPIces.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/ices.gif"))); // NOI18N
+        jPanel2.add(lblPIces, new org.netbeans.lib.awtextra.AbsoluteConstraints(1700, 870, 100, 110));
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 760));
 
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new java.awt.GridBagLayout());
@@ -81,6 +162,7 @@ public class MainMenu extends javax.swing.JFrame {
         btnPlay.setBackground(new java.awt.Color(10, 34, 63));
         btnPlay.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPlay.setForeground(new java.awt.Color(153, 153, 255));
+        btnPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Icon/New_Game.png"))); // NOI18N
         btnPlay.setText("New Game");
         btnPlay.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(0, 1, 59)));
         btnPlay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -98,7 +180,7 @@ public class MainMenu extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(53, 548, 0, 0);
         jPanel1.add(btnPlay, gridBagConstraints);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/Logo Genesisbox.png"))); // NOI18N
+        lblGenesisBox.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/Logo Genesisbox.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -107,11 +189,12 @@ public class MainMenu extends javax.swing.JFrame {
         gridBagConstraints.ipady = -313;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(27, 247, 0, 208);
-        jPanel1.add(jLabel2, gridBagConstraints);
+        jPanel1.add(lblGenesisBox, gridBagConstraints);
 
         btnLoad.setBackground(new java.awt.Color(10, 34, 63));
         btnLoad.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnLoad.setForeground(new java.awt.Color(153, 153, 255));
+        btnLoad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Icon/load.png"))); // NOI18N
         btnLoad.setText("Load");
         btnLoad.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(0, 1, 59)));
         btnLoad.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -123,15 +206,16 @@ public class MainMenu extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 52;
+        gridBagConstraints.ipadx = 54;
         gridBagConstraints.ipady = 26;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.insets = new java.awt.Insets(6, 548, 0, 0);
         jPanel1.add(btnLoad, gridBagConstraints);
 
         btnExit.setBackground(new java.awt.Color(10, 34, 63));
         btnExit.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnExit.setForeground(new java.awt.Color(153, 153, 255));
+        btnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Icon/exit.png"))); // NOI18N
         btnExit.setText("Exit");
         btnExit.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(0, 1, 59)));
         btnExit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -150,7 +234,7 @@ public class MainMenu extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(6, 548, 53, 0);
         jPanel1.add(btnExit, gridBagConstraints);
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1180, 680));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1200, 760));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -204,7 +288,14 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnLoad;
     private javax.swing.JButton btnPlay;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lblGalaxi;
+    private javax.swing.JLabel lblGenesisBox;
+    private javax.swing.JLabel lblPAquilix;
+    private javax.swing.JLabel lblPGas;
+    private javax.swing.JLabel lblPIces;
+    private javax.swing.JLabel lblPMoon;
+    private javax.swing.JLabel lblPurpleHole;
     // End of variables declaration//GEN-END:variables
 }
