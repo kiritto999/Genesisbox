@@ -4,17 +4,29 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class DatabaseManager {
 
-    private static final String URL =
-            "jdbc:mysql://localhost:3306/genesisbox";
-
-    private static final String USER = "root";
-
-    private static final String PASSWORD = "";
-
+    private static String URL;
+    private static String USER;
+    private static String PASSWORD;
+    
     private Connection connection;
+    
+    static {
+        try {
+            Properties props = new Properties();
+            props.load(new FileInputStream("db.properties"));
+            URL      = props.getProperty("db.url");
+            USER     = props.getProperty("db.user");
+            PASSWORD = props.getProperty("db.password");
+        } catch (IOException e) {
+            System.err.println("No se encontró db.properties");
+        }
+    }
 
     // =========================================
     // CONECTAR

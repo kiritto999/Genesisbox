@@ -330,23 +330,5 @@ public class Zyrox extends Animal {
             g2.drawOval(dx, dy, drawW, drawH);
         }
 
-        drawHealthBar(g2, px, py, tileSize);
-    }
-
-    private void drawHealthBar(Graphics2D g2, int px, int py, int tileSize) {
-        int barW = tileSize - 6;
-        int barH = 3;
-        int bx   = px + 3;
-        int by   = py + tileSize - barH - 2;
-
-        float ratio = (float) health / maxHealth;
-        Color barColor = ratio > 0.5f ? new Color(80, 220, 80)
-                       : ratio > 0.25f ? new Color(255, 200, 0)
-                       : new Color(220, 50, 50);
-
-        g2.setColor(new Color(0, 0, 0, 120));
-        g2.fillRect(bx, by, barW, barH);
-        g2.setColor(barColor);
-        g2.fillRect(bx, by, (int)(barW * ratio), barH);
     }
 }

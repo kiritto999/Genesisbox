@@ -1,6 +1,6 @@
 # Archivos privados de NetBeans
 nbproject/private/
-
+db.properties
 # Archivos temporales
 build/
 dist/
