@@ -204,11 +204,11 @@ public class ControlPanel extends javax.swing.JFrame {
     public Resource makeResourse(int tipo, int x, int y) {
         switch (tipo) {
             case 1:
-                return new Food(x, y);
+                return new Blupys(x, y);
             case 2:
                 return new Nero(x, y);
             case 3:
-                return new Tree(x, y);
+                return new Zenthra(x, y);
             default:
                 return null;
         }

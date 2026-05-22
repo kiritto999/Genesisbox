@@ -138,7 +138,7 @@ public abstract class Animal extends Entity {
     }
 
     // ── Comer un recurso de comida ─────────────────────────────────────
-    protected boolean intentarComer(Food food) {
+    protected boolean intentarComer(Blupys food) {
         if (food == null || !food.isAlive() || food.isDepleted()) return false;
         if (food.getTileX() != tileX || food.getTileY() != tileY) {
             if (!esAdyacente(food.getTileX(), food.getTileY())) return false;

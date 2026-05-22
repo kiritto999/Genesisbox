@@ -1,35 +1,77 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import World.Tile;
 
 /**
- * Zyrox: Zorro herbívoro, presa del Lummon.
+ * Zyrox: Herbívoro presa del Lummon.
  * - capacity = 3 → no caben 2 en el mismo tile.
- * - Se agrupa de a 2 en tiles adyacentes. Si ya tiene pareja, los demás
- *   buscan otro Zyrox sin pareja.
  * - Come bayas maduras cuando tiene hambre.
  * - Contraataca si fue golpeado.
  * - Huye si HP < 20%.
+ *
+ * Estados visuales:
+ *   IDLE    → zyrox_idle.png
+ *   ATTACK  → zyrox_attack.png  (solo cuando golpea, con timer)
+ *   HURT    → zyrox_hurt.png    (HP < 35%)
+ *   EAT     → zyrox_eat.png     (mientras come)
  */
 public class Zyrox extends Animal {
 
+    private static final Logger logger = Logger.getLogger(Zyrox.class.getName());
+
+    // ── Constantes de comportamiento ───────────────────────────────────
     private static final int    MAX_GRUPO     = 2;
     private static final int    HAMBRE_UMBRAL = CAP_HAMBRE / 2;
-    private static final int    RANGO_COMIDA  = 8;
+    private static final int    RANGO_COMIDA  = 20;
     private static final double VIDA_HUIDA    = 0.20;
+    private static final double VIDA_HERIDO   = 0.35;
+
+    // ── Sprites ────────────────────────────────────────────────────────
+    private static BufferedImage spriteIdle;
+    private static BufferedImage spriteAttack;
+    private static BufferedImage spriteHurt;
+    private static BufferedImage spriteEat;
+    private static boolean spritesLoaded = false;
 
     private final Random random = new Random();
     private int hpUltimoTick = -1;
 
+    // Timer para el sprite de ataque (evita mostrarlo al recibir daño)
+    private int timerAtaque = 0;
+    private static final int DURACION_SPRITE_ATAQUE = 3;
+
+    // Flag para el sprite de comer
+    private boolean estaComiendo = false;
+
+    // ── Carga de sprites ───────────────────────────────────────────────
+    private static void loadSprites() {
+        if (spritesLoaded) return;
+        try {
+            spriteIdle   = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_idle.png"));
+            spriteAttack = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_attack.png"));
+            spriteHurt   = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_hurt.png"));
+            spriteEat    = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_eat.png"));
+        } catch (IOException | IllegalArgumentException e) {
+            logger.log(Level.WARNING, "No se pudieron cargar los sprites del Zyrox", e);
+        }
+        spritesLoaded = true;
+    }
+
+    // ── Constructor ────────────────────────────────────────────────────
     public Zyrox(int tileX, int tileY, Entitymanager manager) {
         super(tileX, tileY, manager);
+        loadSprites();
+
         this.baseColor = new Color(210, 120, 40);
         name         = "Zyrox";
         maxHealth    = 40 + random.nextInt(21);
@@ -48,8 +90,30 @@ public class Zyrox extends Animal {
         hpUltimoTick = maxHealth;
     }
 
+    // ── Selección de sprite según estado ──────────────────────────────
+    private BufferedImage currentSprite() {
+        // Herido: prioridad máxima
+        if (health < (int)(maxHealth * VIDA_HERIDO) && spriteHurt != null) {
+            return spriteHurt;
+        }
+        // Atacando: solo si el timer está activo (lo activamos al golpear)
+        if (timerAtaque > 0 && spriteAttack != null) {
+            timerAtaque--;
+            return spriteAttack;
+        }
+        // Comiendo
+        if (estaComiendo && spriteEat != null) {
+            return spriteEat;
+        }
+        return spriteIdle;
+    }
+
+    // ── Lógica de acción ──────────────────────────────────────────────
     @Override
     protected void decidirAccion(World.World world) {
+
+        // Resetear flags al inicio de cada tick
+        estaComiendo = false;
 
         // Prioridad 1: Huir si HP bajo
         if (estaEnPeligroDeMuerte()) {
@@ -67,7 +131,9 @@ public class Zyrox extends Animal {
         if (hpUltimoTick > health) {
             Lummon objetivo = buscarLummonAdyacente();
             if (objetivo != null) {
-                intentarAtacar(objetivo);
+                if (intentarAtacar(objetivo)) {
+                    timerAtaque = DURACION_SPRITE_ATAQUE; // activar sprite solo si golpeó
+                }
                 hpUltimoTick = health;
                 return;
             }
@@ -75,12 +141,13 @@ public class Zyrox extends Animal {
 
         // Prioridad 3: Comer si tiene hambre
         if (hunger <= HAMBRE_UMBRAL) {
-            Food comida = buscarComidaMasCercana(RANGO_COMIDA);
+            Blupys comida = buscarComidaMasCercana(RANGO_COMIDA);
             if (comida != null) {
-                if ((comida.getTileX() == tileX && comida.getTileY() == tileY)
-                        || esAdyacente(comida.getTileX(), comida.getTileY())) {
-                    intentarComer(comida);
-                } else {
+                boolean enRango = (comida.getTileX() == tileX && comida.getTileY() == tileY)
+                        || esAdyacente(comida.getTileX(), comida.getTileY());
+                if (enRango && comida.getStage() == Blupys.Etapa.MADURA) {
+                    estaComiendo = intentarComer(comida); // activar sprite eat
+                } else if (!enRango) {
                     moverHacia(comida.getTileX(), comida.getTileY(), world);
                 }
                 hpUltimoTick = health;
@@ -96,7 +163,7 @@ public class Zyrox extends Animal {
         hpUltimoTick = health;
     }
 
-    // ── Agrupación ─────────────────────────────────────────────────────
+// ── Agrupación ─────────────────────────────────────────────────────
     /**
      * Cuenta cuántos Zyrox están en tiles adyacentes a (cx, cy).
      */
@@ -157,7 +224,6 @@ public class Zyrox extends Animal {
     }
 
     // ── Utilidades ─────────────────────────────────────────────────────
-
     private boolean estaEnPeligroDeMuerte() {
         return health < (int)(maxHealth * VIDA_HUIDA);
     }
@@ -166,24 +232,29 @@ public class Zyrox extends Animal {
         for (Animal a : entitymanager.getAnimals()) {
             if (a instanceof Lummon) {
                 Lummon l = (Lummon) a;
-                if (l.isAlive() && esAdyacente(l.getTileX(), l.getTileY())) {
-                    return l;
-                }
+                if (l.isAlive() && esAdyacente(l.getTileX(), l.getTileY())) return l;
             }
         }
         return null;
     }
 
-    private Food buscarComidaMasCercana(int radio) {
-        Food mejor = null;
-        int mejorDist = radio + 1;
+    private Blupys buscarComidaMasCercana(int radio) {
+        Blupys mejor = null;
+        int mejorDist = Integer.MAX_VALUE;
+
         for (Entity e : entitymanager.getResources()) {
-            if (!(e instanceof Food)) continue;
-            Food f = (Food) e;
+            if (!(e instanceof Blupys)) continue;
+            Blupys f = (Blupys) e;
             if (!f.isAlive() || f.isDepleted()) continue;
-            if (f.getStage() != Food.Etapa.MADURA) continue;
             int dist = Math.abs(f.getTileX() - tileX) + Math.abs(f.getTileY() - tileY);
-            if (dist < mejorDist) { mejorDist = dist; mejor = f; }
+            if (dist <= radio && dist < mejorDist) {
+                if (mejor == null
+                        || f.getStage() == Blupys.Etapa.MADURA && mejor.getStage() != Blupys.Etapa.MADURA
+                        || (f.getStage() == mejor.getStage() && dist < mejorDist)) {
+                    mejorDist = dist;
+                    mejor = f;
+                }
+            }
         }
         return mejor;
     }
@@ -203,8 +274,7 @@ public class Zyrox extends Animal {
         moverAleatorio(world);
     }
 
-    // ── Update ─────────────────────────────────────────────────────────
-
+    // ── Updates ───────────────────────────────────────────────────────
     @Override public void update(World.World world) {}
 
     @Override
@@ -213,36 +283,70 @@ public class Zyrox extends Animal {
         super.update(world, deltaTime);
     }
 
-    // ── Dibujo ─────────────────────────────────────────────────────────
-
+    // ── Dibujo ────────────────────────────────────────────────────────
     @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
         if (slot < 0 || slot >= 5) return;
 
-        int size  = (int)(tileSize * 0.55);
-        int px    = cameraX + tileX * tileSize + (tileSize - size) / 2;
-        int py    = cameraY + tileY * tileSize + (tileSize - size) / 2;
-        int bodyH = (int)(size * 0.60);
+        BufferedImage sprite = currentSprite();
 
-        Color color;
-        if (estaEnPeligroDeMuerte())      color = new Color(180, 30,  30);
-        else if (hunger <= HAMBRE_UMBRAL) color = new Color(255, 210, 50);
-        else                              color = baseColor;
+        int px = cameraX + tileX * tileSize;
+        int py = cameraY + tileY * tileSize;
 
-        int earW = size / 7, earH = size / 5;
-        g.setColor(color.darker());
-        g.fillOval(px + size / 5, py - earH / 2, earW, earH);
-        g.fillOval(px + size / 2, py - earH / 2, earW, earH);
+        int drawW, drawH;
+        if (sprite != null) {
+            double ratio = (double) sprite.getWidth() / sprite.getHeight();
+            drawH = (int)(tileSize * 0.90);
+            drawW = (int)(drawH * ratio);
+        } else {
+            drawW = (int)(tileSize * 0.55);
+            drawH = (int)(tileSize * 0.55);
+        }
 
-        g.setColor(color);
-        g.fillOval(px, py, size, bodyH);
+        int dx = px + (tileSize - drawW) / 2;
+        int dy = py + (tileSize - drawH) / 2;
 
-        int snoutW = size / 4, snoutH = bodyH / 3;
-        g.setColor(new Color(230, 160, 100));
-        g.fillOval(px + size - snoutW, py + bodyH / 2 - snoutH / 2, snoutW, snoutH);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                            RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-        g.setColor(Color.BLACK);
-        g.drawOval(px, py, size, bodyH);
-        g.fillOval(px + size * 3 / 4, py + bodyH / 3, Math.max(2, size / 10), Math.max(2, size / 10));
+        if (sprite != null) {
+            g2.drawImage(sprite, dx, dy, drawW, drawH, null);
+            if (customColor != null) {
+                g2.setColor(new Color(
+                    customColor.getRed(),
+                    customColor.getGreen(),
+                    customColor.getBlue(), 60));
+                g2.fillRect(dx, dy, drawW, drawH);
+            }
+        } else {
+            Color color;
+            if (estaEnPeligroDeMuerte())      color = new Color(180, 30, 30);
+            else if (hunger <= HAMBRE_UMBRAL) color = new Color(255, 210, 50);
+            else                              color = baseColor;
+            g2.setColor(color);
+            g2.fillOval(dx, dy, drawW, drawH);
+            g2.setColor(Color.BLACK);
+            g2.drawOval(dx, dy, drawW, drawH);
+        }
+
+        drawHealthBar(g2, px, py, tileSize);
+    }
+
+    private void drawHealthBar(Graphics2D g2, int px, int py, int tileSize) {
+        int barW = tileSize - 6;
+        int barH = 3;
+        int bx   = px + 3;
+        int by   = py + tileSize - barH - 2;
+
+        float ratio = (float) health / maxHealth;
+        Color barColor = ratio > 0.5f ? new Color(80, 220, 80)
+                       : ratio > 0.25f ? new Color(255, 200, 0)
+                       : new Color(220, 50, 50);
+
+        g2.setColor(new Color(0, 0, 0, 120));
+        g2.fillRect(bx, by, barW, barH);
+        g2.setColor(barColor);
+        g2.fillRect(bx, by, (int)(barW * ratio), barH);
     }
 }

@@ -45,9 +45,9 @@ public class Entitymanager {
  
     // ── Spawn inicial ──────────────────────────────────────────────────
     private void spawnInicial() {
-        spawnRecursos(Tree.class,  8);
+        spawnRecursos(Zenthra.class,  8);
         spawnRecursos(Nero.class,  5);
-        spawnRecursos(Food.class,  6);
+        spawnRecursos(Blupys.class,  6);
     }
  
     private void spawnRecursos(Class<?> clazz, int cantidad) {
@@ -67,9 +67,9 @@ public class Entitymanager {
     }
  
     private Resource crearRecurso(Class<?> clazz, int x, int y) {
-        if (clazz == Tree.class) return new Tree(x, y);
+        if (clazz == Zenthra.class) return new Zenthra(x, y);
         if (clazz == Nero.class) return new Nero(x, y);
-        if (clazz == Food.class) return new Food(x, y);
+        if (clazz == Blupys.class) return new Blupys(x, y);
         return null;
     }
  

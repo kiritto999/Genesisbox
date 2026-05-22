@@ -12,6 +12,9 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import Utils.TimeDay;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  *
@@ -163,14 +166,25 @@ public class GamePanel extends JPanel {
    
     public void DrawTest(Graphics g) {
         synchronized (entitymanager) {
-            for (Entity e : entitymanager.getResources()) {
-                e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
+
+        // Juntar recursos y animales en una sola lista
+        List<Entity> todo = new ArrayList<>();
+        todo.addAll(entitymanager.getResources());
+        todo.addAll(entitymanager.getAnimals());
+
+        // Ordenar por tileY: los de arriba se dibujan primero (quedan atrás)
+        todo.sort(new Comparator<Entity>() {
+            @Override
+            public int compare(Entity a, Entity b) {
+                return Integer.compare(a.getTileY(), b.getTileY());
             }
-            for (Entity e : entitymanager.getAnimals()) {
-                e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
-            }
+        });
+
+        for (Entity e : todo) {
+            e.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray);
         }
     }
+}
    
    //detector de entidades en las casiilas
    public void handleClick(int mouseX, int mouseY) {
