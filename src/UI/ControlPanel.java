@@ -76,6 +76,37 @@ public class ControlPanel extends javax.swing.JFrame {
         Image icon = new ImageIcon(
                 getClass().getResource("/resources/Gifs/Aqualix.gif")
         ).getImage();
+        
+        // ── Botón rayo ──
+        javax.swing.JButton btnRayo = new javax.swing.JButton("⚡ Rayo");
+        btnRayo.setBackground(new Color(20, 10, 60));
+        btnRayo.setForeground(new Color(180, 100, 255));
+        btnRayo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRayo.setBounds(340, 40, 100, 30);
+        btnRayo.addActionListener(e -> setTool(Tool.RAYO));
+        menuGame.add(btnRayo);
+        
+        // ── Label cooldown ──
+        javax.swing.JLabel lblCooldown = new javax.swing.JLabel("Listo");
+        lblCooldown.setForeground(new Color(100, 255, 100));
+        lblCooldown.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+        lblCooldown.setBounds(340, 75, 100, 20);
+        menuGame.add(lblCooldown);
+
+        // ── Timer que actualiza el label ──
+        new javax.swing.Timer(200, e -> {
+            LightningEffect ray = GP.getLightning();
+            if (ray.puedeUsarse()) {
+                lblCooldown.setForeground(new Color(100, 255, 100));
+                lblCooldown.setText("✔ Listo");
+                btnRayo.setEnabled(true);
+            } else {
+                int seg = ray.getCooldownRestante();
+                lblCooldown.setForeground(new Color(255, 80, 80));
+                lblCooldown.setText("⏳ " + seg + "s");
+                btnRayo.setEnabled(false);
+            }
+        }).start();
 
         setIconImage(icon);
         

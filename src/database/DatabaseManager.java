@@ -17,20 +17,23 @@ public class DatabaseManager {
     private Connection connection;
     
     static {
-
         try {
-
             Properties props = new Properties();
-            props.load(
-                DatabaseManager.class.getResourceAsStream("/db.properties")
-            );
-            URL = props.getProperty("db.url");
-            USER = props.getProperty("db.user");
-            PASSWORD = props.getProperty("db.password");
-            System.out.println("db.properties cargado");
+            java.io.InputStream stream = DatabaseManager.class
+                .getClassLoader()
+                .getResourceAsStream("db.properties");
+
+            if (stream != null) {
+                props.load(stream);
+                URL      = props.getProperty("db.url");
+                USER     = props.getProperty("db.user");
+                PASSWORD = props.getProperty("db.password");
+            } else {
+                System.err.println("db.properties no encontrado, BD desactivada");
+                URL = null; USER = null; PASSWORD = null;
+            }
         } catch (IOException e) {
-            System.err.println("No se encontró db.properties");
-            e.printStackTrace();
+            System.err.println("Error leyendo db.properties");
         }
     }
 

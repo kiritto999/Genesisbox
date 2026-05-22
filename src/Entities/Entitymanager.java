@@ -198,20 +198,26 @@ public class Entitymanager {
  
     // ── API pública para agregar durante el juego (usa buffer) ─────────
     public void addAnimal(Animal a) {
-        a.slot = getSlotLibre(a.getTileX(), a.getTileY(), a.getCapacity());
-        if (a.slot == -1) return;
-        toAdd.add(a);
+        synchronized (this) {
+            a.slot = getSlotLibre(a.getTileX(), a.getTileY(), a.getCapacity());
+            if (a.slot == -1) return;
+            toAdd.add(a);
+        }
     }
  
     public void addResourse(Resource r) {
-        int cap = obtenerCapacidad(r);
-        r.slot = getSlotLibre(r.getTileX(), r.getTileY(), cap);
-        if (r.slot == -1) return;
-        toAdd.add(r);   // ← antes iba directo a las listas, aquí estaba el CME
+        synchronized (this) {
+            int cap = obtenerCapacidad(r);
+            r.slot = getSlotLibre(r.getTileX(), r.getTileY(), cap);
+            if (r.slot == -1) return;
+            toAdd.add(r);
+        }
     }
  
     public void addEntity(Entity e) {
-        toAdd.add(e);
+        synchronized (this) {
+            toAdd.add(e);
+        }
     }
  
     // ── Utilidades de espacio ──────────────────────────────────────────

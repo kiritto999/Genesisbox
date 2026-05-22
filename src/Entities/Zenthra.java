@@ -37,7 +37,7 @@ public class Zenthra extends Resource {
 
     private Etapa_Crecimiento stage;
     private int Tiempo_Crecimiento;
-    private static final int INTERVALO_CRECIMIENTO = 200;
+    private static final int INTERVALO_CRECIMIENTO = 1200;
 
     private static void loadSprites() {
         if (spritesLoaded) return;

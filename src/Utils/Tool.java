@@ -13,5 +13,6 @@ public enum Tool {
     GRASS,
     NONE,
     Lummon,
-    Zyrox
+    Zyrox,
+    RAYO
 }

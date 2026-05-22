@@ -2,12 +2,13 @@ package Inputs;
 
 import java.awt.event.*;
 import UI.GamePanel;
-import Utils.Tool;
+import Utils.*;
 import World.World;
 import World.Tile;
 import Entities.Entitymanager;
 import Entities.Lummon;
 import Entities.Zyrox;
+import Utils.LightningEffect;
 
 public class Mouser implements MouseListener, MouseMotionListener, MouseWheelListener {
 
@@ -149,7 +150,20 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
             case Zyrox:
                 Emanager.addEntity(new Zyrox(col, row,Emanager));
                 break;
+                
+            case RAYO:
+                LightningEffect ray = jpanel.getLightning();
+                if (!ray.puedeUsarse()) break;
+                ray.lanzar(col, row);
+                for (Entities.Entity e : Emanager.getEntities()) {
+                    if (e.getTileX() == col && e.getTileY() == row) {
+                        e.takeDamage(80);
+                    }
+                }
+    break;
         }
+        
+        
 
         jpanel.repaint();
     }

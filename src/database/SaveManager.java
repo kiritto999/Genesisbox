@@ -143,8 +143,8 @@ public class SaveManager {
                     ps.setInt(22, r.getRegenInterval());
                 }
 
-                if (e instanceof Tree) {
-                    Tree t = (Tree) e;
+                if (e instanceof Zenthra) {
+                    Zenthra t = (Zenthra) e;
                     ps.setDouble(24, t.getStage().ordinal());
                 }
 
@@ -260,13 +260,13 @@ public class SaveManager {
                         e = new Zyrox(x, y,manager);
                         break;
 
-                    case "Tree":
-                        e = new Tree(x, y);
+                    case "Zenthra":
+                        e = new Zenthra(x, y);
                         break;
                     case "Nero":
                         e = new Nero(x,y);
                         break;
-                    case "Food":
+                    case "Blupys":
                         e = new Blupys(x,y);
                         break;
                 }

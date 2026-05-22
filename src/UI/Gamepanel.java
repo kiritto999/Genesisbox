@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import Utils.LightningEffect;
 
 public class GamePanel extends JPanel {
 
@@ -29,6 +30,8 @@ public class GamePanel extends JPanel {
 
     private Entity followedEntity;
     private TimeDay time;
+    // ── campo nuevo ──
+    private LightningEffect lightning = new LightningEffect();
 
     // =========================
     // BACKGROUND IMAGE
@@ -113,6 +116,8 @@ public class GamePanel extends JPanel {
         DrawIsland(g);
         DrawTest(g);
         drawGrid(g);
+        lightning.update();
+        lightning.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray, this);
         drawNight(g);
     }
 
@@ -363,6 +368,8 @@ public class GamePanel extends JPanel {
             infoP.setTileEntities(entitiesInTile);
         }
     }
+    
+    
 
     // =========================
     // CAMERA ENTITY CONTROL
@@ -416,5 +423,8 @@ public class GamePanel extends JPanel {
 
     public Entitymanager getEntityManager() {
         return entitymanager;
+    }
+    public LightningEffect getLightning() {
+        return lightning; 
     }
 }
