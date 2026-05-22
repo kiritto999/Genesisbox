@@ -14,5 +14,7 @@ public enum Tool {
     NONE,
     Lummon,
     Zyrox,
+    Nero,
+    Zethar,
     RAYO
 }

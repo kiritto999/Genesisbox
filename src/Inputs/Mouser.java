@@ -7,7 +7,10 @@ import World.World;
 import World.Tile;
 import Entities.Entitymanager;
 import Entities.Lummon;
+import Entities.Nero;
+import Entities.Zenthra;
 import Entities.Zyrox;
+import UI.ControlPanel;
 import Utils.LightningEffect;
 
 public class Mouser implements MouseListener, MouseMotionListener, MouseWheelListener {
@@ -19,12 +22,14 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
     private int lastX, lastY;
     private boolean dragging = false;
     private Entitymanager Emanager;
+    private ControlPanel controlPanel;
     
-    public Mouser(Camera camera, GamePanel panel, World world,Entitymanager entityManager) {
+    public Mouser(Camera camera, GamePanel panel, World world,Entitymanager entityManager,ControlPanel cp) {
         this.camera = camera;
         this.jpanel = panel;
         this.world = world;
         this.Emanager = entityManager;
+        this.controlPanel = cp;
 
         jpanel.addMouseListener(this);
         jpanel.addMouseMotionListener(this);
@@ -140,7 +145,8 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
             break;
 
             case GRASS:
-                world.setTile(row, col, Tile.GRASS);
+                int variant = controlPanel.getSelectedGroundVariant();
+                world.setTile(row, col, variant);
                 break;
 
             case Lummon:
@@ -150,6 +156,15 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
             case Zyrox:
                 Emanager.addEntity(new Zyrox(col, row,Emanager));
                 break;
+                    
+            case Nero:
+                Emanager.addEntity(new Nero(col, row));
+                break;
+
+            case Zethar:
+                Emanager.addEntity(new Zenthra(col, row));
+                break;
+                
                 
             case RAYO:
                 LightningEffect ray = jpanel.getLightning();

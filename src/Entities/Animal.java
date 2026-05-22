@@ -3,11 +3,19 @@ package Entities;
 import World.Tile;
 import java.util.Random;
 
-enum Sex { MALE, FEMALE }
-enum FoodType { HERBIVORE, CARNIVORE }
+
 
 public abstract class Animal extends Entity {
 
+    public static enum Sex {
+        MALE,
+        FEMALE
+    }
+
+    public static enum FoodType {
+        HERBIVORE,
+        CARNIVORE
+    }
     public static final int CAP_VIDA         = 400;
     public static final int CAP_ENERGIA      = 200;
     public static final int CAP_ATAQUE       = 60;
@@ -274,6 +282,8 @@ public abstract class Animal extends Entity {
     public FoodType getFoodType()   { return foodType; }
     public int    getCapacity()     { return capacity; }
     public int    getHabitat()      { return habitat; }
+    public double getReproTimer() {return reproTimer;}
+    
 
     // ── Setters ────────────────────────────────────────────────────────
     public void setEnergy(int e)        { this.energy = e; }
@@ -287,4 +297,8 @@ public abstract class Animal extends Entity {
     public void setFoodType(FoodType f) { this.foodType = f; }
     public void setEtapa(Etapa etapa)   { this.etapa = etapa; }
     public void setEdadDias(int dias)   { this.edadDias = dias; }
+    public void setReproTimer(double reproTimer) {this.reproTimer = reproTimer;}
+    
+    
+    
 }

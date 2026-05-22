@@ -47,121 +47,248 @@ public class SaveManager {
     }
     
     public void saveTiles(World world) {
+
         try {
             PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO tiles (" +
-                "x, y, type, variant" +
-                ") VALUES (?, ?, ?, ?)"
+                "x, y, tileId" +
+                ") VALUES (?, ?, ?)"
             );
+
             for (int y = 0; y < world.getRows(); y++) {
+
                 for (int x = 0; x < world.getColums(); x++) {
+
                     Tile tile = world.getMap()[y][x];
                     ps.setInt(1, x);
                     ps.setInt(2, y);
+
                     ps.setInt(3, tile.getType());
-                    ps.setInt(4, tile.getVariant());
+
                     ps.executeUpdate();
                 }
             }
+
             System.out.println("Tiles guardados");
+
         } catch (SQLException e) {
+
             e.printStackTrace();
         }
     }
     public void saveEntities(Entitymanager manager) {
 
-        try {
-            PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO entities (" +
-                "entityType," +
-                "x,y," +
-                "slot," +
-                "health,maxHealth," +
-                "alive," +
-                "energy,hunger," +
-                "speed,attackStat,intelligence," +
-                "capacity," +
-                "sex," +
-                "foodType," +
-                "habitat," +
-                "amount,maxAmount," +
-                "depleted," +
-                "regenRate,regenTimer,regenInterval," +
-                "customName," +
-                "custom1,custom2,custom3" +
-                ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    try {
+
+        PreparedStatement ps = connection.prepareStatement(
+
+            "INSERT INTO entities (" +
+
+            "entityType," +
+            "x," +
+            "y," +
+            "slot," +
+
+            "health," +
+            "maxHealth," +
+            "alive," +
+
+            "customName," +
+
+            "energy," +
+            "hunger," +
+
+            "speed," +
+            "attackStat," +
+            "intelligence," +
+
+            "capacity," +
+
+            "sex," +
+            "foodType," +
+
+            "habitat," +
+
+            "ageDays," +
+            "stage," +
+            "reproTimer," +
+
+            "amount," +
+            "maxAmount," +
+
+            "depleted," +
+
+            "regenRate," +
+            "regenTimer," +
+            "regenInterval" +
+
+            ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        );
+
+        for(Entity e : manager.getEntities()) {
+
+            ps.setString(1,
+                e.getClass().getSimpleName()
             );
-            for (Entity e : manager.getEntities()) {
 
-                ps.setString(1, e.getClass().getSimpleName());
-                ps.setInt(2, e.getTileX());
-                ps.setInt(3, e.getTileY());
-                ps.setInt(4, e.getSlot());
-                ps.setInt(5, e.getHealth());
-                ps.setInt(6, e.getMaxHealth());
-                ps.setBoolean(7, e.isAlive());
-                ps.setNull(8, java.sql.Types.INTEGER);
-                ps.setNull(9, java.sql.Types.INTEGER);
-                ps.setNull(10, java.sql.Types.INTEGER);
-                ps.setNull(11, java.sql.Types.INTEGER);
-                ps.setNull(12, java.sql.Types.INTEGER);
-                ps.setNull(13, java.sql.Types.INTEGER);
-                ps.setNull(14, java.sql.Types.VARCHAR);
-                ps.setNull(15, java.sql.Types.VARCHAR);
-                ps.setNull(16, java.sql.Types.INTEGER);
-                ps.setNull(17, java.sql.Types.INTEGER);
-                ps.setNull(18, java.sql.Types.INTEGER);
-                ps.setNull(19, java.sql.Types.BOOLEAN);
-                ps.setNull(20, java.sql.Types.INTEGER);
-                ps.setNull(21, java.sql.Types.INTEGER);
-                ps.setNull(22, java.sql.Types.INTEGER);
-                ps.setString(23, e.getCustomName());
-                ps.setNull(24, java.sql.Types.DOUBLE);
-                ps.setNull(25, java.sql.Types.DOUBLE);
-                ps.setNull(26, java.sql.Types.DOUBLE);
+            ps.setInt(2,
+                e.getTileX()
+            );
 
-                if (e instanceof Animal) {
-                    Animal a = (Animal) e;
-                    ps.setInt(8, a.getEnergy());
-                    ps.setInt(9, a.getHunger());
-                    ps.setInt(10, a.getSpeed());
-                    ps.setInt(11, a.getAttack());
-                    ps.setInt(12, a.getIntelligence());
-                    ps.setInt(13, a.getCapacity());
-                    ps.setString(14, "" + a.getSex());
-                    ps.setString(15, "" + a.getFoodType());
-                    ps.setInt(16, a.getHabitat());
-                }
+            ps.setInt(3,
+                e.getTileY()
+            );
 
-                if (e instanceof Resource) {
-                    Resource r = (Resource) e;
-                    ps.setInt(17, r.getQuantity());
-                    ps.setInt(18, r.getMaxQuantity());
-                    ps.setBoolean(19, r.isDepleted());
-                    ps.setInt(20, r.getRegenRate());
-                    ps.setInt(21, r.getRegenTimer());
-                    ps.setInt(22, r.getRegenInterval());
-                }
+            ps.setInt(4,
+                e.getSlot()
+            );
 
-                if (e instanceof Zenthra) {
-                    Zenthra t = (Zenthra) e;
-                    ps.setDouble(24, t.getStage().ordinal());
-                }
+            ps.setInt(5,
+                e.getHealth()
+            );
 
-                if (e instanceof Corpse) {
-                    Corpse c = (Corpse) e;
-                    ps.setDouble(25, c.getAge());
-                }
-                ps.executeUpdate();
+            ps.setInt(6,
+                e.getMaxHealth()
+            );
+
+            ps.setBoolean(7,
+                e.isAlive()
+            );
+
+            ps.setString(8,
+                e.getCustomName()
+            );
+
+            // DEFAULTS
+            ps.setInt(9, 0);
+            ps.setInt(10, 0);
+
+            ps.setInt(11, 0);
+            ps.setInt(12, 0);
+            ps.setInt(13, 0);
+
+            ps.setInt(14, 0);
+
+            ps.setString(15, "");
+            ps.setString(16, "");
+
+            ps.setInt(17, 0);
+
+            ps.setInt(18, 0);
+            ps.setString(19, "");
+            ps.setDouble(20, 0);
+
+            ps.setInt(21, 0);
+            ps.setInt(22, 0);
+
+            ps.setBoolean(23, false);
+
+            ps.setInt(24, 0);
+            ps.setInt(25, 0);
+            ps.setInt(26, 0);
+
+            // =========================
+            // ANIMALS
+            // =========================
+
+            if(e instanceof Animal) {
+
+                Animal a = (Animal)e;
+
+                ps.setInt(9,
+                    a.getEnergy()
+                );
+
+                ps.setInt(10,
+                    a.getHunger()
+                );
+
+                ps.setInt(11,
+                    a.getSpeed()
+                );
+
+                ps.setInt(12,
+                    a.getAttack()
+                );
+
+                ps.setInt(13,
+                    a.getIntelligence()
+                );
+
+                ps.setInt(14,
+                    a.getCapacity()
+                );
+
+                ps.setString(15,
+                    a.getSex().name()
+                );
+
+                ps.setString(16,
+                    a.getFoodType().name()
+                );
+
+                ps.setInt(17,
+                    a.getHabitat()
+                );
+
+                ps.setInt(18,
+                    a.getEdadDias()
+                );
+
+                ps.setString(19,
+                    a.getEtapa().name()
+                );
+
+                ps.setDouble(20,
+                    a.getReproTimer()
+                );
             }
 
-            System.out.println("Entidades guardadas");
+            // =========================
+            // RESOURCES
+            // =========================
+
+            if(e instanceof Resource) {
+
+                Resource r = (Resource)e;
+
+                ps.setInt(21,
+                    r.getQuantity()
+                );
+
+                ps.setInt(22,
+                    r.getMaxQuantity()
+                );
+
+                ps.setBoolean(23,
+                    r.isDepleted()
+                );
+
+                ps.setInt(24,
+                    r.getRegenRate()
+                );
+
+                ps.setInt(25,
+                    r.getRegenTimer()
+                );
+
+                ps.setInt(26,
+                    r.getRegenInterval()
+                );
+            }
+
+            ps.executeUpdate();
+        }
+
+        System.out.println("Entidades guardadas");
 
         } catch (SQLException e) {
 
             e.printStackTrace();
         }
     }
+    
+    
     public void saveGame(World world,TimeDay time, Entitymanager manager) {
         db.clearTables();
         saveWorld(world, time);
@@ -210,18 +337,17 @@ public class SaveManager {
             PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM tiles"
             );
-            
+
             ResultSet rs = ps.executeQuery();
-            
+
             while(rs.next()) {
+
                 int x = rs.getInt("x");
                 int y = rs.getInt("y");
-                int type = rs.getInt("type");
-                int variant = rs.getInt("variant");
-                //Tile tile = new Tile(type);
-                //tile.setVariant(variant);
-                //world.getMap()[y][x] = tile;
-                
+
+                int tileId = rs.getInt("tileId");
+
+                world.setTile(y, x, tileId);
             }
 
             System.out.println("Tiles cargados");
@@ -235,6 +361,7 @@ public class SaveManager {
     public void loadEntities(Entitymanager manager) {
 
         try {
+
             PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM entities"
             );
@@ -252,31 +379,155 @@ public class SaveManager {
 
                 switch(type) {
 
+                    // =========================
+                    // ANIMALS
+                    // =========================
+
                     case "Lummon":
-                        e = new Lummon(x, y,manager);
+                        e = new Lummon(x, y, manager);
                         break;
 
                     case "Zyrox":
-                        e = new Zyrox(x, y,manager);
+                        e = new Zyrox(x, y, manager);
                         break;
+
+                    // =========================
+                    // RESOURCES
+                    // =========================
 
                     case "Zenthra":
                         e = new Zenthra(x, y);
                         break;
+
                     case "Nero":
-                        e = new Nero(x,y);
+                        e = new Nero(x, y);
                         break;
+
                     case "Blupys":
-                        e = new Blupys(x,y);
+                        e = new Blupys(x, y);
+                        break;
+
+                    case "Corpse":
+                        e = new Corpse(
+                            x,
+                            y,
+                            rs.getInt("maxAmount")
+                        );
                         break;
                 }
 
+                // =========================
+                // COMMON DATA
+                // =========================
+
                 if(e != null) {
-                    e.setHealth(rs.getInt("health"));
-                    e.setMaxHealth(rs.getInt("maxHealth"));
-                    e.setAlive(rs.getBoolean("alive"));
-                    e.setSlot(rs.getInt("slot"));
-                    e.setCustomName(rs.getString("customName"));
+
+                    e.setHealth(
+                        rs.getInt("health")
+                    );
+
+                    e.setMaxHealth(
+                        rs.getInt("maxHealth")
+                    );
+
+                    e.setAlive(
+                        rs.getBoolean("alive")
+                    );
+
+                    e.setSlot(
+                        rs.getInt("slot")
+                    );
+
+                    e.setCustomName(
+                        rs.getString("customName")
+                    );
+
+                    // =========================
+                    // ANIMAL DATA
+                    // =========================
+
+                    if (e instanceof Animal) {
+
+                        Animal a = (Animal) e;
+
+                        a.setEnergy(
+                            rs.getInt("energy")
+                        );
+
+                        a.setHunger(
+                            rs.getInt("hunger")
+                        );
+
+                        a.setSpeed(
+                            rs.getInt("speed")
+                        );
+
+                        a.setAttack(
+                            rs.getInt("attackStat")
+                        );
+
+                        a.setIntelligence(
+                            rs.getInt("intelligence")
+                        );
+
+                        a.setCapacity(
+                            rs.getInt("capacity")
+                        );
+
+                        a.setHabitat(
+                            rs.getInt("habitat")
+                        );
+
+                        a.setEdadDias(
+                            rs.getInt("ageDays")
+                        );
+
+                        a.setReproTimer(
+                            rs.getDouble("reproTimer")
+                        );
+
+                        String stage = rs.getString("stage");
+
+                        if(stage != null) {
+
+                            a.setEtapa(
+                                Animal.Etapa.valueOf(stage)
+                            );
+                        }
+                    }
+
+                    // =========================
+                    // RESOURCE DATA
+                    // =========================
+
+                    if (e instanceof Resource) {
+
+                        Resource r = (Resource) e;
+
+                        r.setQuantity(
+                            rs.getInt("amount")
+                        );
+
+                        r.setMaxQuantity(
+                            rs.getInt("maxAmount")
+                        );
+
+                        r.setDepleted(
+                            rs.getBoolean("depleted")
+                        );
+
+                        r.setRegenRate(
+                            rs.getInt("regenRate")
+                        );
+
+                        r.setRegenTimer(
+                            rs.getInt("regenTimer")
+                        );
+
+                        r.setRegenInterval(
+                            rs.getInt("regenInterval")
+                        );
+                    }
 
                     manager.addEntity(e);
                 }

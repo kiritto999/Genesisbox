@@ -10,34 +10,31 @@ public class Tile {
 
     public static final int WATER = 0;
     public static final int GRASS = 1;
-    public static final int DIRT = 2;
-    public static final int PLAIN = 3;
-    public static final int ROCK = 4;
 
     // =========================
     // DIRT VARIANTS
     // =========================
 
-    public static final int DIRT_1 = 0;
-    public static final int DIRT_2 = 1;
-    public static final int DIRT_3 = 2;
-    public static final int DIRT_4 = 3;
+    public static final int DIRT_1 = 1;
+    public static final int DIRT_2 = 2;
+    public static final int DIRT_3 = 3;
+    public static final int DIRT_4 = 4;
 
     // =========================
     // PLAIN VARIANTS
     // =========================
 
-    public static final int PLAIN_5 = 4;
-    public static final int PLAIN_6 = 5;
-    public static final int PLAIN_7 = 6;
-    public static final int PLAIN_8 = 7;
+    public static final int PLAIN_5 = 5;
+    public static final int PLAIN_6 = 6;
+    public static final int PLAIN_7 = 7;
+    public static final int PLAIN_8 = 8;
 
     // =========================
     // ROCK VARIANTS
     // =========================
 
-    public static final int ROCK_8 = 8;
-    public static final int ROCK_9 = 9;
+    public static final int ROCK_8 = 9;
+    public static final int ROCK_9 = 10;
 
     // =========================
 

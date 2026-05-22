@@ -51,6 +51,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private Mode currentMode = Mode.SPAWN; 
     private Tool currentBuildTool = Tool.NONE;
     private SaveManager SV;
+    private int selectedGroundVariant = 0;
     
     String[] animals = {"Elegir","Lummon", "Zyrox"};
     String[] resources = {"Elegir","Food","Nero","Zenthra",};
@@ -68,7 +69,7 @@ public class ControlPanel extends javax.swing.JFrame {
         
         camera = new Camera();
         GP = new GamePanel(world, EManager, this.infoPanel, camera,time);
-        mouser = new Mouser(camera, GP, world,EManager);
+        mouser = new Mouser(camera, GP, world,EManager,this);
         infoPanel.setGamePanel(GP);
         //se agreg el redibujado 
         GLoop.setGamePanel(GP);      
@@ -155,38 +156,17 @@ public class ControlPanel extends javax.swing.JFrame {
             updateLblD();
         }).start();
 
-        // combobox
-        for (String animal : animals) { 
-            cboxAnimals.addItem(animal);
-        }
-        cboxAnimals.addActionListener(e -> {
-            if (!RbtnAnimals.isSelected()) return;
-
-            int animal = cboxAnimals.getSelectedIndex();
-
-            switch (animal) {
-                case 1:
-                    setTool(Tool.Lummon);
-                    break;
-                case 2:
-                    setTool(Tool.Zyrox);
-                    break;
-                default:
-                    setTool(Tool.NONE);
-                    break;
-            }
-        });
-        for (String resource : resources ){
-            cboxResource.addItem(resource);
-        }
+        
+       
 
         //la info empieza oculta
         panelInfo.setVisible(false);
         
         //modos
-        rbtnMGenerate.setSelected(true);
-        panelMode.add(panelMSpawn,"Spawn");
+        rbtnMCreatures.setSelected(true);
+        panelMode.add(panelMCreature,"Spawn");
         panelMode.add(panelMBuilt,"Built");
+        panelMode.add(panelMResources,"Resources");
         
         //controla la velocidad del timepo
         
@@ -294,6 +274,82 @@ public class ControlPanel extends javax.swing.JFrame {
 
         lblDResources.setText("Recursos: " + EManager.getResources().size());
     }
+    
+    private void resetBorders() {
+
+    // CREATURES
+    TbtnCZyrox.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+    TbtnCLummon.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    // RESOURCES
+    TbtnRZen.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnRZen2.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnRZen3.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnRZen4.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnRNero.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+    // BUILTS
+    TbtnBGrass.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBGrass1.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBGrass2.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBGrass3.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBGrass4.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBGrass5.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBGrass6.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBGrass7.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBGrass8.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBGrass9.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+
+    TbtnBWater.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
+}
 
     
   
@@ -302,29 +358,40 @@ public class ControlPanel extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnGSpawn = new javax.swing.ButtonGroup();
         jTextField1 = new javax.swing.JTextField();
         btnGmodes = new javax.swing.ButtonGroup();
         btnGMBuilts = new javax.swing.ButtonGroup();
+        btnGCreatures = new javax.swing.ButtonGroup();
+        btnGResources = new javax.swing.ButtonGroup();
         panelGame = new javax.swing.JPanel();
         menuGame = new javax.swing.JPanel();
         btnPause = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
         btnInformationshow = new javax.swing.JButton();
-        rbtnMGenerate = new javax.swing.JRadioButton();
+        rbtnMResources = new javax.swing.JRadioButton();
         rbtnMbuilt = new javax.swing.JRadioButton();
         panelMode = new javax.swing.JPanel();
-        panelMSpawn = new javax.swing.JPanel();
-        RbtnResource = new javax.swing.JRadioButton();
-        cboxResource = new javax.swing.JComboBox<>();
-        RbtnAnimals = new javax.swing.JRadioButton();
-        cboxAnimals = new javax.swing.JComboBox<>();
-        btnGenerate = new javax.swing.JToggleButton();
-        RbtnGNone = new javax.swing.JRadioButton();
+        panelMCreature = new javax.swing.JPanel();
+        TbtnCZyrox = new javax.swing.JToggleButton();
+        TbtnCLummon = new javax.swing.JToggleButton();
+        panelMResources = new javax.swing.JPanel();
+        TbtnRZen = new javax.swing.JToggleButton();
+        TbtnRZen2 = new javax.swing.JToggleButton();
+        TbtnRZen3 = new javax.swing.JToggleButton();
+        TbtnRZen4 = new javax.swing.JToggleButton();
+        TbtnRNero = new javax.swing.JToggleButton();
         panelMBuilt = new javax.swing.JPanel();
-        rbtnBNone = new javax.swing.JRadioButton();
-        rbtnBWater = new javax.swing.JRadioButton();
-        rbtnBGlass = new javax.swing.JRadioButton();
+        TbtnBGrass = new javax.swing.JToggleButton();
+        TbtnBGrass1 = new javax.swing.JToggleButton();
+        TbtnBGrass2 = new javax.swing.JToggleButton();
+        TbtnBGrass3 = new javax.swing.JToggleButton();
+        TbtnBGrass4 = new javax.swing.JToggleButton();
+        TbtnBGrass5 = new javax.swing.JToggleButton();
+        TbtnBGrass6 = new javax.swing.JToggleButton();
+        TbtnBGrass7 = new javax.swing.JToggleButton();
+        TbtnBGrass8 = new javax.swing.JToggleButton();
+        TbtnBGrass9 = new javax.swing.JToggleButton();
+        TbtnBWater = new javax.swing.JToggleButton();
         btnStartTime1 = new javax.swing.JButton();
         SliderSpeed = new javax.swing.JSlider();
         lblSpeed = new javax.swing.JLabel();
@@ -333,6 +400,9 @@ public class ControlPanel extends javax.swing.JFrame {
         lblDDays = new javax.swing.JLabel();
         lblDAnimals = new javax.swing.JLabel();
         lblDResources = new javax.swing.JLabel();
+        btnGenerate = new javax.swing.JToggleButton();
+        rbtnMCreatures = new javax.swing.JRadioButton();
+        rbtnMNone = new javax.swing.JRadioButton();
         panelInfo = new javax.swing.JPanel();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -389,14 +459,14 @@ public class ControlPanel extends javax.swing.JFrame {
         menuGame.add(btnInformationshow);
         btnInformationshow.setBounds(220, 10, 110, 22);
 
-        rbtnMGenerate.setBackground(new java.awt.Color(0, 102, 102));
-        btnGmodes.add(rbtnMGenerate);
-        rbtnMGenerate.setForeground(new java.awt.Color(255, 255, 255));
-        rbtnMGenerate.setText("Generater");
-        rbtnMGenerate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        rbtnMGenerate.addActionListener(this::rbtnMGenerateActionPerformed);
-        menuGame.add(rbtnMGenerate);
-        rbtnMGenerate.setBounds(500, 0, 110, 21);
+        rbtnMResources.setBackground(new java.awt.Color(51, 51, 51));
+        btnGmodes.add(rbtnMResources);
+        rbtnMResources.setForeground(new java.awt.Color(255, 255, 255));
+        rbtnMResources.setText("Resources");
+        rbtnMResources.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        rbtnMResources.addActionListener(this::rbtnMResourcesActionPerformed);
+        menuGame.add(rbtnMResources);
+        rbtnMResources.setBounds(500, 40, 110, 21);
 
         rbtnMbuilt.setBackground(new java.awt.Color(51, 51, 51));
         btnGmodes.add(rbtnMbuilt);
@@ -405,125 +475,192 @@ public class ControlPanel extends javax.swing.JFrame {
         rbtnMbuilt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         rbtnMbuilt.addActionListener(this::rbtnMbuiltActionPerformed);
         menuGame.add(rbtnMbuilt);
-        rbtnMbuilt.setBounds(500, 20, 110, 20);
+        rbtnMbuilt.setBounds(500, 60, 110, 20);
 
         panelMode.setLayout(new java.awt.CardLayout());
 
-        panelMSpawn.setBackground(new java.awt.Color(0, 102, 102));
+        panelMCreature.setBackground(new java.awt.Color(0, 102, 102));
 
-        RbtnResource.setBackground(new java.awt.Color(0, 51, 51));
-        btnGSpawn.add(RbtnResource);
-        RbtnResource.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        RbtnResource.setForeground(new java.awt.Color(255, 255, 255));
-        RbtnResource.setText("Resources");
-        RbtnResource.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        RbtnResource.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGCreatures.add(TbtnCZyrox);
+        TbtnCZyrox.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Mzyrox_idle.png"))); // NOI18N
+        TbtnCZyrox.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnCZyrox.setOpaque(true);
+        TbtnCZyrox.addActionListener(this::TbtnCZyroxActionPerformed);
 
-        cboxResource.setBackground(new java.awt.Color(0, 102, 102));
-        cboxResource.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        cboxResource.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGCreatures.add(TbtnCLummon);
+        TbtnCLummon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Mlummon_idle.png"))); // NOI18N
+        TbtnCLummon.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnCLummon.setOpaque(true);
+        TbtnCLummon.addActionListener(this::TbtnCLummonActionPerformed);
 
-        RbtnAnimals.setBackground(new java.awt.Color(0, 51, 51));
-        btnGSpawn.add(RbtnAnimals);
-        RbtnAnimals.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        RbtnAnimals.setForeground(new java.awt.Color(255, 255, 255));
-        RbtnAnimals.setText("Animals");
-        RbtnAnimals.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        RbtnAnimals.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        RbtnAnimals.addActionListener(this::RbtnAnimalsActionPerformed);
-
-        cboxAnimals.setBackground(new java.awt.Color(0, 102, 102));
-        cboxAnimals.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        cboxAnimals.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        btnGenerate.setBackground(new java.awt.Color(0, 153, 102));
-        btnGenerate.setForeground(new java.awt.Color(255, 255, 255));
-        btnGenerate.setText("Generate");
-        btnGenerate.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        btnGenerate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGenerate.addActionListener(this::btnGenerateActionPerformed);
-
-        RbtnGNone.setBackground(new java.awt.Color(0, 51, 51));
-        btnGSpawn.add(RbtnGNone);
-        RbtnGNone.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        RbtnGNone.setForeground(new java.awt.Color(255, 255, 255));
-        RbtnGNone.setText("None");
-        RbtnGNone.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        RbtnGNone.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        RbtnGNone.addActionListener(this::RbtnGNoneActionPerformed);
-
-        javax.swing.GroupLayout panelMSpawnLayout = new javax.swing.GroupLayout(panelMSpawn);
-        panelMSpawn.setLayout(panelMSpawnLayout);
-        panelMSpawnLayout.setHorizontalGroup(
-            panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelMSpawnLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(RbtnResource, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelMSpawnLayout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(cboxResource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelMSpawnLayout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
-                        .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(60, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMSpawnLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(RbtnGNone, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(RbtnAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34))))
+        javax.swing.GroupLayout panelMCreatureLayout = new javax.swing.GroupLayout(panelMCreature);
+        panelMCreature.setLayout(panelMCreatureLayout);
+        panelMCreatureLayout.setHorizontalGroup(
+            panelMCreatureLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMCreatureLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(TbtnCZyrox, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(TbtnCLummon, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(217, Short.MAX_VALUE))
         );
-        panelMSpawnLayout.setVerticalGroup(
-            panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelMSpawnLayout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(RbtnResource)
-                    .addComponent(RbtnAnimals)
-                    .addComponent(RbtnGNone))
+        panelMCreatureLayout.setVerticalGroup(
+            panelMCreatureLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMCreatureLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(panelMCreatureLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TbtnCLummon)
+                    .addComponent(TbtnCZyrox))
+                .addContainerGap(65, Short.MAX_VALUE))
+        );
+
+        panelMode.add(panelMCreature, "card3");
+
+        panelMResources.setBackground(new java.awt.Color(51, 51, 0));
+
+        btnGResources.add(TbtnRZen);
+        TbtnRZen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_zenthra_sapling.png"))); // NOI18N
+        TbtnRZen.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRZen.setOpaque(true);
+        TbtnRZen.addActionListener(this::TbtnRZenActionPerformed);
+
+        btnGResources.add(TbtnRZen2);
+        TbtnRZen2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_zenthra_joven.png"))); // NOI18N
+        TbtnRZen2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRZen2.setEnabled(false);
+        TbtnRZen2.setOpaque(true);
+        TbtnRZen2.addActionListener(this::TbtnRZen2ActionPerformed);
+
+        btnGResources.add(TbtnRZen3);
+        TbtnRZen3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_zenthra_maduro.png"))); // NOI18N
+        TbtnRZen3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRZen3.setEnabled(false);
+        TbtnRZen3.setOpaque(true);
+        TbtnRZen3.addActionListener(this::TbtnRZen3ActionPerformed);
+
+        btnGResources.add(TbtnRZen4);
+        TbtnRZen4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_zenthra_old.png"))); // NOI18N
+        TbtnRZen4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRZen4.setEnabled(false);
+        TbtnRZen4.setOpaque(true);
+        TbtnRZen4.addActionListener(this::TbtnRZen4ActionPerformed);
+
+        btnGResources.add(TbtnRNero);
+        TbtnRNero.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_Nero_sprite.png"))); // NOI18N
+        TbtnRNero.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRNero.setOpaque(true);
+        TbtnRNero.addActionListener(this::TbtnRNeroActionPerformed);
+
+        javax.swing.GroupLayout panelMResourcesLayout = new javax.swing.GroupLayout(panelMResources);
+        panelMResources.setLayout(panelMResourcesLayout);
+        panelMResourcesLayout.setHorizontalGroup(
+            panelMResourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMResourcesLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(TbtnRZen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(TbtnRZen2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelMSpawnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(cboxResource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cboxAnimals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addComponent(TbtnRZen3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(TbtnRZen4)
+                .addGap(56, 56, 56)
+                .addComponent(TbtnRNero)
+                .addGap(20, 20, 20))
+        );
+        panelMResourcesLayout.setVerticalGroup(
+            panelMResourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelMResourcesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelMResourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TbtnRNero, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TbtnRZen4, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TbtnRZen2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TbtnRZen3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TbtnRZen, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
-        panelMode.add(panelMSpawn, "card3");
+        panelMode.add(panelMResources, "card4");
 
         panelMBuilt.setBackground(new java.awt.Color(43, 35, 58));
 
-        rbtnBNone.setBackground(new java.awt.Color(47, 12, 39));
-        btnGMBuilts.add(rbtnBNone);
-        rbtnBNone.setForeground(new java.awt.Color(255, 255, 255));
-        rbtnBNone.setText("None");
-        rbtnBNone.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        rbtnBNone.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        rbtnBNone.addActionListener(this::rbtnBNoneActionPerformed);
-        panelMBuilt.add(rbtnBNone);
+        btnGMBuilts.add(TbtnBGrass);
+        TbtnBGrass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Dirt1.png"))); // NOI18N
+        TbtnBGrass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass.setOpaque(true);
+        TbtnBGrass.addActionListener(this::TbtnBGrassActionPerformed);
+        panelMBuilt.add(TbtnBGrass);
 
-        rbtnBWater.setBackground(new java.awt.Color(47, 12, 39));
-        btnGMBuilts.add(rbtnBWater);
-        rbtnBWater.setForeground(new java.awt.Color(0, 102, 255));
-        rbtnBWater.setText("Water");
-        rbtnBWater.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        rbtnBWater.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        rbtnBWater.addActionListener(this::rbtnBWaterActionPerformed);
-        panelMBuilt.add(rbtnBWater);
+        btnGMBuilts.add(TbtnBGrass1);
+        TbtnBGrass1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Dirt2.png"))); // NOI18N
+        TbtnBGrass1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass1.setOpaque(true);
+        TbtnBGrass1.addActionListener(this::TbtnBGrass1ActionPerformed);
+        panelMBuilt.add(TbtnBGrass1);
 
-        rbtnBGlass.setBackground(new java.awt.Color(47, 12, 39));
-        btnGMBuilts.add(rbtnBGlass);
-        rbtnBGlass.setForeground(new java.awt.Color(102, 255, 51));
-        rbtnBGlass.setText("Glass");
-        rbtnBGlass.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        rbtnBGlass.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        rbtnBGlass.addActionListener(this::rbtnBGlassActionPerformed);
-        panelMBuilt.add(rbtnBGlass);
+        btnGMBuilts.add(TbtnBGrass2);
+        TbtnBGrass2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Dirt3.png"))); // NOI18N
+        TbtnBGrass2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass2.setOpaque(true);
+        TbtnBGrass2.addActionListener(this::TbtnBGrass2ActionPerformed);
+        panelMBuilt.add(TbtnBGrass2);
+
+        btnGMBuilts.add(TbtnBGrass3);
+        TbtnBGrass3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Dirt4.png"))); // NOI18N
+        TbtnBGrass3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass3.setOpaque(true);
+        TbtnBGrass3.addActionListener(this::TbtnBGrass3ActionPerformed);
+        panelMBuilt.add(TbtnBGrass3);
+
+        btnGMBuilts.add(TbtnBGrass4);
+        TbtnBGrass4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Plain5.png"))); // NOI18N
+        TbtnBGrass4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass4.setOpaque(true);
+        TbtnBGrass4.addActionListener(this::TbtnBGrass4ActionPerformed);
+        panelMBuilt.add(TbtnBGrass4);
+
+        btnGMBuilts.add(TbtnBGrass5);
+        TbtnBGrass5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Plain6.png"))); // NOI18N
+        TbtnBGrass5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass5.setOpaque(true);
+        TbtnBGrass5.addActionListener(this::TbtnBGrass5ActionPerformed);
+        panelMBuilt.add(TbtnBGrass5);
+
+        btnGMBuilts.add(TbtnBGrass6);
+        TbtnBGrass6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Plain7.png"))); // NOI18N
+        TbtnBGrass6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass6.setOpaque(true);
+        TbtnBGrass6.addActionListener(this::TbtnBGrass6ActionPerformed);
+        panelMBuilt.add(TbtnBGrass6);
+
+        btnGMBuilts.add(TbtnBGrass7);
+        TbtnBGrass7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Plain8.png"))); // NOI18N
+        TbtnBGrass7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass7.setOpaque(true);
+        TbtnBGrass7.addActionListener(this::TbtnBGrass7ActionPerformed);
+        panelMBuilt.add(TbtnBGrass7);
+
+        btnGMBuilts.add(TbtnBGrass8);
+        TbtnBGrass8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Rock8.png"))); // NOI18N
+        TbtnBGrass8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass8.setOpaque(true);
+        TbtnBGrass8.addActionListener(this::TbtnBGrass8ActionPerformed);
+        panelMBuilt.add(TbtnBGrass8);
+
+        btnGMBuilts.add(TbtnBGrass9);
+        TbtnBGrass9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Rock9.png"))); // NOI18N
+        TbtnBGrass9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass9.setOpaque(true);
+        TbtnBGrass9.addActionListener(this::TbtnBGrass9ActionPerformed);
+        panelMBuilt.add(TbtnBGrass9);
+
+        btnGMBuilts.add(TbtnBWater);
+        TbtnBWater.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/WaterV1.png"))); // NOI18N
+        TbtnBWater.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBWater.setOpaque(true);
+        TbtnBWater.addActionListener(this::TbtnBWaterActionPerformed);
+        panelMBuilt.add(TbtnBWater);
 
         panelMode.add(panelMBuilt, "card2");
 
@@ -605,6 +742,33 @@ public class ControlPanel extends javax.swing.JFrame {
         menuGame.add(jPanel1);
         jPanel1.setBounds(1290, 10, 350, 120);
 
+        btnGenerate.setBackground(new java.awt.Color(0, 153, 102));
+        btnGenerate.setForeground(new java.awt.Color(255, 255, 255));
+        btnGenerate.setText("Generate");
+        btnGenerate.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        btnGenerate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnGenerate.addActionListener(this::btnGenerateActionPerformed);
+        menuGame.add(btnGenerate);
+        btnGenerate.setBounds(510, 90, 84, 38);
+
+        rbtnMCreatures.setBackground(new java.awt.Color(0, 102, 102));
+        btnGmodes.add(rbtnMCreatures);
+        rbtnMCreatures.setForeground(new java.awt.Color(255, 255, 255));
+        rbtnMCreatures.setText("Creatures");
+        rbtnMCreatures.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        rbtnMCreatures.addActionListener(this::rbtnMCreaturesActionPerformed);
+        menuGame.add(rbtnMCreatures);
+        rbtnMCreatures.setBounds(500, 20, 110, 21);
+
+        rbtnMNone.setBackground(new java.awt.Color(51, 51, 51));
+        btnGmodes.add(rbtnMNone);
+        rbtnMNone.setForeground(new java.awt.Color(255, 255, 255));
+        rbtnMNone.setText("None");
+        rbtnMNone.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        rbtnMNone.addActionListener(this::rbtnMNoneActionPerformed);
+        menuGame.add(rbtnMNone);
+        rbtnMNone.setBounds(500, 0, 110, 21);
+
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
 
         panelInfo.setBackground(new java.awt.Color(102, 102, 102));
@@ -665,51 +829,6 @@ public class ControlPanel extends javax.swing.JFrame {
 
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
 
-    int rngX;
-    int rngY;
-
-    do{
-        rngX = rng.nextInt(world.getColums());
-        rngY = rng.nextInt(world.getRows());
-
-    }while(world.getTile(rngY, rngX).getType() == Tile.WATER);
-
-    
-    if (RbtnAnimals.isSelected()){      
-
-        if (cboxAnimals.getSelectedIndex() == 0 ){
-            return;
-
-        }else{
-            EManager.addAnimal(
-                makeAnimal(
-                    cboxAnimals.getSelectedIndex(),
-                    rngX,
-                    rngY,
-                    EManager
-                )
-            );
-        }
-    }
-
-    
-    if (RbtnResource.isSelected()){
-
-        if (cboxResource.getSelectedIndex() == 0 ){
-            return;
-
-        }else{
-            EManager.addResourse(
-                makeResourse(
-                    cboxResource.getSelectedIndex(),
-                    rngX,
-                    rngY
-                )
-            );
-        }
-    }
-
-    repaint();
     }//GEN-LAST:event_btnGenerateActionPerformed
 
     private void btnInformationshowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInformationshowActionPerformed
@@ -724,40 +843,31 @@ public class ControlPanel extends javax.swing.JFrame {
        repaint();
     }//GEN-LAST:event_MitemGridActionPerformed
 
-    private void rbtnMGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMGenerateActionPerformed
+    private void rbtnMResourcesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMResourcesActionPerformed
         // TODO add your handling code here:
-        if(rbtnMGenerate.isSelected()){
-            rbtnMGenerate.setBackground(new Color(0, 102, 102));
+        if(rbtnMResources.isSelected()){
+            rbtnMCreatures.setBackground(new Color(51,51,51));
+            rbtnMResources.setBackground(new Color(51,51,0));
             rbtnMbuilt.setBackground(new Color(51,51,51));
-            chansemode("Spawn");
+            rbtnMNone.setBackground(new Color(51,51,51));
+            chansemode("Resources");
             setTool(Tool.NONE);
-            RbtnGNone.setSelected(true);
         }
-    }//GEN-LAST:event_rbtnMGenerateActionPerformed
+
+
+    }//GEN-LAST:event_rbtnMResourcesActionPerformed
 
     private void rbtnMbuiltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMbuiltActionPerformed
         //se cambia el modo del cardpanel
         if(rbtnMbuilt.isSelected()){
-            rbtnMGenerate.setBackground(new Color(51,51,51));
+            rbtnMCreatures.setBackground(new Color(51,51,51));
+            rbtnMResources.setBackground(new Color(51,51,51));
             rbtnMbuilt.setBackground(new Color(43,35,58));
+            rbtnMNone.setBackground(new Color(51,51,51));
             chansemode("Built");
             setTool(Tool.NONE);
-            rbtnBNone.setSelected(true);
         }
     }//GEN-LAST:event_rbtnMbuiltActionPerformed
-
-    private void rbtnBWaterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBWaterActionPerformed
-        setTool(Tool.WATER);
-    }//GEN-LAST:event_rbtnBWaterActionPerformed
-
-    private void rbtnBGlassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBGlassActionPerformed
-        //cambia solo la herramienta ya que en el mouser hace todo le comprobane   
-        setTool(Tool.GRASS);
-    }//GEN-LAST:event_rbtnBGlassActionPerformed
-
-    private void rbtnBNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnBNoneActionPerformed
-        setTool(Tool.NONE);
-    }//GEN-LAST:event_rbtnBNoneActionPerformed
 
     private void MitemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MitemSaveActionPerformed
         // TODO add your handling code here:
@@ -774,16 +884,6 @@ public class ControlPanel extends javax.swing.JFrame {
         // TODO add your handling code here:
         GLoop.resume();
     }//GEN-LAST:event_btnStartTime1ActionPerformed
-
-    private void RbtnAnimalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RbtnAnimalsActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_RbtnAnimalsActionPerformed
-
-    private void RbtnGNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RbtnGNoneActionPerformed
-        // TODO add your handling code here:
-        setTool(Tool.NONE);
-    }//GEN-LAST:event_RbtnGNoneActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
@@ -808,6 +908,262 @@ public class ControlPanel extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_MitemExitActionPerformed
 
+    private void rbtnMCreaturesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMCreaturesActionPerformed
+        // TODO add your handling code here:
+        if(rbtnMCreatures.isSelected()){
+            rbtnMCreatures.setBackground(new Color(0,102,102));
+            rbtnMResources.setBackground(new Color(51,51,51));
+            rbtnMbuilt.setBackground(new Color(51,51,51));
+            rbtnMNone.setBackground(new Color(51,51,51));
+            chansemode("Spawn");
+            setTool(Tool.NONE);
+        }
+    }//GEN-LAST:event_rbtnMCreaturesActionPerformed
+
+    private void TbtnCZyroxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnCZyroxActionPerformed
+        // TODO add your handling code here:
+            resetBorders();
+
+        if (TbtnCZyrox.isSelected()) {
+
+            TbtnCZyrox.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+
+            setTool(Tool.Zyrox);
+        }
+    }//GEN-LAST:event_TbtnCZyroxActionPerformed
+
+    private void TbtnCLummonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnCLummonActionPerformed
+        // TODO add your handling code here:
+            resetBorders();
+
+        if (TbtnCLummon.isSelected()) {
+
+            TbtnCLummon.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+
+            setTool(Tool.Lummon);
+        }
+    }//GEN-LAST:event_TbtnCLummonActionPerformed
+
+    private void TbtnRZenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnRZenActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnRZen.isSelected()) {
+
+            TbtnRZen.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+
+            setTool(Tool.Zethar);
+        }
+    }//GEN-LAST:event_TbtnRZenActionPerformed
+
+    private void TbtnRNeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnRNeroActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnRNero.isSelected()) {
+
+            TbtnRNero.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+
+            setTool(Tool.Nero);
+        }
+    }//GEN-LAST:event_TbtnRNeroActionPerformed
+
+    private void TbtnRZen2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnRZen2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TbtnRZen2ActionPerformed
+
+    private void TbtnRZen3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnRZen3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TbtnRZen3ActionPerformed
+
+    private void TbtnRZen4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnRZen4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TbtnRZen4ActionPerformed
+
+    private void rbtnMNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMNoneActionPerformed
+        // TODO add your handling code here:
+        if(rbtnMNone.isSelected()){
+            rbtnMCreatures.setBackground(new Color(51,51,51));
+            rbtnMResources.setBackground(new Color(51,51,51));
+            rbtnMbuilt.setBackground(new Color(51,51,51));
+            rbtnMNone.setBackground(new Color(120,0,153));
+            setTool(Tool.NONE);
+        }
+        
+    }//GEN-LAST:event_rbtnMNoneActionPerformed
+
+    private void TbtnBGrassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrassActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnBGrass.isSelected()) {
+
+            TbtnBGrass.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.DIRT_1;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrassActionPerformed
+
+    private void TbtnBGrass1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrass1ActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnBGrass1.isSelected()) {
+
+            TbtnBGrass1.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.DIRT_2;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrass1ActionPerformed
+
+    private void TbtnBGrass2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrass2ActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnBGrass2.isSelected()) {
+
+            TbtnBGrass2.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.DIRT_3;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrass2ActionPerformed
+
+    private void TbtnBGrass3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrass3ActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnBGrass3.isSelected()) {
+
+            TbtnBGrass3.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.DIRT_4;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrass3ActionPerformed
+
+    private void TbtnBGrass4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrass4ActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnBGrass4.isSelected()) {
+
+            TbtnBGrass4.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.PLAIN_5;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrass4ActionPerformed
+
+    private void TbtnBGrass5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrass5ActionPerformed
+        // TODO add your handling code here:resetBorders();
+
+        if (TbtnBGrass5.isSelected()) {
+
+            TbtnBGrass5.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.PLAIN_6;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrass5ActionPerformed
+
+    private void TbtnBGrass6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrass6ActionPerformed
+        // TODO add your handling code here:resetBorders();
+
+        if (TbtnBGrass6.isSelected()) {
+
+            TbtnBGrass6.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.PLAIN_7;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrass6ActionPerformed
+
+    private void TbtnBGrass7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrass7ActionPerformed
+        // TODO add your handling code here:resetBorders();
+
+        if (TbtnBGrass7.isSelected()) {
+
+            TbtnBGrass7.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.PLAIN_8;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrass7ActionPerformed
+
+    private void TbtnBGrass8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrass8ActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnBGrass8.isSelected()) {
+
+            TbtnBGrass8.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.ROCK_8;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrass8ActionPerformed
+
+    private void TbtnBGrass9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBGrass9ActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnBGrass9.isSelected()) {
+
+            TbtnBGrass9.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+            
+            selectedGroundVariant = Tile.ROCK_9;
+            setTool(Tool.GRASS);
+        }
+    }//GEN-LAST:event_TbtnBGrass9ActionPerformed
+
+    private void TbtnBWaterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnBWaterActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnBWater.isSelected()) {
+
+            TbtnBWater.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+
+            setTool(Tool.WATER);
+        }
+    }//GEN-LAST:event_TbtnBWaterActionPerformed
+
+    public int getSelectedGroundVariant() {
+        return selectedGroundVariant;
+    }
     /**
      * @param args the command line arguments
      */
@@ -840,20 +1196,34 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JMenuItem MitemGrid;
     private javax.swing.JMenuItem MitemLoad;
     private javax.swing.JMenuItem MitemSave;
-    private javax.swing.JRadioButton RbtnAnimals;
-    private javax.swing.JRadioButton RbtnGNone;
-    private javax.swing.JRadioButton RbtnResource;
     private javax.swing.JSlider SliderSpeed;
+    private javax.swing.JToggleButton TbtnBGrass;
+    private javax.swing.JToggleButton TbtnBGrass1;
+    private javax.swing.JToggleButton TbtnBGrass2;
+    private javax.swing.JToggleButton TbtnBGrass3;
+    private javax.swing.JToggleButton TbtnBGrass4;
+    private javax.swing.JToggleButton TbtnBGrass5;
+    private javax.swing.JToggleButton TbtnBGrass6;
+    private javax.swing.JToggleButton TbtnBGrass7;
+    private javax.swing.JToggleButton TbtnBGrass8;
+    private javax.swing.JToggleButton TbtnBGrass9;
+    private javax.swing.JToggleButton TbtnBWater;
+    private javax.swing.JToggleButton TbtnCLummon;
+    private javax.swing.JToggleButton TbtnCZyrox;
+    private javax.swing.JToggleButton TbtnRNero;
+    private javax.swing.JToggleButton TbtnRZen;
+    private javax.swing.JToggleButton TbtnRZen2;
+    private javax.swing.JToggleButton TbtnRZen3;
+    private javax.swing.JToggleButton TbtnRZen4;
     private javax.swing.JMenuBar bMenuGame;
+    private javax.swing.ButtonGroup btnGCreatures;
     private javax.swing.ButtonGroup btnGMBuilts;
-    private javax.swing.ButtonGroup btnGSpawn;
+    private javax.swing.ButtonGroup btnGResources;
     private javax.swing.JToggleButton btnGenerate;
     private javax.swing.ButtonGroup btnGmodes;
     private javax.swing.JButton btnInformationshow;
     private javax.swing.JButton btnPause;
     private javax.swing.JButton btnStartTime1;
-    private javax.swing.JComboBox<String> cboxAnimals;
-    private javax.swing.JComboBox<String> cboxResource;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -870,12 +1240,12 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JPanel panelGame;
     private javax.swing.JPanel panelInfo;
     private javax.swing.JPanel panelMBuilt;
-    private javax.swing.JPanel panelMSpawn;
+    private javax.swing.JPanel panelMCreature;
+    private javax.swing.JPanel panelMResources;
     private javax.swing.JPanel panelMode;
-    private javax.swing.JRadioButton rbtnBGlass;
-    private javax.swing.JRadioButton rbtnBNone;
-    private javax.swing.JRadioButton rbtnBWater;
-    private javax.swing.JRadioButton rbtnMGenerate;
+    private javax.swing.JRadioButton rbtnMCreatures;
+    private javax.swing.JRadioButton rbtnMNone;
+    private javax.swing.JRadioButton rbtnMResources;
     private javax.swing.JRadioButton rbtnMbuilt;
     // End of variables declaration//GEN-END:variables
 }
