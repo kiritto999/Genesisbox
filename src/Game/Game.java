@@ -24,7 +24,7 @@ public class Game {
 
         time = new TimeDay();
         world = new World();
-        entityManager = new Entitymanager(world);
+        entityManager = new Entitymanager(world, time);
 
         // DATABASE
 

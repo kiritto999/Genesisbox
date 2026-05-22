@@ -35,12 +35,6 @@ import World.Tile;
  * - Necesitan al menos MIN_CAZADORES adyacentes para atacar.
  * - Al matar un Zyrox genera un Corpse con porciones = cazadores (máx 4).
  * - En modo hambre busca cadáveres antes de cazar.
- *
- * Estados visuales:
- *   IDLE    → lummon_idle.png    (normal)
- *   ATTACK  → lummon_attack.png  (hambre / cazando)
- *   HURT    → lummon_hurt.png    (poca vida)
- *   EAT     → lummon_comer.png   (mientras devora un cadáver)
  */
 public class Lummon extends Animal {
 
@@ -49,8 +43,9 @@ public class Lummon extends Animal {
     // ── Constantes de comportamiento ───────────────────────────────────
     private static final int MAX_GRUPO      = 4;
     private static final int MIN_CAZADORES  = 2;
-    private static final int HAMBRE_UMBRAL  = CAP_HAMBRE / 2;
+    private static final int HAMBRE_UMBRAL  = CAP_HAMBRE / 3;
     private static final double VIDA_HERIDO = 0.35; // < 35 % HP → sprite herido
+    private static final int DURACION_SPRITE_COMER = 8;
 
     // ── Sprites (compartidos entre todas las instancias) ───────────────
     private static BufferedImage spriteIdle;
@@ -58,6 +53,7 @@ public class Lummon extends Animal {
     private static BufferedImage spriteHurt;
     private static BufferedImage spriteDead;
     private static BufferedImage spriteEat;
+    private static BufferedImage spriteCachorro;
     private static boolean spritesLoaded = false;
 
     // ── Muerte con delay ───────────────────────────────────────────────
@@ -67,7 +63,9 @@ public class Lummon extends Animal {
 
     // ── Flag de comer ──────────────────────────────────────────────────
     private boolean estaComiendo = false;
-
+    private int timerComer = 0;
+    
+    //
     private final Random random = new Random();
 
     // ── Carga de sprites ───────────────────────────────────────────────
@@ -79,6 +77,8 @@ public class Lummon extends Animal {
             spriteHurt   = ImageIO.read(Lummon.class.getResourceAsStream("/sprites/lummon_hurt.png"));
             spriteDead   = ImageIO.read(Lummon.class.getResourceAsStream("/sprites/lummon_dead.png"));
             spriteEat    = ImageIO.read(Lummon.class.getResourceAsStream("/sprites/lummon_comer.png"));
+            spriteCachorro = ImageIO.read(Lummon.class.getResourceAsStream("/sprites/lummon_cachorro.png"));
+
         } catch (IOException | IllegalArgumentException e) {
             logger.log(Level.WARNING, "No se pudieron cargar los sprites del Lummon", e);
         }
@@ -92,14 +92,16 @@ public class Lummon extends Animal {
 
         this.baseColor = Color.WHITE;
         name         = "Lummon";
-        maxHealth    = 15 + random.nextInt(11);
+        maxHealth    = 180 + random.nextInt(51);   
+        energy       = 200 + random.nextInt(51);
         health       = maxHealth;
         capacity     = 1;
-        energy       = 30 + random.nextInt(21);
         sex          = random.nextBoolean() ? Sex.MALE : Sex.FEMALE;
         habitat      = Tile.GRASS;
         foodType     = FoodType.CARNIVORE;
         hunger       = CAP_HAMBRE;
+        etapa    = Etapa.ADULTO;
+        edadDias = DIAS_ADULTO;
 
         speed        = 2 + random.nextInt(3);
         attack       = 2 + random.nextInt(3);
@@ -109,8 +111,11 @@ public class Lummon extends Animal {
     // ── Selección de sprite según estado ──────────────────────────────
     private BufferedImage currentSprite() {
         if (dying && spriteDead != null)                                    return spriteDead;
+        if (etapa == Etapa.CACHORRO)                                        return spriteCachorro; 
         if (health < (int)(maxHealth * VIDA_HERIDO) && spriteHurt != null)  return spriteHurt;
-        if (estaComiendo && spriteEat != null)                              return spriteEat;
+        if (timerComer > 0 && spriteEat != null) {
+            timerComer--;                                                   return spriteEat;
+        }
         if (hunger <= HAMBRE_UMBRAL && spriteAttack != null)                return spriteAttack;
         return spriteIdle;
     }
@@ -129,7 +134,10 @@ public class Lummon extends Animal {
             if (cadaver != null) {
                 if (cadaver.getTileX() == tileX && cadaver.getTileY() == tileY
                         || esAdyacente(cadaver.getTileX(), cadaver.getTileY())) {
-                    estaComiendo = intentarComerCadaver(cadaver); // activar sprite eat
+                    if (intentarComerCadaver(cadaver)) {
+                        timerComer = DURACION_SPRITE_COMER;
+                    }
+                    estaComiendo = timerComer > 0;
                 } else {
                     moverHacia(cadaver.getTileX(), cadaver.getTileY(), world);
                 }
@@ -160,6 +168,7 @@ public class Lummon extends Animal {
                 moverAleatorio(world);
             }
         }
+        intentarReproducirse(world);
     }
 
     // ── Búsquedas ─────────────────────────────────────────────────────
@@ -255,6 +264,62 @@ public class Lummon extends Animal {
         }
         super.update(world, deltaTime);
     }
+    
+    // ── Al crecer ──────────────────────────────────────────────────────
+    @Override
+    protected void onCrecerAAdulto() {
+        // Recupera stats completos al llegar a adulto
+        maxHealth = (int)(maxHealth * 1.2);
+        health    = maxHealth;
+        System.out.println(getCustomName() + " creció a ADULTO");
+    }
+
+    @Override
+    protected void onCrecerAViejo() {
+        // Stats reducidos en vejez
+        speed  = Math.max(1, speed  - 1);
+        attack = Math.max(1, attack - 1);
+        System.out.println(getCustomName() + " llegó a VIEJO");
+    }
+
+    // ── Reproducción ──────────────────────────────────────────────────
+    private void intentarReproducirse(World.World world) {
+        if (!puedeReproducirse()) return;
+
+        for (Animal a : entitymanager.getAnimals()) {
+            if (!(a instanceof Lummon)) continue;
+            Lummon otro = (Lummon) a;
+
+            if (otro == this)                                   continue;
+            if (!otro.isAlive())                                continue;
+            if (otro.sex == this.sex)                           continue;
+            if (otro.getEtapa() != Etapa.ADULTO)                continue;
+            if (!esAdyacente(otro.getTileX(), otro.getTileY())) continue;
+            if (!otro.puedeReproducirse())                      continue;
+
+            int[] hijoPos = buscarTileLibre(world);
+            if (hijoPos == null) return;
+
+            // Crear cachorro con stats heredados
+            Lummon hijo = new Lummon(hijoPos[0], hijoPos[1], entitymanager);
+            hijo.etapa        = Etapa.CACHORRO;   // nace cachorro
+            hijo.edadDias     = 0;
+            hijo.speed        = heredarStat(this.speed,        otro.speed,        1, CAP_VELOCIDAD);
+            hijo.attack       = heredarStat(this.attack,       otro.attack,       1, CAP_ATAQUE);
+            hijo.intelligence = heredarStat(this.intelligence, otro.intelligence, 1, CAP_INTELIGENCIA);
+            hijo.maxHealth    = heredarStat(this.maxHealth,    otro.maxHealth,    5, CAP_VIDA);
+            hijo.health       = hijo.maxHealth / 2; // nace con mitad de vida
+
+            entitymanager.addAnimal(hijo);
+
+            this.resetCooldownRepro();
+            otro.resetCooldownRepro();
+
+            System.out.println("¡Nació un Lummon cachorro en "
+                + hijoPos[0] + "," + hijoPos[1] + "!");
+            return;
+        }
+    }
 
     // ── Dibujo con sprite ─────────────────────────────────────────────
     // El tile se divide en una cuadrícula 2x2 + 1 celda extra (slot 0-4).
@@ -285,7 +350,7 @@ public class Lummon extends Animal {
             int cellY = cameraY + tileY * tileSize + SLOT_OY[safeSlot] * cellSize;
 
             double ratio = (double) spriteDead.getWidth() / spriteDead.getHeight();
-            int drawH = (int)(cellSize * 0.80);
+            int drawH = (int)(cellSize * 0.70);
             int drawW = (int)(drawH * ratio);
             int dx = cellX + (cellSize - drawW) / 2;
             int dy = cellY + (cellSize - drawH) / 2;
@@ -307,7 +372,7 @@ public class Lummon extends Animal {
         // ── Estado comiendo: sprite centrado en el tile completo ──────
         if (estaComiendo && spriteEat != null) {
             double ratio = (double) spriteEat.getWidth() / spriteEat.getHeight();
-            int drawH = (int)(tileSize * 0.65);
+            int drawH = (int)(tileSize * 0.75);
             int drawW = (int)(drawH * ratio);
             int dx = cameraX + tileX * tileSize + (tileSize - drawW) / 2;
             int dy = cameraY + tileY * tileSize + (tileSize - drawH) / 2;
@@ -324,7 +389,19 @@ public class Lummon extends Animal {
         int drawW, drawH;
         if (sprite != null) {
             double ratio = (double) sprite.getWidth() / sprite.getHeight();
-            drawH = (int)(cellSize * 0.80);
+            float escala;
+        if (etapa == Etapa.CACHORRO) {
+            escala = 0.42f;
+        } else if (estaComiendo) {
+            escala = 0.30f;
+        } else if (hunger <= HAMBRE_UMBRAL) {
+            escala = 0.55f; // ataque mismo tamaño que idle
+        } else if (health < (int)(maxHealth * VIDA_HERIDO)) {
+            escala = 0.50f;
+        } else {
+            escala = 0.60f;
+        }
+        drawH = (int)(tileSize * escala);
             drawW = (int)(drawH * ratio);
         } else {
             drawW = drawH = (int)(cellSize * 0.75);

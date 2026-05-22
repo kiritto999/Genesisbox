@@ -1,14 +1,16 @@
 package Game;
 
-import Entities.Entitymanager;
+import Entities.*;
 import UI.GamePanel;
 import Utils.TimeDay;
+
 
 public class GameLoop implements Runnable {
 
     private TimeDay timeDay;
     private long lastTime;
     private boolean running = false;
+    private int ultimoDiaRegistrado = -1;
 
     private Entitymanager entitymanager;
     private GamePanel gamePanel;
@@ -45,10 +47,19 @@ public class GameLoop implements Runnable {
             double scaledDelta = deltaTime * speedMultiplier;
 
             if (!timeDay.isPaused()) {
-
                 // Tiempo del juego
                 timeDay.updateTime(scaledDelta);
-
+                if (timeDay.getDay() != ultimoDiaRegistrado) {
+                    ultimoDiaRegistrado = timeDay.getDay();
+                    if (entitymanager != null) {
+                        synchronized (entitymanager) {
+                            for (Animal a : entitymanager.getAnimals()) {
+                                a.cumplirDia();
+                            }
+                        }
+                    }
+                }
+                            
                 // Entidades
                 if (entitymanager != null) {
                     synchronized (entitymanager) {

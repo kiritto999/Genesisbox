@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import Utils.TimeDay;
 
 /**
  *
@@ -37,9 +38,12 @@ public class Entitymanager {
  
     private final Random rng   = new Random();
     private final World  world;
+    private TimeDay time;
+    private int ultimoDia = -1;
  
-    public Entitymanager(World world) {
+    public Entitymanager(World world, TimeDay time) {
         this.world = world;
+        this.time  = time;
         spawnInicial();
     }
  
@@ -80,7 +84,15 @@ public class Entitymanager {
  
     // ── Actualización principal ────────────────────────────────────────
     public void update(double deltaTime) {
- 
+        
+        int diaActual = time.getDay() + time.getYear() * 160;
+        if (diaActual != ultimoDia) {
+            ultimoDia = diaActual;
+            for (Animal a : new ArrayList<>(animals)) {
+                a.cumplirDia();
+            }
+        }
+         
         // 1) Aplicar pendientes ANTES de iterar
         flushPending();
  
@@ -98,6 +110,7 @@ public class Entitymanager {
  
         // 4) Eliminar muertos
         eliminarMuertas();
+        
     }
  
     private void flushPending() {
@@ -141,6 +154,7 @@ public class Entitymanager {
             if (e instanceof Animal){
                 Animal a = (Animal) e;
                 animals.remove(a);
+                
             }
         }
         toRemove.clear();

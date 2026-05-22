@@ -267,7 +267,7 @@ public class SaveManager {
                         e = new Nero(x,y);
                         break;
                     case "Food":
-                        e = new Food(x,y);
+                        e = new Blupys(x,y);
                         break;
                 }
 

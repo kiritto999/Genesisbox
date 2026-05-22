@@ -41,6 +41,7 @@ public class Zyrox extends Animal {
     private static BufferedImage spriteAttack;
     private static BufferedImage spriteHurt;
     private static BufferedImage spriteEat;
+    private static BufferedImage spriteCachorro;
     private static boolean spritesLoaded = false;
 
     private final Random random = new Random();
@@ -48,7 +49,9 @@ public class Zyrox extends Animal {
 
     // Timer para el sprite de ataque (evita mostrarlo al recibir daño)
     private int timerAtaque = 0;
-    private static final int DURACION_SPRITE_ATAQUE = 3;
+    private int timerComer = 0;
+    private static final int DURACION_SPRITE_ATAQUE = 40;
+    private static final int DURACION_SPRITE_COMER  = 60;
 
     // Flag para el sprite de comer
     private boolean estaComiendo = false;
@@ -57,10 +60,11 @@ public class Zyrox extends Animal {
     private static void loadSprites() {
         if (spritesLoaded) return;
         try {
-            spriteIdle   = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_idle.png"));
-            spriteAttack = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_attack.png"));
-            spriteHurt   = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_hurt.png"));
-            spriteEat    = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_eat.png"));
+            spriteIdle     = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_idle.png"));
+            spriteAttack   = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_attack.png"));
+            spriteHurt     = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_hurt.png"));
+            spriteEat      = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_eat.png"));
+            spriteCachorro = ImageIO.read(Zyrox.class.getResourceAsStream("/sprites/zyrox_cachorro.png"));
         } catch (IOException | IllegalArgumentException e) {
             logger.log(Level.WARNING, "No se pudieron cargar los sprites del Zyrox", e);
         }
@@ -74,18 +78,22 @@ public class Zyrox extends Animal {
 
         this.baseColor = new Color(210, 120, 40);
         name         = "Zyrox";
-        maxHealth    = 40 + random.nextInt(21);
+        maxHealth    = 300 + random.nextInt(81);
+        energy       = 200 + random.nextInt(51);
         health       = maxHealth;
-        capacity     = 3;
-        energy       = 50 + random.nextInt(21);
+        capacity     = 3;       
         sex          = random.nextBoolean() ? Sex.MALE : Sex.FEMALE;
         habitat      = Tile.GRASS;
         foodType     = FoodType.HERBIVORE;
         hunger       = CAP_HAMBRE;
 
-        speed        = 3 + random.nextInt(3);
-        attack       = 3 + random.nextInt(3);
+        speed        = 4 + random.nextInt(3);
+        attack       = 5 + random.nextInt(5);
         intelligence = 1 + random.nextInt(3);
+
+        // Los spawneados manualmente empiezan como adultos
+        etapa    = Etapa.ADULTO;
+        edadDias = DIAS_ADULTO;
 
         hpUltimoTick = maxHealth;
     }
@@ -96,14 +104,19 @@ public class Zyrox extends Animal {
         if (health < (int)(maxHealth * VIDA_HERIDO) && spriteHurt != null) {
             return spriteHurt;
         }
-        // Atacando: solo si el timer está activo (lo activamos al golpear)
+        // Atacando: solo si el timer está activo
         if (timerAtaque > 0 && spriteAttack != null) {
             timerAtaque--;
             return spriteAttack;
         }
         // Comiendo
-        if (estaComiendo && spriteEat != null) {
+        if (timerComer > 0 && spriteEat != null) {
+            timerComer--;
             return spriteEat;
+        }
+        // Cachorro: sprite especial si existe
+        if (etapa == Etapa.CACHORRO && spriteCachorro != null) {
+            return spriteCachorro;
         }
         return spriteIdle;
     }
@@ -113,7 +126,8 @@ public class Zyrox extends Animal {
     protected void decidirAccion(World.World world) {
 
         // Resetear flags al inicio de cada tick
-        estaComiendo = false;
+        if (timerComer <= 0) estaComiendo = false; // solo resetear si el timer ya terminó
+
 
         // Prioridad 1: Huir si HP bajo
         if (estaEnPeligroDeMuerte()) {
@@ -132,7 +146,7 @@ public class Zyrox extends Animal {
             Lummon objetivo = buscarLummonAdyacente();
             if (objetivo != null) {
                 if (intentarAtacar(objetivo)) {
-                    timerAtaque = DURACION_SPRITE_ATAQUE; // activar sprite solo si golpeó
+                    timerAtaque = DURACION_SPRITE_ATAQUE;
                 }
                 hpUltimoTick = health;
                 return;
@@ -146,7 +160,10 @@ public class Zyrox extends Animal {
                 boolean enRango = (comida.getTileX() == tileX && comida.getTileY() == tileY)
                         || esAdyacente(comida.getTileX(), comida.getTileY());
                 if (enRango && comida.getStage() == Blupys.Etapa.MADURA) {
-                    estaComiendo = intentarComer(comida); // activar sprite eat
+                    if (intentarComer(comida)) {
+                    timerComer = DURACION_SPRITE_COMER;
+                }
+                estaComiendo = timerComer > 0;
                 } else if (!enRango) {
                     moverHacia(comida.getTileX(), comida.getTileY(), world);
                 }
@@ -161,9 +178,10 @@ public class Zyrox extends Animal {
         }
 
         hpUltimoTick = health;
+        intentarReproducirse(world);
     }
 
-// ── Agrupación ─────────────────────────────────────────────────────
+    // ── Agrupación ─────────────────────────────────────────────────────
     /**
      * Cuenta cuántos Zyrox están en tiles adyacentes a (cx, cy).
      */
@@ -249,7 +267,7 @@ public class Zyrox extends Animal {
             int dist = Math.abs(f.getTileX() - tileX) + Math.abs(f.getTileY() - tileY);
             if (dist <= radio && dist < mejorDist) {
                 if (mejor == null
-                        || f.getStage() == Blupys.Etapa.MADURA && mejor.getStage() != Blupys.Etapa.MADURA
+                        || (f.getStage() == Blupys.Etapa.MADURA && mejor.getStage() != Blupys.Etapa.MADURA)
                         || (f.getStage() == mejor.getStage() && dist < mejorDist)) {
                     mejorDist = dist;
                     mejor = f;
@@ -283,7 +301,60 @@ public class Zyrox extends Animal {
         super.update(world, deltaTime);
     }
 
-    // ── Dibujo ────────────────────────────────────────────────────────
+    // ── Al crecer ──────────────────────────────────────────────────────
+    @Override
+    protected void onCrecerAAdulto() {
+        maxHealth = (int)(maxHealth * 1.2);
+        health    = maxHealth;
+        System.out.println(getCustomName() + " Zyrox creció a ADULTO");
+    }
+
+    @Override
+    protected void onCrecerAViejo() {
+        speed  = Math.max(1, speed  - 1);
+        attack = Math.max(1, attack - 1);
+        System.out.println(getCustomName() + " Zyrox llegó a VIEJO");
+    }
+
+    // ── Reproducción ──────────────────────────────────────────────────
+    private void intentarReproducirse(World.World world) {
+        if (!puedeReproducirse()) return;
+
+        for (Animal a : entitymanager.getAnimals()) {
+            if (!(a instanceof Zyrox)) continue;
+            Zyrox otro = (Zyrox) a;
+
+            if (otro == this)                                  continue;
+            if (!otro.isAlive())                               continue;
+            if (otro.sex == this.sex)                          continue;
+            if (otro.getEtapa() != Etapa.ADULTO)               continue;
+            if (!esAdyacente(otro.getTileX(), otro.getTileY())) continue;
+            if (!otro.puedeReproducirse())                     continue;
+
+            int[] hijoPos = buscarTileLibre(world);
+            if (hijoPos == null) return;
+
+            Zyrox hijo = new Zyrox(hijoPos[0], hijoPos[1], entitymanager);
+            // El hijo nace cachorro, sobreescribir lo que puso el constructor
+            hijo.etapa        = Etapa.CACHORRO;
+            hijo.edadDias     = 0;
+            hijo.speed        = heredarStat(this.speed,        otro.speed,        1, CAP_VELOCIDAD);
+            hijo.attack       = heredarStat(this.attack,       otro.attack,       1, CAP_ATAQUE);
+            hijo.intelligence = heredarStat(this.intelligence, otro.intelligence, 1, CAP_INTELIGENCIA);
+            hijo.maxHealth    = heredarStat(this.maxHealth,    otro.maxHealth,    5, CAP_VIDA);
+            hijo.health       = hijo.maxHealth / 2;
+
+            entitymanager.addAnimal(hijo);
+
+            this.resetCooldownRepro();
+            otro.resetCooldownRepro();
+
+            System.out.println("Nació un Zyrox cachorro en "
+                + hijoPos[0] + "," + hijoPos[1] + "!");
+            return;
+        }
+    }
+
     @Override
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY) {
         if (slot < 0 || slot >= 5) return;
@@ -293,14 +364,26 @@ public class Zyrox extends Animal {
         int px = cameraX + tileX * tileSize;
         int py = cameraY + tileY * tileSize;
 
+        // Escala por estado
+        float escala;
+        if (etapa == Etapa.CACHORRO) {
+            escala = 0.55f;
+        } else if (health < (int)(maxHealth * VIDA_HERIDO)) {
+            escala = 0.70f; // herido más pequeño
+        } else if (estaComiendo) {
+            escala = 0.85f;
+        } else {
+            escala = 0.90f;
+        }
+
         int drawW, drawH;
         if (sprite != null) {
             double ratio = (double) sprite.getWidth() / sprite.getHeight();
-            drawH = (int)(tileSize * 0.90);
+            drawH = (int)(tileSize * escala);
             drawW = (int)(drawH * ratio);
         } else {
-            drawW = (int)(tileSize * 0.55);
-            drawH = (int)(tileSize * 0.55);
+            drawW = (int)(tileSize * escala);
+            drawH = (int)(tileSize * escala);
         }
 
         int dx = px + (tileSize - drawW) / 2;
