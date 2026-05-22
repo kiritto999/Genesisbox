@@ -98,7 +98,7 @@ public class Zenthra extends Resource {
             switch (stage) {
                 case SEMILLA: escala = 1.55f; break;
                 case JOVEN:   escala = 1.95f; break;
-                case MADURO:  escala = 2.50f; break;
+                case MADURO:  escala = 2.40f; break;
                 case VIEJO:   escala = 3.00f; break;
                 default:      escala = 0.55f; break;
             }

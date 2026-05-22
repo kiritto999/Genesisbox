@@ -78,7 +78,8 @@ public class Entitymanager {
     }
  
     private int capacidadDeClase(Class<?> clazz) {
-        if (clazz == Nero.class) return 4;
+        if (clazz == Nero.class) return 5;
+        if (clazz == Zenthra.class) return 3;
         return 1;
     }
  
@@ -232,7 +233,8 @@ public class Entitymanager {
     }
  
     private int obtenerCapacidad(Entity e) {
-        if (e instanceof Nero)   return 4;
+        if (e instanceof Nero)   return 5;
+        if (e instanceof Zenthra) return 3;
         if (e instanceof Animal) {
             Animal a = (Animal) e;
             return a.getCapacity();
