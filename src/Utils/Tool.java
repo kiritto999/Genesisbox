@@ -16,5 +16,10 @@ public enum Tool {
     Zyrox,
     Nero,
     Zethar,
-    RAYO
+    RAYO,
+    Blupys
+    
+    
 }
+
+

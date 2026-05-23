@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class World {
 
-    int rows = 42;
+    int rows = 40;
     int colums = 40;
 
     Tile[][] map;

@@ -1,5 +1,6 @@
 package Inputs;
 
+import Entities.Blupys;
 import java.awt.event.*;
 import UI.GamePanel;
 import Utils.*;
@@ -140,9 +141,9 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
         switch (currentTool) {
 
             case WATER:
-            world.setTile(row, col, Tile.WATER);
-            Emanager.removeEntitiesAt(col, row);
-            break;
+                world.setTile(row, col, Tile.WATER);
+                Emanager.removeEntitiesAt(col, row);
+                break;
 
             case GRASS:
                 int variant = controlPanel.getSelectedGroundVariant();
@@ -151,18 +152,26 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
 
             case Lummon:
                 Emanager.addEntity(new Lummon(col,row ,Emanager));
+                jpanel.repaint();
                 break;
 
             case Zyrox:
                 Emanager.addEntity(new Zyrox(col, row,Emanager));
+                jpanel.repaint();
                 break;
                     
             case Nero:
                 Emanager.addEntity(new Nero(col, row));
+                jpanel.repaint();
                 break;
 
             case Zethar:
                 Emanager.addEntity(new Zenthra(col, row));
+                jpanel.repaint();
+                break;
+            case Blupys:
+                Emanager.addEntity(new Blupys(col, row));
+                jpanel.repaint();
                 break;
                 
                 
@@ -175,11 +184,8 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
                         e.takeDamage(80);
                     }
                 }
-    break;
+        break;
         }
-        
-        
-
         jpanel.repaint();
     }
     
@@ -194,9 +200,14 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
         System.out.println("Tool: " + tool);
     }
 
+    public Tool getCurrentTool() {return currentTool;}
+    
+    
+
 
     @Override public void mouseClicked(MouseEvent e) {}
     @Override public void mouseEntered(MouseEvent e) {}
     @Override public void mouseExited(MouseEvent e) {}
     @Override public void mouseMoved(MouseEvent e) {}
+    
 }

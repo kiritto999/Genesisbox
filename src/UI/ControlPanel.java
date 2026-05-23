@@ -380,6 +380,7 @@ public class ControlPanel extends javax.swing.JFrame {
         TbtnRZen3 = new javax.swing.JToggleButton();
         TbtnRZen4 = new javax.swing.JToggleButton();
         TbtnRNero = new javax.swing.JToggleButton();
+        TbtnRBlupys = new javax.swing.JToggleButton();
         panelMBuilt = new javax.swing.JPanel();
         TbtnBGrass = new javax.swing.JToggleButton();
         TbtnBGrass1 = new javax.swing.JToggleButton();
@@ -551,34 +552,47 @@ public class ControlPanel extends javax.swing.JFrame {
         TbtnRNero.setOpaque(true);
         TbtnRNero.addActionListener(this::TbtnRNeroActionPerformed);
 
+        btnGResources.add(TbtnRBlupys);
+        TbtnRBlupys.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_blupys_young.png"))); // NOI18N
+        TbtnRBlupys.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRBlupys.setOpaque(true);
+        TbtnRBlupys.addActionListener(this::TbtnRBlupysActionPerformed);
+
         javax.swing.GroupLayout panelMResourcesLayout = new javax.swing.GroupLayout(panelMResources);
         panelMResources.setLayout(panelMResourcesLayout);
         panelMResourcesLayout.setHorizontalGroup(
             panelMResourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelMResourcesLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMResourcesLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(TbtnRZen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(TbtnRZen2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TbtnRZen3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TbtnRZen4)
-                .addGap(56, 56, 56)
-                .addComponent(TbtnRNero)
-                .addGap(20, 20, 20))
+                .addGroup(panelMResourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelMResourcesLayout.createSequentialGroup()
+                        .addComponent(TbtnRBlupys)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(panelMResourcesLayout.createSequentialGroup()
+                        .addComponent(TbtnRZen)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(TbtnRZen2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TbtnRZen3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TbtnRZen4)
+                        .addGap(61, 61, 61)
+                        .addComponent(TbtnRNero)
+                        .addGap(15, 15, 15))))
         );
         panelMResourcesLayout.setVerticalGroup(
             panelMResourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMResourcesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelMResourcesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(TbtnRNero, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TbtnRZen4, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TbtnRZen2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TbtnRZen3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TbtnRZen, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(72, Short.MAX_VALUE))
+                    .addComponent(TbtnRZen, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TbtnRNero, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(TbtnRBlupys, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         panelMode.add(panelMResources, "card4");
@@ -829,6 +843,57 @@ public class ControlPanel extends javax.swing.JFrame {
 
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
 
+        Random random = new Random();
+
+        Tool tool = mouser.getCurrentTool();
+
+        for (int i = 0; i < 50; i++) {
+
+            int x = random.nextInt(world.getColums()* GP.getUNIT_SIZE());
+            int y = random.nextInt(world.getRows() * GP.getUNIT_SIZE());
+
+            switch (tool) {
+
+                // ===== CREATURES =====
+
+                case Zyrox:
+                    EManager.addAnimal(
+                        new Zyrox(x, y, EManager)
+                    );
+                    break;
+
+                case Lummon:
+                    EManager.addAnimal(
+                        new Lummon(x, y, EManager)
+                    );
+                    break;
+
+                // ===== RESOURCES =====
+
+                case Nero:
+                    EManager.addResourse(
+                        new Nero(x, y)
+                    );
+                    break;
+
+                case Zethar:
+                    EManager.addResourse(
+                        new Zenthra(x, y)
+                    );
+                    break;
+
+                case Blupys:
+                    EManager.addResourse(
+                        new Blupys(x, y)
+                    );
+                    break;
+
+                default:
+                    System.out.println("No hay entidad seleccionada");
+                    break;
+            }
+        }
+        GP.repaint();
     }//GEN-LAST:event_btnGenerateActionPerformed
 
     private void btnInformationshowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInformationshowActionPerformed
@@ -846,6 +911,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private void rbtnMResourcesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMResourcesActionPerformed
         // TODO add your handling code here:
         if(rbtnMResources.isSelected()){
+            panelMode.setOpaque(false);
             rbtnMCreatures.setBackground(new Color(51,51,51));
             rbtnMResources.setBackground(new Color(51,51,0));
             rbtnMbuilt.setBackground(new Color(51,51,51));
@@ -911,6 +977,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private void rbtnMCreaturesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMCreaturesActionPerformed
         // TODO add your handling code here:
         if(rbtnMCreatures.isSelected()){
+            panelMode.setOpaque(false);
             rbtnMCreatures.setBackground(new Color(0,102,102));
             rbtnMResources.setBackground(new Color(51,51,51));
             rbtnMbuilt.setBackground(new Color(51,51,51));
@@ -991,6 +1058,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private void rbtnMNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMNoneActionPerformed
         // TODO add your handling code here:
         if(rbtnMNone.isSelected()){
+            panelMode.setOpaque(true);
             rbtnMCreatures.setBackground(new Color(51,51,51));
             rbtnMResources.setBackground(new Color(51,51,51));
             rbtnMbuilt.setBackground(new Color(51,51,51));
@@ -1161,6 +1229,20 @@ public class ControlPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_TbtnBWaterActionPerformed
 
+    private void TbtnRBlupysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnRBlupysActionPerformed
+        // TODO add your handling code here:
+        resetBorders();
+
+        if (TbtnRBlupys.isSelected()) {
+
+            TbtnRBlupys.setBorder(
+                new javax.swing.border.LineBorder(java.awt.Color.GREEN, 3)
+            );
+
+            setTool(Tool.Blupys);
+        }
+    }//GEN-LAST:event_TbtnRBlupysActionPerformed
+
     public int getSelectedGroundVariant() {
         return selectedGroundVariant;
     }
@@ -1210,6 +1292,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JToggleButton TbtnBWater;
     private javax.swing.JToggleButton TbtnCLummon;
     private javax.swing.JToggleButton TbtnCZyrox;
+    private javax.swing.JToggleButton TbtnRBlupys;
     private javax.swing.JToggleButton TbtnRNero;
     private javax.swing.JToggleButton TbtnRZen;
     private javax.swing.JToggleButton TbtnRZen2;

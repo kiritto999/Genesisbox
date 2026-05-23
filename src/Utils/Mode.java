@@ -10,5 +10,6 @@ package Utils;
  */
 public enum Mode {
     SPAWN,
-    BUILD
+    BUILD,
+    Resouces
 }
