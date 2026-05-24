@@ -67,10 +67,13 @@ public class LightningEffect {
     }
     
     public int getCooldownRestante() {
-    long elapsed = System.currentTimeMillis() - lastUsedTime;
-    int restante = (int)((COOLDOWN_MS - elapsed) / 1000) + 1;
-    return Math.max(0, restante);
-}
+        long elapsed = System.currentTimeMillis() - lastUsedTime;
+        long restanteMs = COOLDOWN_MS - elapsed;
+        if (restanteMs <= 0) {
+            return 0;
+        }
+        return (int) Math.ceil(restanteMs / 1000.0);
+    }
 
     public void draw(Graphics g, int tileSize, int cameraX, int cameraY, java.awt.image.ImageObserver observer) {
         if (!active || gifImage == null) return;
@@ -92,4 +95,5 @@ public class LightningEffect {
     public boolean isActive() { return active; }
     public int getTileX()     { return tileX; }
     public int getTileY()     { return tileY; }
+    public int getCooldownMax() {return (int) (COOLDOWN_MS / 1000);}
 }

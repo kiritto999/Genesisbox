@@ -19,6 +19,7 @@ import Utils.*;
 import java.awt.Color;
 import Game.Game;
 import World.Tile;
+import java.awt.Cursor;
 import java.awt.Image;
 import java.util.Hashtable;
 import javax.swing.BorderFactory;
@@ -71,46 +72,14 @@ public class ControlPanel extends javax.swing.JFrame {
         GP = new GamePanel(world, EManager, this.infoPanel, camera,time);
         mouser = new Mouser(camera, GP, world,EManager,this);
         infoPanel.setGamePanel(GP);
-        //se agreg el redibujado 
         GLoop.setGamePanel(GP);      
         
         Image icon = new ImageIcon(
                 getClass().getResource("/resources/Gifs/Aqualix.gif")
         ).getImage();
         
-        // ── Botón rayo ──
-        javax.swing.JButton btnRayo = new javax.swing.JButton("⚡ Rayo");
-        btnRayo.setBackground(new Color(20, 10, 60));
-        btnRayo.setForeground(new Color(180, 100, 255));
-        btnRayo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnRayo.setBounds(340, 40, 100, 30);
-        btnRayo.addActionListener(e -> setTool(Tool.RAYO));
-        menuGame.add(btnRayo);
-        
-        // ── Label cooldown ──
-        javax.swing.JLabel lblCooldown = new javax.swing.JLabel("Listo");
-        lblCooldown.setForeground(new Color(100, 255, 100));
-        lblCooldown.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
-        lblCooldown.setBounds(340, 75, 100, 20);
-        menuGame.add(lblCooldown);
-
-        // ── Timer que actualiza el label ──
-        new javax.swing.Timer(200, e -> {
-            LightningEffect ray = GP.getLightning();
-            if (ray.puedeUsarse()) {
-                lblCooldown.setForeground(new Color(100, 255, 100));
-                lblCooldown.setText("✔ Listo");
-                btnRayo.setEnabled(true);
-            } else {
-                int seg = ray.getCooldownRestante();
-                lblCooldown.setForeground(new Color(255, 80, 80));
-                lblCooldown.setText("⏳ " + seg + "s");
-                btnRayo.setEnabled(false);
-            }
-        }).start();
-
         setIconImage(icon);
-        
+
         panelGame.setLayout(new BorderLayout());
         panelGame.add(GP, BorderLayout.CENTER);
         GP.setOpaque(false);
@@ -148,26 +117,49 @@ public class ControlPanel extends javax.swing.JFrame {
         
         //tamaño del panel lateral
         panelInfo.setPreferredSize(new Dimension(340, 900));
-
+        //la info empieza oculta
+        panelInfo.setVisible(false);
+        
+        
         // tiempo
         lblTime.setText("");
         new javax.swing.Timer(100, e -> {
             lblTime.setText(GLoop.getTimeDay().getTimeString());
             updateLblD();
         }).start();
-
         
-       
+        // ── Timer Lightning Cooldown ──
+        new javax.swing.Timer(200, e -> {
+            LightningEffect ray = GP.getLightning();
+            int max = ray.getCooldownMax();
+            int restante = ray.getCooldownRestante();
+            PBarLightning.setMaximum(max);
 
-        //la info empieza oculta
-        panelInfo.setVisible(false);
+            if (ray.puedeUsarse()) {
+                PBarLightning.setValue(max);
+                PBarLightning.setString("LISTO");
+                TbtnLightning.setEnabled(true);
+
+            } else {
+                int progreso = max - restante;
+                PBarLightning.setValue(progreso);
+                PBarLightning.setString(restante + "s");
+                TbtnLightning.setEnabled(false);
+            }
+            // actualizar cursor siempre
+            updateCursor();
+
+        }).start();
         
+  
         //modos
-        rbtnMCreatures.setSelected(true);
+        rbtnMNone.setSelected(true);
+        panelMode.add(panelMNone,"None");
         panelMode.add(panelMCreature,"Spawn");
         panelMode.add(panelMBuilt,"Built");
         panelMode.add(panelMResources,"Resources");
         
+  
         //controla la velocidad del timepo
         
         SliderSpeed.addChangeListener(e -> {
@@ -246,7 +238,32 @@ public class ControlPanel extends javax.swing.JFrame {
     private void setTool(Tool tool) {
         if (mouser != null) {
             mouser.setTool(tool);
+            updateCursor();
             System.out.println("Tool actual: " + tool);
+        }
+    }
+    
+    //si cambio del cursor
+    private void updateCursor() {
+
+        LightningEffect ray = GP.getLightning();
+
+        // Lightning seleccionado y en cooldown
+        if (mouser.getCurrentTool() == Tool.RAYO && !ray.puedeUsarse()) {
+
+            GP.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+
+        }
+        // Lightning seleccionado y listo
+        else if (mouser.getCurrentTool() == Tool.RAYO) {
+
+            GP.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
+
+        }
+        // cualquier otro tool
+        else {
+
+            GP.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         }
     }
     
@@ -349,6 +366,9 @@ public class ControlPanel extends javax.swing.JFrame {
     TbtnBWater.setBorder(
         new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
     );
+    TbtnRBlupys.setBorder(
+        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
+    );
 }
 
     
@@ -371,6 +391,7 @@ public class ControlPanel extends javax.swing.JFrame {
         rbtnMResources = new javax.swing.JRadioButton();
         rbtnMbuilt = new javax.swing.JRadioButton();
         panelMode = new javax.swing.JPanel();
+        panelMNone = new javax.swing.JPanel();
         panelMCreature = new javax.swing.JPanel();
         TbtnCZyrox = new javax.swing.JToggleButton();
         TbtnCLummon = new javax.swing.JToggleButton();
@@ -404,14 +425,16 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGenerate = new javax.swing.JToggleButton();
         rbtnMCreatures = new javax.swing.JRadioButton();
         rbtnMNone = new javax.swing.JRadioButton();
+        PBarLightning = new javax.swing.JProgressBar();
+        TbtnLightning = new javax.swing.JToggleButton();
         panelInfo = new javax.swing.JPanel();
         bMenuGame = new javax.swing.JMenuBar();
+        jMenu2 = new javax.swing.JMenu();
+        MitemExit = new javax.swing.JMenuItem();
+        MitemExitManu = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         MitemSave = new javax.swing.JMenuItem();
         MitemLoad = new javax.swing.JMenuItem();
-        MitemExitManu = new javax.swing.JMenuItem();
-        MitemExit = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         MitemGrid = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -435,6 +458,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnPause.setBackground(new java.awt.Color(62, 62, 62));
         btnPause.setForeground(new java.awt.Color(51, 255, 0));
         btnPause.setText("⏸");
+        btnPause.setToolTipText("Pause");
         btnPause.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnPause.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnPause.addActionListener(this::btnPauseActionPerformed);
@@ -454,6 +478,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnInformationshow.setBackground(new java.awt.Color(0, 51, 51));
         btnInformationshow.setForeground(new java.awt.Color(255, 255, 153));
         btnInformationshow.setText("Information");
+        btnInformationshow.setToolTipText("");
         btnInformationshow.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnInformationshow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnInformationshow.addActionListener(this::btnInformationshowActionPerformed);
@@ -480,17 +505,40 @@ public class ControlPanel extends javax.swing.JFrame {
 
         panelMode.setLayout(new java.awt.CardLayout());
 
+        panelMNone.setBackground(new java.awt.Color(51, 51, 51));
+        panelMNone.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, java.awt.Color.red, null));
+        panelMNone.setToolTipText("");
+        panelMNone.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        javax.swing.GroupLayout panelMNoneLayout = new javax.swing.GroupLayout(panelMNone);
+        panelMNone.setLayout(panelMNoneLayout);
+        panelMNoneLayout.setHorizontalGroup(
+            panelMNoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 396, Short.MAX_VALUE)
+        );
+        panelMNoneLayout.setVerticalGroup(
+            panelMNoneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 136, Short.MAX_VALUE)
+        );
+
+        panelMode.add(panelMNone, "card5");
+
         panelMCreature.setBackground(new java.awt.Color(0, 102, 102));
 
         btnGCreatures.add(TbtnCZyrox);
         TbtnCZyrox.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Mzyrox_idle.png"))); // NOI18N
+        TbtnCZyrox.setToolTipText("<html>\n<b><font color='orange'>Zyrox</font></b><br>\n<font color='green'><b>Herbívora</b></font><br><br>\n<b><font color='orange'>MaxHealth:</font></b> 300 - 380<br>\n<b><font color='yellow'>Energy:</font></b> 200 - 250<br>\n<b><font color='pink'>Sex:</font></b> Male / Female<br>\n<b><font color='cyan'>Speed:</font></b> 4 - 6<br>\n<b><font color='red'>Attack:</font></b> 5 - 9<br>\n<b><font color='magenta'>Intelligence:</font></b> 1 - 3<br>\n</html>");
         TbtnCZyrox.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnCZyrox.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnCZyrox.setOpaque(true);
         TbtnCZyrox.addActionListener(this::TbtnCZyroxActionPerformed);
 
         btnGCreatures.add(TbtnCLummon);
         TbtnCLummon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Mlummon_idle.png"))); // NOI18N
+        TbtnCLummon.setToolTipText("<html>  <b><font color='cyan'>Lummon</font></b><br>  \n<font color='red'><b>     Carnívora      </b></font><br><br>  \n<b><font color='orange'>MaxHealth:</font></b>    180 - 230       <br>  \n<b><font color='yellow'>Energy:</font></b>       200 - 250       <br> \n <b><font color='pink'>Sex:</font></b>         Male / Female      <br>  \n<b><font color='green'>    Speed:       </font></b> 2 - 4<br>  \n<b><font color='red'>       Attack:          </font></b> 2 - 4<br> \n <b><font color='magenta'>   Intelligence:     </font></b> 3 - 5<br>  \n</html>");
         TbtnCLummon.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnCLummon.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TbtnCLummon.setFocusable(false);
         TbtnCLummon.setOpaque(true);
         TbtnCLummon.addActionListener(this::TbtnCLummonActionPerformed);
 
@@ -521,13 +569,16 @@ public class ControlPanel extends javax.swing.JFrame {
 
         btnGResources.add(TbtnRZen);
         TbtnRZen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_zenthra_sapling.png"))); // NOI18N
+        TbtnRZen.setToolTipText("Zenthra");
         TbtnRZen.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRZen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnRZen.setOpaque(true);
         TbtnRZen.addActionListener(this::TbtnRZenActionPerformed);
 
         btnGResources.add(TbtnRZen2);
         TbtnRZen2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_zenthra_joven.png"))); // NOI18N
         TbtnRZen2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRZen2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         TbtnRZen2.setEnabled(false);
         TbtnRZen2.setOpaque(true);
         TbtnRZen2.addActionListener(this::TbtnRZen2ActionPerformed);
@@ -548,13 +599,17 @@ public class ControlPanel extends javax.swing.JFrame {
 
         btnGResources.add(TbtnRNero);
         TbtnRNero.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_Nero_sprite.png"))); // NOI18N
+        TbtnRNero.setToolTipText("Nero");
         TbtnRNero.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRNero.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnRNero.setOpaque(true);
         TbtnRNero.addActionListener(this::TbtnRNeroActionPerformed);
 
         btnGResources.add(TbtnRBlupys);
         TbtnRBlupys.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/MINI_blupys_young.png"))); // NOI18N
+        TbtnRBlupys.setToolTipText("Blupys");
         TbtnRBlupys.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnRBlupys.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnRBlupys.setOpaque(true);
         TbtnRBlupys.addActionListener(this::TbtnRBlupysActionPerformed);
 
@@ -602,6 +657,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass);
         TbtnBGrass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Dirt1.png"))); // NOI18N
         TbtnBGrass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass.setOpaque(true);
         TbtnBGrass.addActionListener(this::TbtnBGrassActionPerformed);
         panelMBuilt.add(TbtnBGrass);
@@ -609,6 +665,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass1);
         TbtnBGrass1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Dirt2.png"))); // NOI18N
         TbtnBGrass1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass1.setOpaque(true);
         TbtnBGrass1.addActionListener(this::TbtnBGrass1ActionPerformed);
         panelMBuilt.add(TbtnBGrass1);
@@ -616,6 +673,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass2);
         TbtnBGrass2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Dirt3.png"))); // NOI18N
         TbtnBGrass2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass2.setOpaque(true);
         TbtnBGrass2.addActionListener(this::TbtnBGrass2ActionPerformed);
         panelMBuilt.add(TbtnBGrass2);
@@ -623,6 +681,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass3);
         TbtnBGrass3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Dirt4.png"))); // NOI18N
         TbtnBGrass3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass3.setOpaque(true);
         TbtnBGrass3.addActionListener(this::TbtnBGrass3ActionPerformed);
         panelMBuilt.add(TbtnBGrass3);
@@ -630,6 +689,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass4);
         TbtnBGrass4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Plain5.png"))); // NOI18N
         TbtnBGrass4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass4.setOpaque(true);
         TbtnBGrass4.addActionListener(this::TbtnBGrass4ActionPerformed);
         panelMBuilt.add(TbtnBGrass4);
@@ -637,6 +697,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass5);
         TbtnBGrass5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Plain6.png"))); // NOI18N
         TbtnBGrass5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass5.setOpaque(true);
         TbtnBGrass5.addActionListener(this::TbtnBGrass5ActionPerformed);
         panelMBuilt.add(TbtnBGrass5);
@@ -644,6 +705,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass6);
         TbtnBGrass6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Plain7.png"))); // NOI18N
         TbtnBGrass6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass6.setOpaque(true);
         TbtnBGrass6.addActionListener(this::TbtnBGrass6ActionPerformed);
         panelMBuilt.add(TbtnBGrass6);
@@ -651,6 +713,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass7);
         TbtnBGrass7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Plain8.png"))); // NOI18N
         TbtnBGrass7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass7.setOpaque(true);
         TbtnBGrass7.addActionListener(this::TbtnBGrass7ActionPerformed);
         panelMBuilt.add(TbtnBGrass7);
@@ -658,6 +721,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass8);
         TbtnBGrass8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Rock8.png"))); // NOI18N
         TbtnBGrass8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass8.setOpaque(true);
         TbtnBGrass8.addActionListener(this::TbtnBGrass8ActionPerformed);
         panelMBuilt.add(TbtnBGrass8);
@@ -665,6 +729,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBGrass9);
         TbtnBGrass9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sprites/Rock9.png"))); // NOI18N
         TbtnBGrass9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBGrass9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBGrass9.setOpaque(true);
         TbtnBGrass9.addActionListener(this::TbtnBGrass9ActionPerformed);
         panelMBuilt.add(TbtnBGrass9);
@@ -672,6 +737,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnGMBuilts.add(TbtnBWater);
         TbtnBWater.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/Gifs/WaterV1.png"))); // NOI18N
         TbtnBWater.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        TbtnBWater.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnBWater.setOpaque(true);
         TbtnBWater.addActionListener(this::TbtnBWaterActionPerformed);
         panelMBuilt.add(TbtnBWater);
@@ -684,6 +750,7 @@ public class ControlPanel extends javax.swing.JFrame {
         btnStartTime1.setBackground(new java.awt.Color(62, 62, 62));
         btnStartTime1.setForeground(new java.awt.Color(102, 153, 0));
         btnStartTime1.setText("▶");
+        btnStartTime1.setToolTipText("Start");
         btnStartTime1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnStartTime1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnStartTime1.addActionListener(this::btnStartTime1ActionPerformed);
@@ -765,7 +832,7 @@ public class ControlPanel extends javax.swing.JFrame {
         menuGame.add(btnGenerate);
         btnGenerate.setBounds(510, 90, 84, 38);
 
-        rbtnMCreatures.setBackground(new java.awt.Color(0, 102, 102));
+        rbtnMCreatures.setBackground(new java.awt.Color(51, 51, 51));
         btnGmodes.add(rbtnMCreatures);
         rbtnMCreatures.setForeground(new java.awt.Color(255, 255, 255));
         rbtnMCreatures.setText("Creatures");
@@ -774,14 +841,28 @@ public class ControlPanel extends javax.swing.JFrame {
         menuGame.add(rbtnMCreatures);
         rbtnMCreatures.setBounds(500, 20, 110, 21);
 
-        rbtnMNone.setBackground(new java.awt.Color(51, 51, 51));
+        rbtnMNone.setBackground(new java.awt.Color(120, 0, 153));
         btnGmodes.add(rbtnMNone);
         rbtnMNone.setForeground(new java.awt.Color(255, 255, 255));
-        rbtnMNone.setText("None");
+        rbtnMNone.setText("Cursor");
         rbtnMNone.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         rbtnMNone.addActionListener(this::rbtnMNoneActionPerformed);
         menuGame.add(rbtnMNone);
         rbtnMNone.setBounds(500, 0, 110, 21);
+
+        PBarLightning.setBackground(new java.awt.Color(20, 10, 60));
+        PBarLightning.setStringPainted(true);
+        menuGame.add(PBarLightning);
+        PBarLightning.setBounds(350, 96, 110, 14);
+
+        TbtnLightning.setBackground(new java.awt.Color(20, 10, 60));
+        TbtnLightning.setForeground(new java.awt.Color(180, 100, 255));
+        TbtnLightning.setText("⚡  Lightning  ⚡");
+        TbtnLightning.setActionCommand("⚡  Lightning ⚡");
+        TbtnLightning.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TbtnLightning.addActionListener(this::TbtnLightningActionPerformed);
+        menuGame.add(TbtnLightning);
+        TbtnLightning.setBounds(350, 60, 110, 50);
 
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
 
@@ -793,6 +874,18 @@ public class ControlPanel extends javax.swing.JFrame {
         bMenuGame.setToolTipText("");
         bMenuGame.setAlignmentX(1.0F);
 
+        jMenu2.setText("⚙");
+
+        MitemExit.setText("Exit");
+        MitemExit.addActionListener(this::MitemExitActionPerformed);
+        jMenu2.add(MitemExit);
+
+        MitemExitManu.setText("Exit menu");
+        MitemExitManu.addActionListener(this::MitemExitManuActionPerformed);
+        jMenu2.add(MitemExitManu);
+
+        bMenuGame.add(jMenu2);
+
         jMenu1.setText("File");
 
         MitemSave.setText("Save");
@@ -803,18 +896,7 @@ public class ControlPanel extends javax.swing.JFrame {
         MitemLoad.addActionListener(this::MitemLoadActionPerformed);
         jMenu1.add(MitemLoad);
 
-        MitemExitManu.setText("Exit menu");
-        MitemExitManu.addActionListener(this::MitemExitManuActionPerformed);
-        jMenu1.add(MitemExitManu);
-
-        MitemExit.setText("Exit");
-        MitemExit.addActionListener(this::MitemExitActionPerformed);
-        jMenu1.add(MitemExit);
-
         bMenuGame.add(jMenu1);
-
-        jMenu2.setText("Edit");
-        bMenuGame.add(jMenu2);
 
         jMenu3.setText("View");
 
@@ -911,7 +993,6 @@ public class ControlPanel extends javax.swing.JFrame {
     private void rbtnMResourcesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMResourcesActionPerformed
         // TODO add your handling code here:
         if(rbtnMResources.isSelected()){
-            panelMode.setOpaque(false);
             rbtnMCreatures.setBackground(new Color(51,51,51));
             rbtnMResources.setBackground(new Color(51,51,0));
             rbtnMbuilt.setBackground(new Color(51,51,51));
@@ -977,7 +1058,6 @@ public class ControlPanel extends javax.swing.JFrame {
     private void rbtnMCreaturesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMCreaturesActionPerformed
         // TODO add your handling code here:
         if(rbtnMCreatures.isSelected()){
-            panelMode.setOpaque(false);
             rbtnMCreatures.setBackground(new Color(0,102,102));
             rbtnMResources.setBackground(new Color(51,51,51));
             rbtnMbuilt.setBackground(new Color(51,51,51));
@@ -1058,11 +1138,12 @@ public class ControlPanel extends javax.swing.JFrame {
     private void rbtnMNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnMNoneActionPerformed
         // TODO add your handling code here:
         if(rbtnMNone.isSelected()){
-            panelMode.setOpaque(true);
+            resetBorders();
             rbtnMCreatures.setBackground(new Color(51,51,51));
             rbtnMResources.setBackground(new Color(51,51,51));
             rbtnMbuilt.setBackground(new Color(51,51,51));
             rbtnMNone.setBackground(new Color(120,0,153));
+            chansemode("None");
             setTool(Tool.NONE);
         }
         
@@ -1243,6 +1324,13 @@ public class ControlPanel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_TbtnRBlupysActionPerformed
 
+    private void TbtnLightningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnLightningActionPerformed
+        // TODO add your handling code here:
+        rbtnMNone.setSelected(false);
+        setTool(Tool.RAYO);
+        TbtnLightning.setSelected(true);
+    }//GEN-LAST:event_TbtnLightningActionPerformed
+
     public int getSelectedGroundVariant() {
         return selectedGroundVariant;
     }
@@ -1278,6 +1366,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JMenuItem MitemGrid;
     private javax.swing.JMenuItem MitemLoad;
     private javax.swing.JMenuItem MitemSave;
+    private javax.swing.JProgressBar PBarLightning;
     private javax.swing.JSlider SliderSpeed;
     private javax.swing.JToggleButton TbtnBGrass;
     private javax.swing.JToggleButton TbtnBGrass1;
@@ -1292,6 +1381,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JToggleButton TbtnBWater;
     private javax.swing.JToggleButton TbtnCLummon;
     private javax.swing.JToggleButton TbtnCZyrox;
+    private javax.swing.JToggleButton TbtnLightning;
     private javax.swing.JToggleButton TbtnRBlupys;
     private javax.swing.JToggleButton TbtnRNero;
     private javax.swing.JToggleButton TbtnRZen;
@@ -1324,6 +1414,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JPanel panelInfo;
     private javax.swing.JPanel panelMBuilt;
     private javax.swing.JPanel panelMCreature;
+    private javax.swing.JPanel panelMNone;
     private javax.swing.JPanel panelMResources;
     private javax.swing.JPanel panelMode;
     private javax.swing.JRadioButton rbtnMCreatures;
