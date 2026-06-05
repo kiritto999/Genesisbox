@@ -24,11 +24,22 @@ public class StarEffect {
     private boolean active = false;
     private long lastUsedTime = 0;
     private static final long COOLDOWN_MS = 20000;
+    private boolean impactoAplicado = false;
+    private static final long IMPACT_TIME = 900;
 
     public StarEffect() {
         if (gifImage == null) {
             cargarGif();
         }
+    }
+    public boolean debeAplicarImpacto() {
+        return active
+            && !impactoAplicado
+            && (System.currentTimeMillis() - startTime >= IMPACT_TIME);
+    }
+
+    public void marcarImpactoAplicado() {
+        impactoAplicado = true;
     }
 
     private void cargarGif() {
@@ -50,12 +61,13 @@ public class StarEffect {
 
     public void lanzar(int tileX, int tileY) {
         if (!puedeUsarse()) return;
-        this.tileX        = tileX;
-        this.tileY        = tileY;
-        this.startTime    = System.currentTimeMillis();
+        this.tileX = tileX;
+        this.tileY = tileY;
+        this.startTime = System.currentTimeMillis();
         this.lastUsedTime = System.currentTimeMillis();
-        this.active       = true;
-        // Recarga el GIF para que empiece desde el frame 0 (sin loop)
+        this.active = true;
+        this.impactoAplicado = false;
+
         gifImage = null;
         cargarGif();
     }
@@ -74,8 +86,8 @@ public class StarEffect {
         Graphics2D g2 = (Graphics2D) g;
         int px = cameraX + tileX * tileSize;
         int py = cameraY + tileY * tileSize;
-        int drawW = tileSize * 4;
-        int drawH = tileSize * 4;
+        int drawW = tileSize * 6;
+        int drawH = tileSize * 6;
         int dx = px - drawW / 2 + tileSize / 2;
         int dy = py - drawH + tileSize;
         g2.drawImage(gifImage, dx, dy, drawW, drawH, observer);
@@ -92,4 +104,12 @@ public class StarEffect {
     public int getCooldownMax() {
         return (int)(COOLDOWN_MS / 1000);
     }
+    public int getTileX() {
+        return tileX;
+    }
+
+    public int getTileY() {
+        return tileY;
+    }
+
 }

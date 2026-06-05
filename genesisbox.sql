@@ -43,7 +43,7 @@ CREATE TABLE tiles (
 
     x INT,
     y INT,
-
+	variant INT DEFAULT 0,
     tileId INT,
 
     biome INT DEFAULT 0,
@@ -134,3 +134,4 @@ CREATE TABLE entities (
 SELECT * FROM world;
 SELECT * FROM tiles;
 SELECT * FROM entities;
+

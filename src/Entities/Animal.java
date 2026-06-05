@@ -12,7 +12,7 @@ public abstract class Animal extends Entity {
         FEMALE
     }
 
-    enum FoodType {
+    public enum FoodType {
         HERBIVORE,
         CARNIVORE
     }

@@ -27,6 +27,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 /**
  *
@@ -53,8 +54,6 @@ public class ControlPanel extends javax.swing.JFrame {
     private Tool currentBuildTool = Tool.NONE;
     private SaveManager SV;
     private int selectedGroundVariant = 0;
-    private javax.swing.JToggleButton TbtnStar;
-    private javax.swing.JProgressBar PBarStar;
     
     String[] animals = {"Elegir","Lummon", "Zyrox"};
     String[] resources = {"Elegir","Food","Nero","Zenthra",};
@@ -138,7 +137,7 @@ public class ControlPanel extends javax.swing.JFrame {
 
             if (ray.puedeUsarse()) {
                 PBarLightning.setValue(max);
-                PBarLightning.setString("LISTO");
+                PBarLightning.setString("READY");
                 TbtnLightning.setEnabled(true);
 
             } else {
@@ -152,41 +151,32 @@ public class ControlPanel extends javax.swing.JFrame {
 
         }).start();
         
-        // ── Star button ──
-        TbtnStar = new javax.swing.JToggleButton("⭐ Star ⭐");
-        TbtnStar.setBackground(new Color(60, 30, 0));
-        TbtnStar.setForeground(new Color(255, 200, 50));
-        TbtnStar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        TbtnStar.setBounds(350, 5, 110, 30);
-        TbtnStar.addActionListener(e -> {
-            TbtnLightning.setSelected(false);  // deselecciona lightning
-            setTool(Tool.STAR);
-            TbtnStar.setSelected(true);
-        });
-        menuGame.add(TbtnStar);
-
-        // ── Star Barra de progreso──
-        PBarStar = new javax.swing.JProgressBar();
-        PBarStar.setBackground(new Color(60, 30, 0));
-        PBarStar.setStringPainted(true);
-        PBarStar.setBounds(350, 37, 110, 14);
-        menuGame.add(PBarStar);
 
         // ── Star cooldown timer ──
         new javax.swing.Timer(200, e -> {
+
             StarEffect starEffect = GP.getStar();
+
             int max = starEffect.getCooldownMax();
             int restante = starEffect.getCooldownRestante();
-            PBarStar.setMaximum(max);
+
+            PBarStard.setMaximum(max);
+
             if (starEffect.puedeUsarse()) {
-                PBarStar.setValue(max);
-                PBarStar.setString("LISTO");
-                TbtnStar.setEnabled(true);
+
+                PBarStard.setValue(max);
+                PBarStard.setString("READY");
+                TbtnStard.setEnabled(true);
+
             } else {
-                PBarStar.setValue(max - restante);
-                PBarStar.setString(restante + "s");
-                TbtnStar.setEnabled(false);
+
+                PBarStard.setValue(max - restante);
+                PBarStard.setString(restante + "s");
+                TbtnStard.setEnabled(false);
             }
+
+            updateCursor();
+
         }).start();
   
         //modos
@@ -282,25 +272,38 @@ public class ControlPanel extends javax.swing.JFrame {
     
     //si cambio del cursor
     private void updateCursor() {
-
         LightningEffect ray = GP.getLightning();
-
-        // Lightning seleccionado y en cooldown
+        StarEffect star = GP.getStar();
+        // Lightning en cooldown
         if (mouser.getCurrentTool() == Tool.RAYO && !ray.puedeUsarse()) {
-
-            GP.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+            GP.setCursor(
+                new Cursor(Cursor.WAIT_CURSOR)
+            );
+        }
+        // Star en cooldown
+        else if (mouser.getCurrentTool() == Tool.STAR && !star.puedeUsarse()) {
+            GP.setCursor(
+                new Cursor(Cursor.WAIT_CURSOR)
+            );
 
         }
-        // Lightning seleccionado y listo
+        // Lightning listo
         else if (mouser.getCurrentTool() == Tool.RAYO) {
-
-            GP.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
-
+            GP.setCursor(
+                new Cursor(Cursor.CROSSHAIR_CURSOR)
+            );
         }
-        // cualquier otro tool
+        // Star listo
+        else if (mouser.getCurrentTool() == Tool.STAR) {
+            GP.setCursor(
+                new Cursor(Cursor.CROSSHAIR_CURSOR)
+            );
+        }
+        // resto
         else {
-
-            GP.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            GP.setCursor(
+                new Cursor(Cursor.DEFAULT_CURSOR)
+            );
         }
     }
     
@@ -331,82 +334,34 @@ public class ControlPanel extends javax.swing.JFrame {
     
     private void resetBorders() {
 
-    // CREATURES
-    TbtnCZyrox.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-    TbtnCLummon.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
+        JToggleButton[] buttons = {
+            TbtnCZyrox,
+            TbtnCLummon,
+            TbtnRZen,
+            TbtnRZen2,
+            TbtnRZen3,
+            TbtnRZen4,
+            TbtnRNero,
+            TbtnRBlupys,
+            TbtnBGrass,
+            TbtnBGrass1,
+            TbtnBGrass2,
+            TbtnBGrass3,
+            TbtnBGrass4,
+            TbtnBGrass5,
+            TbtnBGrass6,
+            TbtnBGrass7,
+            TbtnBGrass8,
+            TbtnBGrass9,
+            TbtnBWater
+        };
 
-    // RESOURCES
-    TbtnRZen.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnRZen2.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnRZen3.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnRZen4.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnRNero.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-    // BUILTS
-    TbtnBGrass.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBGrass1.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBGrass2.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBGrass3.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBGrass4.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBGrass5.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBGrass6.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBGrass7.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBGrass8.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBGrass9.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-
-    TbtnBWater.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-    TbtnRBlupys.setBorder(
-        new javax.swing.border.LineBorder(java.awt.Color.BLACK, 3)
-    );
-}
+        for (JToggleButton b : buttons) {
+            b.setBorder(
+                BorderFactory.createLineBorder(Color.BLACK, 3)
+                );
+        }
+    }
 
     
   
@@ -463,7 +418,9 @@ public class ControlPanel extends javax.swing.JFrame {
         rbtnMCreatures = new javax.swing.JRadioButton();
         rbtnMNone = new javax.swing.JRadioButton();
         PBarLightning = new javax.swing.JProgressBar();
+        PBarStard = new javax.swing.JProgressBar();
         TbtnLightning = new javax.swing.JToggleButton();
+        TbtnStard = new javax.swing.JToggleButton();
         panelInfo = new javax.swing.JPanel();
         bMenuGame = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
@@ -890,7 +847,12 @@ public class ControlPanel extends javax.swing.JFrame {
         PBarLightning.setBackground(new java.awt.Color(20, 10, 60));
         PBarLightning.setStringPainted(true);
         menuGame.add(PBarLightning);
-        PBarLightning.setBounds(350, 96, 110, 14);
+        PBarLightning.setBounds(350, 110, 110, 14);
+
+        PBarStard.setBackground(new java.awt.Color(60, 30, 0));
+        PBarStard.setStringPainted(true);
+        menuGame.add(PBarStard);
+        PBarStard.setBounds(350, 60, 110, 14);
 
         TbtnLightning.setBackground(new java.awt.Color(20, 10, 60));
         TbtnLightning.setForeground(new java.awt.Color(180, 100, 255));
@@ -899,7 +861,16 @@ public class ControlPanel extends javax.swing.JFrame {
         TbtnLightning.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TbtnLightning.addActionListener(this::TbtnLightningActionPerformed);
         menuGame.add(TbtnLightning);
-        TbtnLightning.setBounds(350, 60, 110, 50);
+        TbtnLightning.setBounds(350, 80, 110, 40);
+
+        TbtnStard.setBackground(new java.awt.Color(60, 30, 0));
+        TbtnStard.setForeground(new java.awt.Color(255, 200, 50));
+        TbtnStard.setText("⭐ Star ⭐");
+        TbtnStard.setActionCommand("⚡  Lightning ⚡");
+        TbtnStard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TbtnStard.addActionListener(this::TbtnStardActionPerformed);
+        menuGame.add(TbtnStard);
+        TbtnStard.setBounds(350, 30, 110, 40);
 
         getContentPane().add(menuGame, java.awt.BorderLayout.PAGE_END);
 
@@ -1362,11 +1333,19 @@ public class ControlPanel extends javax.swing.JFrame {
 
     private void TbtnLightningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnLightningActionPerformed
         // TODO add your handling code here:
-        TbtnStar.setSelected(false);
+        TbtnStard.setSelected(false);
         rbtnMNone.setSelected(false);
         setTool(Tool.RAYO);
         TbtnLightning.setSelected(true);
     }//GEN-LAST:event_TbtnLightningActionPerformed
+
+    private void TbtnStardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnStardActionPerformed
+        // TODO add your handling code here:
+        TbtnLightning.setSelected(false);
+        rbtnMNone.setSelected(false);
+        setTool(Tool.STAR);
+        TbtnStard.setSelected(true);
+    }//GEN-LAST:event_TbtnStardActionPerformed
 
     public int getSelectedGroundVariant() {
         return selectedGroundVariant;
@@ -1404,6 +1383,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JMenuItem MitemLoad;
     private javax.swing.JMenuItem MitemSave;
     private javax.swing.JProgressBar PBarLightning;
+    private javax.swing.JProgressBar PBarStard;
     private javax.swing.JSlider SliderSpeed;
     private javax.swing.JToggleButton TbtnBGrass;
     private javax.swing.JToggleButton TbtnBGrass1;
@@ -1425,6 +1405,7 @@ public class ControlPanel extends javax.swing.JFrame {
     private javax.swing.JToggleButton TbtnRZen2;
     private javax.swing.JToggleButton TbtnRZen3;
     private javax.swing.JToggleButton TbtnRZen4;
+    private javax.swing.JToggleButton TbtnStard;
     private javax.swing.JMenuBar bMenuGame;
     private javax.swing.ButtonGroup btnGCreatures;
     private javax.swing.ButtonGroup btnGMBuilts;

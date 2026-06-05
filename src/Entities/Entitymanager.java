@@ -300,21 +300,41 @@ public class Entitymanager {
         return found;
     }
     //elimina la entidad por casilla 
-   public void removeEntitiesAt(int x, int y) {
-    Iterator<Entity> it = entities.iterator();
-    while(it.hasNext()){
-        Entity e = it.next();
-        if(e.getTileX() == x && e.getTileY() == y){
-            it.remove();
-            if(e instanceof Animal){
-                animals.remove(e);
-            }
-            if(e instanceof Resource){
-                resources.remove(e);
+    public void removeEntitiesAt(int x, int y) {
+        Iterator<Entity> it = entities.iterator();
+        while(it.hasNext()){
+            Entity e = it.next();
+            if(e.getTileX() == x && e.getTileY() == y){
+                it.remove();
+                if(e instanceof Animal){
+                    animals.remove(e);
+                }
+                if(e instanceof Resource){
+                    resources.remove(e);
+                }
             }
         }
     }
-}
+    //elimina entidades por radio
+    public void removeEntitiesInRadius(int centerX, int centerY, int radio) {
+
+        Iterator<Entity> it = entities.iterator();
+        while (it.hasNext()) {
+            Entity e = it.next();
+            int dx = e.getTileX() - centerX;
+            int dy = e.getTileY() - centerY;
+
+            if (dx * dx + dy * dy <= radio * radio) {
+                it.remove();
+                if (e instanceof Animal) {
+                    animals.remove(e);
+                }
+                if (e instanceof Resource) {
+                    resources.remove(e);
+                }
+            }
+        }
+    }
     // ── Getters ────────────────────────────────────────────────────────
     public ArrayList<Entity>   getEntities()  { return entities;  }
     public ArrayList<Resource> getResources() { return resources; }

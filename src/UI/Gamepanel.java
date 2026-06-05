@@ -118,6 +118,7 @@ public class GamePanel extends JPanel {
         lightning.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray, this);
         
         star.update();
+        StardImpact();
         star.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray, this);
         
         drawNight(g);
@@ -392,6 +393,38 @@ public class GamePanel extends JPanel {
 
         repaint();
     }
+    //crea el hueco del impacto 
+    public void StardImpact(){
+        if (star.debeAplicarImpacto()) {
+        int centerRow = star.getTileY();
+        int centerCol = star.getTileX();
+        int radio = 4;
+
+        for (int row = centerRow - radio; row <= centerRow + radio; row++) {
+
+            for (int col = centerCol - radio; col <= centerCol + radio; col++) {
+
+                if (row < 0 || row >= world.getRows()
+                        || col < 0 || col >= world.getColums()) {
+                    continue;
+                }
+
+                int dx = col - centerCol;
+                int dy = row - centerRow;
+
+                // círculo
+                if (dx * dx + dy * dy <= radio * radio) {
+
+                    world.setTile(row, col, Tile.WATER);
+
+                }
+            }
+        }
+        entitymanager.removeEntitiesInRadius(centerCol,centerRow,radio);
+        star.marcarImpactoAplicado();
+        }
+    }
+    
 
     public void followEntity(Entity e) {
 

@@ -69,4 +69,11 @@ public class Tile {
     public void setSprite(BufferedImage sprite) {
         this.sprite = sprite;
     }
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public void setVariant(int variant) {
+        this.variant = variant;
+    }
 }

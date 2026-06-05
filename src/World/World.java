@@ -104,52 +104,33 @@ public class World {
                     // =========================
 
                     int biome = biomeMap[r][c];
-
                     int variant;
 
                     // =========================
                     // DIRT
                     // =========================
-
-                    if (biome == 0) {
-
-                        variant = rng.nextInt(4);
-
-                        map[r][c] = new Tile(
-                                Tile.GRASS,
-                                variant,
-                                Assets.dirtTiles[variant]
-                        );
-                    }
-
-                    // =========================
-                    // PLAIN
-                    // =========================
-
-                    else if (biome == 1) {
-
-                        variant = rng.nextInt(4);
-
-                        map[r][c] = new Tile(
-                                Tile.GRASS,
-                                variant,
-                                Assets.plainTiles[variant]
-                        );
-                    }
-
-                    // =========================
-                    // ROCK
-                    // =========================
-
-                    else {
-
-                        variant = rng.nextInt(2);
-
-                        map[r][c] = new Tile(
-                                Tile.GRASS,
-                                variant,
-                                Assets.rockTiles[variant]
-                        );
+                    switch (biome) {
+                        case 0:
+                            variant = rng.nextInt(4);
+                            map[r][c] = new Tile(
+                                    Tile.DIRT_1 + variant,
+                                    variant,
+                                    Assets.dirtTiles[variant]
+                            );  break;
+                        case 1:
+                            variant = rng.nextInt(4);
+                            map[r][c] = new Tile(
+                                    Tile.PLAIN_5 + variant,
+                                    variant,
+                                    Assets.plainTiles[variant]
+                            );  break;
+                        default:
+                            variant = rng.nextInt(2);
+                            map[r][c] = new Tile(
+                                    Tile.ROCK_8 + variant,
+                                    variant,
+                                    Assets.rockTiles[variant]
+                            );  break;
                     }
                 }
             }
@@ -174,140 +155,96 @@ public class World {
     public int getColums() {
         return colums;
     }
-    public void setTile(int row, int col, int type) {
-
-        BufferedImage sprite;
-
-        switch (type) {
-
-            // =========================
-            // WATER
-            // =========================
+    public void setTile(int row, int col, int tileId) {
+        switch (tileId) {
 
             case Tile.WATER:
-
-                sprite = Assets.waterNormal;
-
                 map[row][col] = new Tile(
                         Tile.WATER,
                         0,
-                        sprite
+                        Assets.waterNormal
                 );
-
                 break;
 
-            // =========================
-            // DIRT
-            // =========================
-
             case Tile.DIRT_1:
-
                 map[row][col] = new Tile(
                         Tile.DIRT_1,
                         0,
                         Assets.dirtTiles[0]
                 );
-
                 break;
 
             case Tile.DIRT_2:
-
                 map[row][col] = new Tile(
                         Tile.DIRT_2,
                         1,
                         Assets.dirtTiles[1]
                 );
-
                 break;
 
             case Tile.DIRT_3:
-
                 map[row][col] = new Tile(
                         Tile.DIRT_3,
                         2,
                         Assets.dirtTiles[2]
                 );
-
                 break;
 
             case Tile.DIRT_4:
-
                 map[row][col] = new Tile(
                         Tile.DIRT_4,
                         3,
                         Assets.dirtTiles[3]
                 );
-
                 break;
 
-            // =========================
-            // PLAIN
-            // =========================
-
             case Tile.PLAIN_5:
-
                 map[row][col] = new Tile(
                         Tile.PLAIN_5,
                         0,
                         Assets.plainTiles[0]
                 );
-
                 break;
 
             case Tile.PLAIN_6:
-
                 map[row][col] = new Tile(
                         Tile.PLAIN_6,
                         1,
                         Assets.plainTiles[1]
                 );
-
                 break;
 
             case Tile.PLAIN_7:
-
                 map[row][col] = new Tile(
                         Tile.PLAIN_7,
                         2,
                         Assets.plainTiles[2]
                 );
-
                 break;
 
             case Tile.PLAIN_8:
-
                 map[row][col] = new Tile(
                         Tile.PLAIN_8,
                         3,
                         Assets.plainTiles[3]
                 );
-
                 break;
 
-            // =========================
-            // ROCK
-            // =========================
-
             case Tile.ROCK_8:
-
                 map[row][col] = new Tile(
                         Tile.ROCK_8,
                         0,
                         Assets.rockTiles[0]
                 );
-
                 break;
 
             case Tile.ROCK_9:
-
                 map[row][col] = new Tile(
                         Tile.ROCK_9,
                         1,
                         Assets.rockTiles[1]
                 );
-
                 break;
         }
     }
-    
 }

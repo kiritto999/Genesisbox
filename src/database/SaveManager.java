@@ -50,13 +50,9 @@ public class SaveManager {
 
         try {
             PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO tiles (" +
-                "x, y, tileId" +
-                ") VALUES (?, ?, ?)"
+                "INSERT INTO tiles (x, y, tileId) VALUES (?, ?, ?)"
             );
-
             for (int y = 0; y < world.getRows(); y++) {
-
                 for (int x = 0; x < world.getColums(); x++) {
 
                     Tile tile = world.getMap()[y][x];
@@ -64,15 +60,12 @@ public class SaveManager {
                     ps.setInt(2, y);
 
                     ps.setInt(3, tile.getType());
-
                     ps.executeUpdate();
                 }
             }
-
             System.out.println("Tiles guardados");
 
         } catch (SQLException e) {
-
             e.printStackTrace();
         }
     }
@@ -333,27 +326,21 @@ public class SaveManager {
     public void loadTiles(World world) {
 
         try {
-
             PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM tiles"
             );
-
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()) {
+            while (rs.next()) {
 
                 int x = rs.getInt("x");
                 int y = rs.getInt("y");
-
                 int tileId = rs.getInt("tileId");
-
                 world.setTile(y, x, tileId);
             }
-
             System.out.println("Tiles cargados");
 
         } catch (SQLException e) {
-
             e.printStackTrace();
         }
     }
