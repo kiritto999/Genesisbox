@@ -125,23 +125,44 @@ public class Zyrox extends Animal {
     @Override
     protected void decidirAccion(World.World world) {
 
-        // Resetear flags al inicio de cada tick
-        if (timerComer <= 0) estaComiendo = false; // solo resetear si el timer ya terminó
+        if (timerComer <= 0) estaComiendo = false;
 
+        Lummon lummonCercano = buscarLummonAdyacente();
 
-        // Prioridad 1: Huir si HP bajo
-        if (estaEnPeligroDeMuerte()) {
-            Lummon lummonCercano = buscarLummonAdyacente();
-            if (lummonCercano != null) {
-                huirDe(lummonCercano.getTileX(), lummonCercano.getTileY(), world);
-            } else {
-                moverAleatorio(world);
-            }
+        // Prioridad 1: Huir si HP bajo Y hay Lummon cerca
+        if (estaEnPeligroDeMuerte() && lummonCercano != null) {
+            huirDe(lummonCercano.getTileX(), lummonCercano.getTileY(), world);
             hpUltimoTick = health;
             return;
         }
 
-        // Prioridad 2: Contraatacar si fue golpeado
+        // Prioridad 2: Comer si tiene hambre (incluso herido, si no hay Lummon cerca)
+        if (hunger <= HAMBRE_UMBRAL) {
+            Blupys comida = buscarComidaMasCercana(RANGO_COMIDA);
+            if (comida != null) {
+                boolean enRango = (comida.getTileX() == tileX && comida.getTileY() == tileY)
+                        || esAdyacente(comida.getTileX(), comida.getTileY());
+                if (enRango && comida.getStage() == Blupys.Etapa.MADURA) {
+                    if (intentarComer(comida)) {
+                        timerComer = DURACION_SPRITE_COMER;
+                    }
+                    estaComiendo = timerComer > 0;
+                } else if (!enRango) {
+                    moverHacia(comida.getTileX(), comida.getTileY(), world);
+                }
+                hpUltimoTick = health;
+                return;
+            }
+        }
+
+        // Prioridad 3: Huir si HP bajo aunque no haya Lummon visible
+        if (estaEnPeligroDeMuerte()) {
+            moverAleatorio(world);
+            hpUltimoTick = health;
+            return;
+        }
+
+        // Prioridad 4: Contraatacar si fue golpeado
         if (hpUltimoTick > health) {
             Lummon objetivo = buscarLummonAdyacente();
             if (objetivo != null) {
@@ -153,26 +174,7 @@ public class Zyrox extends Animal {
             }
         }
 
-        // Prioridad 3: Comer si tiene hambre
-        if (hunger <= HAMBRE_UMBRAL) {
-            Blupys comida = buscarComidaMasCercana(RANGO_COMIDA);
-            if (comida != null) {
-                boolean enRango = (comida.getTileX() == tileX && comida.getTileY() == tileY)
-                        || esAdyacente(comida.getTileX(), comida.getTileY());
-                if (enRango && comida.getStage() == Blupys.Etapa.MADURA) {
-                    if (intentarComer(comida)) {
-                    timerComer = DURACION_SPRITE_COMER;
-                }
-                estaComiendo = timerComer > 0;
-                } else if (!enRango) {
-                    moverHacia(comida.getTileX(), comida.getTileY(), world);
-                }
-                hpUltimoTick = health;
-                return;
-            }
-        }
-
-        // Prioridad 4: Agruparse o moverse aleatorio
+        // Prioridad 5: Agruparse o moverse aleatorio
         if (!intentarAgruparse(world)) {
             moverAleatorio(world);
         }
@@ -180,7 +182,6 @@ public class Zyrox extends Animal {
         hpUltimoTick = health;
         intentarReproducirse(world);
     }
-
     // ── Agrupación ─────────────────────────────────────────────────────
     /**
      * Cuenta cuántos Zyrox están en tiles adyacentes a (cx, cy).

@@ -53,6 +53,8 @@ public class ControlPanel extends javax.swing.JFrame {
     private Tool currentBuildTool = Tool.NONE;
     private SaveManager SV;
     private int selectedGroundVariant = 0;
+    private javax.swing.JToggleButton TbtnStar;
+    private javax.swing.JProgressBar PBarStar;
     
     String[] animals = {"Elegir","Lummon", "Zyrox"};
     String[] resources = {"Elegir","Food","Nero","Zenthra",};
@@ -151,6 +153,42 @@ public class ControlPanel extends javax.swing.JFrame {
 
         }).start();
         
+        // ── Star button ──
+        TbtnStar = new javax.swing.JToggleButton("⭐ Star ⭐");
+        TbtnStar.setBackground(new Color(60, 30, 0));
+        TbtnStar.setForeground(new Color(255, 200, 50));
+        TbtnStar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TbtnStar.setBounds(350, 5, 110, 30);
+        TbtnStar.addActionListener(e -> {
+            TbtnLightning.setSelected(false);  // deselecciona lightning
+            setTool(Tool.STAR);
+            TbtnStar.setSelected(true);
+        });
+        menuGame.add(TbtnStar);
+
+        // ── Star Barra de progreso──
+        PBarStar = new javax.swing.JProgressBar();
+        PBarStar.setBackground(new Color(60, 30, 0));
+        PBarStar.setStringPainted(true);
+        PBarStar.setBounds(350, 37, 110, 14);
+        menuGame.add(PBarStar);
+
+        // ── Star cooldown timer ──
+        new javax.swing.Timer(200, e -> {
+            StarEffect starEffect = GP.getStar();
+            int max = starEffect.getCooldownMax();
+            int restante = starEffect.getCooldownRestante();
+            PBarStar.setMaximum(max);
+            if (starEffect.puedeUsarse()) {
+                PBarStar.setValue(max);
+                PBarStar.setString("LISTO");
+                TbtnStar.setEnabled(true);
+            } else {
+                PBarStar.setValue(max - restante);
+                PBarStar.setString(restante + "s");
+                TbtnStar.setEnabled(false);
+            }
+        }).start();
   
         //modos
         rbtnMNone.setSelected(true);
@@ -1326,6 +1364,7 @@ public class ControlPanel extends javax.swing.JFrame {
 
     private void TbtnLightningActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TbtnLightningActionPerformed
         // TODO add your handling code here:
+        TbtnStar.setSelected(false);
         rbtnMNone.setSelected(false);
         setTool(Tool.RAYO);
         TbtnLightning.setSelected(true);
