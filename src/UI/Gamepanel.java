@@ -2,6 +2,7 @@ package UI;
 
 import Entities.*;
 import Inputs.*;
+import Utils.Assets;
 import World.*;
 import Utils.TimeDay;
 
@@ -16,6 +17,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import Utils.LightningEffect;
+import java.awt.image.BufferedImage;
 
 public class GamePanel extends JPanel {
 
@@ -76,7 +78,6 @@ public class GamePanel extends JPanel {
         // =========================
         // DRAW BACKGROUND
         // =========================
-
         /*g.drawImage(
                 oceanBackground,
                 0,
@@ -166,33 +167,37 @@ public class GamePanel extends JPanel {
     public void DrawIsland(Graphics g) {
 
         Tile[][] map = world.getMap();
-
         int size = (int) (UNIT_SIZE * camera.zoom);
 
         int startCol = Math.max(0, (-camera.Camerax / size) - 2);
         int endCol = Math.min(
-                world.getColums(),
-                startCol + (getWidth() / size) + 4
+                world.getColums(),startCol + (getWidth() / size) + 4
         );
 
         int startRow = Math.max(0, (-camera.Cameray / size) - 2);
         int endRow = Math.min(
-                world.getRows(),
-                startRow + (getHeight() / size) + 4
+                world.getRows(),startRow + (getHeight() / size) + 4
         );
 
+        // Calcular UNA sola vez por frame
+        int waterFrame =
+                (int) ((System.currentTimeMillis() / 120)% Assets.waterFrames.length);
+        BufferedImage currentWater =Assets.waterFrames[waterFrame];
+
         for (int r = startRow; r < endRow; r++) {
-
             for (int c = startCol; c < endCol; c++) {
-
                 int x = camera.Camerax + (c * size);
-
                 int y = camera.Cameray + (r * size);
 
                 Tile tile = map[r][c];
-
+                BufferedImage sprite;
+                if (tile.getType() == Tile.WATER) {
+                    sprite = currentWater;
+                } else {
+                    sprite = tile.getSprite();
+                }
                 g.drawImage(
-                        tile.getSprite(),
+                        sprite,
                         x,
                         y,
                         size,
@@ -248,21 +253,13 @@ public class GamePanel extends JPanel {
     public void limitForCamera(Camera camera) {
 
         int tileSize = (int) (UNIT_SIZE * camera.zoom);
-
         int mapWidth = world.getColums() * tileSize;
-
         int mapHeight = world.getRows() * tileSize;
-
         int panelWidth = getWidth();
-
         int panelHeight = getHeight();
-
         int minX = panelWidth - mapWidth;
-
         int maxX = 0;
-
         int minY = panelHeight - mapHeight;
-
         int maxY = 0;
 
         if (mapWidth <= panelWidth) {
@@ -308,7 +305,6 @@ public class GamePanel extends JPanel {
             });
 
             for (Entity e : todo) {
-
                 e.draw(
                         g,
                         (int) (UNIT_SIZE * camera.zoom),

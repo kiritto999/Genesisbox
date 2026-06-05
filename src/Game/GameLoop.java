@@ -14,6 +14,7 @@ public class GameLoop implements Runnable {
 
     private Entitymanager entitymanager;
     private GamePanel gamePanel;
+    private long lastRender = 0;
 
     private double speedMultiplier = 1.0;
 
@@ -70,8 +71,14 @@ public class GameLoop implements Runnable {
 
             // Render
             if (gamePanel != null) {
+
+            long current = System.currentTimeMillis();
+
+            if (current - lastRender >= 33) { // 30 FPS
                 gamePanel.repaint();
+                lastRender = current;
             }
+        }
 
             try {
                 Thread.sleep(16); // ~60 FPS

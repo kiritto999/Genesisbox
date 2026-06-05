@@ -12,6 +12,7 @@ public class Assets {
     public static BufferedImage[] dirtTiles;
     public static BufferedImage[] plainTiles;
     public static BufferedImage[] rockTiles;
+    public static BufferedImage[] waterFrames;
 
     public static void init() {
 
@@ -20,10 +21,14 @@ public class Assets {
             // =========================
             // WATER
             // =========================
-            System.out.println(
-                Assets.class.getResource("/resources/Gifs/WaterV1.png")
-            );
-
+            waterFrames = new BufferedImage[8];
+            for (int i = 0; i < waterFrames.length; i++) {
+                waterFrames[i] = ImageIO.read(
+                    Assets.class.getResourceAsStream(
+                        String.format("/resources/Gifs/WaterV1_%04d.png",i)
+                    )
+                );
+            }
             waterNormal = ImageIO.read(
                     Assets.class.getResourceAsStream("/resources/Gifs/WaterV1.png")
             );

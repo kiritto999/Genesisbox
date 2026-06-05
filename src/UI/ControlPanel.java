@@ -100,7 +100,6 @@ public class ControlPanel extends javax.swing.JFrame {
         infoScroll.getVerticalScrollBar().setPreferredSize(
             new Dimension(0, 0)         // hace invisible la barra vertical
         );
-
         infoScroll.getViewport().setBackground(
             new Color(28, 30, 34)
         );
@@ -926,7 +925,6 @@ public class ControlPanel extends javax.swing.JFrame {
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
 
         Random random = new Random();
-
         Tool tool = mouser.getCurrentTool();
 
         for (int i = 0; i < 50; i++) {
