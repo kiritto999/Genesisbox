@@ -296,19 +296,31 @@ public class GamePanel extends JPanel {
 
             todo.addAll(entitymanager.getAnimals());
 
-            todo.sort(new Comparator<Entity>() {
-
+            /*todo.sort(new Comparator<Entity>() {
                 @Override
                 public int compare(Entity a, Entity b) {
 
                     return Integer.compare(a.getTileY(), b.getTileY());
                 }
-            });
+            });*/
+
+            int size = (int) (UNIT_SIZE * camera.zoom);
 
             for (Entity e : todo) {
+
+                int screenX = camera.Camerax + (e.getTileX() * size);
+                int screenY = camera.Cameray + (e.getTileY() * size);
+
+                // No dibujar entidades fuera de pantalla
+                if (screenX < -size
+                        || screenX > getWidth() + size
+                        || screenY < -size
+                        || screenY > getHeight() + size) {
+                    continue;
+                }
                 e.draw(
                         g,
-                        (int) (UNIT_SIZE * camera.zoom),
+                        size,
                         camera.Camerax,
                         camera.Cameray
                 );

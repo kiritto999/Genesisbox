@@ -7,6 +7,7 @@ package genesisbox_galaxy.main;
 
 import Database.*;
 import UI.MainMenu;
+import Game.Game;
 
 /**
  *
@@ -16,6 +17,7 @@ public class main {
     public static void main(String[] args) {
         System.out.println("MAIN FUNCIONA");
 
-        new MainMenu().setVisible(true);
-    }
+        new Game();    
+        //new MainMenu().setVisible(true);
+    }   
 }
