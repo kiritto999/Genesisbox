@@ -17,6 +17,7 @@ public enum Tool {
     Nero,
     Zethar,
     RAYO,
+    STAR,
     Blupys
     
     

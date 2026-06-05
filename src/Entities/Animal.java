@@ -12,7 +12,7 @@ public abstract class Animal extends Entity {
         FEMALE
     }
 
-    public static enum FoodType {
+    enum FoodType {
         HERBIVORE,
         CARNIVORE
     }
@@ -21,7 +21,7 @@ public abstract class Animal extends Entity {
     public static final int CAP_ATAQUE       = 60;
     public static final int CAP_VELOCIDAD    = 12;
     public static final int CAP_INTELIGENCIA = 100;
-    public static final int CAP_HAMBRE       = 2500;
+    public static final int CAP_HAMBRE       = 800;
 
     // ── Etapas de vida ─────────────────────────────────────────────────
     public enum Etapa { CACHORRO, ADULTO, VIEJO }
@@ -226,7 +226,7 @@ public abstract class Animal extends Entity {
         }
         int cosechado = food.harvest(10);
         if (cosechado > 0) {
-            hunger = Math.min(CAP_HAMBRE, hunger + cosechado * 5);
+            hunger = Math.min(CAP_HAMBRE, hunger + cosechado * 200);
             heal(cosechado * 2);
             return true;
         }
@@ -239,9 +239,9 @@ public abstract class Animal extends Entity {
         if (corpse.getTileX() != tileX && !esAdyacente(corpse.getTileX(), corpse.getTileY())) return false;
         int cosechado = corpse.harvest(1);
         if (cosechado > 0) {
-            hunger = Math.min(CAP_HAMBRE, hunger + 80);
-            heal(20);
-            energy = Math.min(CAP_ENERGIA, energy + 80);
+            hunger = Math.min(CAP_HAMBRE, hunger + 200);
+            heal(100);
+            energy = Math.min(CAP_ENERGIA, energy + 100);
             return true;
         }
         return false;

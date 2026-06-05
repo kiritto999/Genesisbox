@@ -13,6 +13,7 @@ import Entities.Zenthra;
 import Entities.Zyrox;
 import UI.ControlPanel;
 import Utils.LightningEffect;
+import Utils.StarEffect;
 
 public class Mouser implements MouseListener, MouseMotionListener, MouseWheelListener {
 
@@ -184,7 +185,21 @@ public class Mouser implements MouseListener, MouseMotionListener, MouseWheelLis
                         e.takeDamage(80);
                     }
                 }
-        break;
+                break;
+                
+            case STAR:
+                StarEffect star = jpanel.getStar();
+                if (!star.puedeUsarse()) break;
+                star.lanzar(col, row);
+                // Daño en área
+                for (Entities.Entity e : Emanager.getEntities()) {
+                    int dx2 = Math.abs(e.getTileX() - col);
+                    int dy2 = Math.abs(e.getTileY() - row);
+                    if (dx2 <= 2 && dy2 <= 2) {
+                        e.takeDamage(200);
+                    }
+                }   
+                break;
         }
         jpanel.repaint();
     }

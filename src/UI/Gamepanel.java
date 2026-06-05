@@ -13,11 +13,11 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import Utils.LightningEffect;
 import java.awt.image.BufferedImage;
+import Utils.StarEffect;
 
 public class GamePanel extends JPanel {
 
@@ -32,8 +32,11 @@ public class GamePanel extends JPanel {
 
     private Entity followedEntity;
     private TimeDay time;
-    // ── campo nuevo ──
+    // ──────── LIGHTNING EFFCT ────
     private LightningEffect lightning = new LightningEffect();
+    
+    // ──────── STAR EFFCT ────
+    private StarEffect star = new StarEffect();
 
     // =========================
     // BACKGROUND IMAGE
@@ -41,14 +44,7 @@ public class GamePanel extends JPanel {
 
     //private Image oceanBackground;
 
-    public GamePanel(
-            World world,
-            Entitymanager entitymanager,
-            InfoPanel infoPanel,
-            Camera camera,
-            TimeDay time
-    ) {
-
+    public GamePanel(World world,Entitymanager entitymanager,InfoPanel infoPanel,Camera camera,TimeDay time) {
         this.infoP = infoPanel;
         this.world = world;
         this.entitymanager = entitymanager;
@@ -117,8 +113,13 @@ public class GamePanel extends JPanel {
         DrawIsland(g);
         DrawTest(g);
         drawGrid(g);
+        
         lightning.update();
         lightning.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray, this);
+        
+        star.update();
+        star.draw(g, (int)(UNIT_SIZE * camera.zoom), camera.Camerax, camera.Cameray, this);
+        
         drawNight(g);
     }
 
@@ -180,8 +181,7 @@ public class GamePanel extends JPanel {
         );
 
         // Calcular UNA sola vez por frame
-        int waterFrame =
-                (int) ((System.currentTimeMillis() / 120)% Assets.waterFrames.length);
+        int waterFrame =(int) ((System.currentTimeMillis() / 120)% Assets.waterFrames.length);
         BufferedImage currentWater =Assets.waterFrames[waterFrame];
 
         for (int r = startRow; r < endRow; r++) {
@@ -423,4 +423,6 @@ public class GamePanel extends JPanel {
     public LightningEffect getLightning() {
         return lightning; 
     }
+    public StarEffect getStar() {
+        return star; }
 }
